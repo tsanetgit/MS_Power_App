@@ -13,7 +13,7 @@
                         "CompanyName": { typeName: "Edm.String", structuralProperty: 1 }
                     },
                     operationType: 0,
-                    operationName: "new_GetCompanyByName" // Replace with your custom action name
+                    operationName: "ap_GetCompanyByName"
                 };
             }
         }
