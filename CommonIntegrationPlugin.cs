@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
+using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -19,7 +20,7 @@ public class CommonIntegrationPlugin
         _clientId = GetEnvironmentVariable("API_CLIENT_ID");
         _clientSecret = GetEnvironmentVariable("API_CLIENT_SECRET");
     }
-
+    //get env var
     private string GetEnvironmentVariable(string schemaName)
     {
         QueryExpression query = new QueryExpression("environmentvariablevalue")
@@ -35,7 +36,7 @@ public class CommonIntegrationPlugin
         }
         throw new InvalidOperationException($"Environment variable '{schemaName}' not found.");
     }
-
+    //main method to get 
     public async Task<string> Login()
     {
         using (HttpClient client = new HttpClient())
@@ -63,6 +64,7 @@ public class CommonIntegrationPlugin
             return tokenResponse.access_token;
         }
     }
+    //get company by name - fulltext
     public async Task<string> GetCompanyByName(string companyName, string accessToken)
     {
         using (HttpClient client = new HttpClient())
@@ -79,9 +81,45 @@ public class CommonIntegrationPlugin
             return await response.Content.ReadAsStringAsync();
         }
     }
+    //get form by company id
+    public async Task<string> GetFormByCompany(string companyId, string accessToken)
+    {
+        using (HttpClient client = new HttpClient())
+        {
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+
+            var response = await client.GetAsync($"{_apiUrl}/form/company/{companyId}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new InvalidOperationException($"Failed to retrieve form details for company ID '{companyId}'.");
+            }
+
+            return await response.Content.ReadAsStringAsync();
+        }
+    }
+
+    // Method to send POST request to create a case
+    public async Task<string> PostCase(object caseDetails, string accessToken)
+    {
+        using (HttpClient client = new HttpClient())
+        {
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+
+            var json = JsonConvert.SerializeObject(caseDetails);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync($"{_apiUrl}/case", content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new InvalidOperationException("Failed to create case.");
+            }
+
+            return await response.Content.ReadAsStringAsync();
+        }
+    }
 }
-
-
 
 public class TokenResponse
 {
