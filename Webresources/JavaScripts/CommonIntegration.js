@@ -42,7 +42,7 @@
 
 function getFormByCompany(companyId) {
     var parameters = {};
-    parameters.CompanyId = companyId;
+    parameters.CompanyId = parseInt(companyId, 10);
 
     var request = {
         getformbycompanyRequest: {
@@ -52,10 +52,10 @@ function getFormByCompany(companyId) {
                 return {
                     boundParameter: null,
                     parameterTypes: {
-                        "CompanyId": { typeName: "Edm.String", structuralProperty: 1 }
+                        "CompanyId": { typeName: "Edm.Int32", structuralProperty: 1 } 
                     },
                     operationType: 0,
-                    operationName: "ap_GetFormByCompany" 
+                    operationName: "new_GetFormByCompany" 
                 };
             }
         }

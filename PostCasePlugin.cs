@@ -20,7 +20,7 @@ public class PostCasePlugin : IPlugin
             }
 
             // Initialize the common integration plugin
-            CommonIntegrationPlugin commonIntegration = new CommonIntegrationPlugin(service);
+            CommonIntegrationPlugin commonIntegration = new CommonIntegrationPlugin(service, tracingService);
 
             // Login and get access token
             string accessToken = commonIntegration.Login().Result;

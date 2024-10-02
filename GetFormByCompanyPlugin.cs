@@ -12,15 +12,15 @@ public class GetFormByCompanyPlugin : IPlugin
 
         try
         {
-            // Retrieve the company ID from input parameters
-            string companyId = (string)context.InputParameters["CompanyId"];
-            if (string.IsNullOrEmpty(companyId))
+            // Retrieve the company ID from input parameters as an integer
+            int companyId = (int)context.InputParameters["CompanyId"];
+            if (companyId <= 0)
             {
-                throw new InvalidPluginExecutionException("Company ID is required.");
+                throw new InvalidPluginExecutionException("Valid Company ID is required.");
             }
 
             // Initialize the common integration plugin
-            CommonIntegrationPlugin commonIntegration = new CommonIntegrationPlugin(service);
+            CommonIntegrationPlugin commonIntegration = new CommonIntegrationPlugin(service, tracingService);
 
             // Login and get access token
             string accessToken = commonIntegration.Login().Result;
