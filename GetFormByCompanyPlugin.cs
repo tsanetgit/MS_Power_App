@@ -26,10 +26,20 @@ public class GetFormByCompanyPlugin : IPlugin
             string accessToken = commonIntegration.Login().Result;
 
             // Get form details by company ID
-            string formJson = commonIntegration.GetFormByCompany(companyId, accessToken).Result;
+            ApiResponse response = commonIntegration.GetFormByCompany(companyId, accessToken).Result;
+            context.OutputParameters["IsError"] = response.IsError;
 
-            // Return the raw JSON response to the context output parameters
-            context.OutputParameters["FormDetails"] = formJson;
+            if (response.IsError)
+            {
+                // Return error
+                context.OutputParameters["ErrorMessage"] = response.Content;
+            }
+            else
+            {
+                // Return the raw JSON response to the context output parameters
+                context.OutputParameters["FormDetails"] = response.Content;
+            }
+
         }
         catch (Exception ex)
         {

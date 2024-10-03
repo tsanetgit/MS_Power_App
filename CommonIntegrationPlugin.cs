@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
+using System.IO;
+using System.IO.Compression;
 
 public class CommonIntegrationPlugin
 {
@@ -22,6 +25,47 @@ public class CommonIntegrationPlugin
         _apiUrl = GetEnvVariable(_service, "ap_API_URL");
         _clientId = GetEnvVariable(_service, "ap_API_CLIENT_ID");
         _clientSecret = GetEnvVariable(_service, "ap_API_CLIENT_SECRET");
+    }
+
+    // Helper method to add default headers to the HttpClient
+    private void AddDefaultHeaders(HttpClient client)
+    {
+        client.DefaultRequestHeaders.Add("Accept", "*/*");
+        client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate");
+        client.DefaultRequestHeaders.Add("Connection", "keep-alive");
+        client.DefaultRequestHeaders.Add("User-Agent", "Dynamics/9.1");
+    }
+
+    // Helper method to decompress response
+    private async Task<string> DecompressResponse(HttpContent content, Stream responseStream)
+    {
+        string responseContent;
+
+        if (content.Headers.ContentEncoding.Contains("gzip"))
+        {
+            _tracingService.Trace("Response is GZIP compressed.");
+            using (var decompressedStream = new GZipStream(responseStream, CompressionMode.Decompress))
+            using (var reader = new StreamReader(decompressedStream))
+            {
+                responseContent = await reader.ReadToEndAsync();
+            }
+        }
+        else if (content.Headers.ContentEncoding.Contains("deflate"))
+        {
+            _tracingService.Trace("Response is Deflate compressed.");
+            using (var decompressedStream = new DeflateStream(responseStream, CompressionMode.Decompress))
+            using (var reader = new StreamReader(decompressedStream))
+            {
+                responseContent = await reader.ReadToEndAsync();
+            }
+        }
+        else
+        {
+            _tracingService.Trace("Response is not compressed.");
+            responseContent = await content.ReadAsStringAsync();
+        }
+
+        return responseContent;
     }
 
     public static string GetEnvVariable(IOrganizationService service, string name)
@@ -97,21 +141,41 @@ public class CommonIntegrationPlugin
                 var json = JsonConvert.SerializeObject(requestBody);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                _tracingService.Trace("Sending login request to API.");
-                var response = await client.PostAsync($"{_apiUrl}/login", content);
+                // Add default headers
+                AddDefaultHeaders(client);
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                content.Headers.ContentLength = json.Length;
 
+                _tracingService.Trace("Sending login request to API. " + _apiUrl);
+
+                var response = await client.PostAsync($"{_apiUrl}/login", content);
+                // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
                 {
-                    _tracingService.Trace("Login request failed.");
+                    _tracingService.Trace("Login request failed. Response: " + await response.Content.ReadAsStringAsync());
                     throw new InvalidOperationException("Failed to login.");
                 }
 
-                _tracingService.Trace("Login request succeeded.");
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var tokenResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<TokenResponse>(responseContent);
+                // Check if the response was successful
+                if (!response.IsSuccessStatusCode)
+                {
+                    _tracingService.Trace("Login request failed. Response: " + await response.Content.ReadAsStringAsync());
+                    throw new InvalidOperationException("Failed to login.");
+                }
+
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
+                // Deserialize the response
+                var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
+
+                if (tokenResponse == null || string.IsNullOrEmpty(tokenResponse.AccessToken))
+                {
+                    throw new InvalidOperationException("Invalid token response.");
+                }
 
                 _tracingService.Trace("Access token retrieved successfully.");
-                return tokenResponse.access_token;
+                return tokenResponse.AccessToken;
             }
         }
         catch (Exception ex)
@@ -129,18 +193,26 @@ public class CommonIntegrationPlugin
 
             using (HttpClient client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+                // Add default headers
+                AddDefaultHeaders(client);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                _tracingService.Trace("Sending request to get company details.");
 
                 var response = await client.GetAsync($"{_apiUrl}/companies/{companyName}");
 
+                // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
                 {
-                    _tracingService.Trace($"Failed to retrieve company details for '{companyName}'.");
+                    _tracingService.Trace($"Failed to retrieve company details for '{companyName}'. Response: " + await response.Content.ReadAsStringAsync());
                     throw new InvalidOperationException($"Failed to retrieve company details for '{companyName}'.");
                 }
 
-                _tracingService.Trace($"Company details retrieved successfully for: {companyName}");
-                return await response.Content.ReadAsStringAsync();
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
+                _tracingService.Trace($"Company details for {companyName} retrieved successfully. Result: " + responseContent);
+                return responseContent;
             }
         }
         catch (Exception ex)
@@ -150,34 +222,54 @@ public class CommonIntegrationPlugin
         }
     }
 
-    public async Task<string> GetFormByCompany(int companyId, string accessToken)
+    public async Task<ApiResponse> GetFormByCompany(int companyId, string accessToken)
     {
+        var apiResponse = new ApiResponse();
+
         try
         {
             _tracingService.Trace($"Retrieving form details for company ID: {companyId}");
 
             using (HttpClient client = new HttpClient())
             {
+                // Add default headers
+                AddDefaultHeaders(client);
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
 
                 var response = await client.GetAsync($"{_apiUrl}/form/company/{companyId}");
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    _tracingService.Trace($"Failed to retrieve form details for company ID '{companyId}'.");
-                    throw new InvalidOperationException($"Failed to retrieve form details for company ID '{companyId}'.");
+                    _tracingService.Trace($"Failed to retrieve form details for company ID '{companyId}'. Status Code: {response.StatusCode}");
+
+                    // Set the error in the response object
+                    apiResponse.IsError = true;
+                    apiResponse.Content = $"Error: Failed to retrieve form details for company ID '{companyId}' - Status Code: {response.StatusCode}, Message: {await response.Content.ReadAsStringAsync()}";
+                    return apiResponse;
                 }
 
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
                 _tracingService.Trace($"Form details retrieved successfully for company ID: {companyId}");
-                return await response.Content.ReadAsStringAsync();
+
+                // Set the success content in the response object
+                apiResponse.IsError = false;
+                apiResponse.Content = responseContent;
+                return apiResponse;
             }
         }
         catch (Exception ex)
         {
             _tracingService.Trace($"Exception in GetFormByCompany: {ex.Message}");
-            throw;
+
+            // Set the exception in the response object
+            apiResponse.IsError = true;
+            apiResponse.Content = $"Error: Exception occurred while retrieving form details for company ID '{companyId}' - {ex.Message}";
+            return apiResponse;
         }
     }
+
 
 
     public async Task<string> PostCase(object caseDetails, string accessToken)
@@ -188,21 +280,29 @@ public class CommonIntegrationPlugin
 
             using (HttpClient client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+                // Add default headers
+                AddDefaultHeaders(client);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
                 var json = JsonConvert.SerializeObject(caseDetails);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
+                _tracingService.Trace("Sending POST request to create case.");
+
                 var response = await client.PostAsync($"{_apiUrl}/case", content);
 
+                // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
                 {
-                    _tracingService.Trace("Failed to create case.");
+                    _tracingService.Trace("Failed to create case. Response: " + await response.Content.ReadAsStringAsync());
                     throw new InvalidOperationException("Failed to create case.");
                 }
 
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
                 _tracingService.Trace("Case created successfully.");
-                return await response.Content.ReadAsStringAsync();
+                return responseContent;
             }
         }
         catch (Exception ex)
@@ -214,7 +314,18 @@ public class CommonIntegrationPlugin
 }
 public class TokenResponse
 {
-    public string access_token { get; set; }
-    public string token_type { get; set; }
-    public int expires_in { get; set; }
+    [JsonProperty("accessToken")]
+    public string AccessToken { get; set; }
+
+    [JsonProperty("tokenType")]
+    public string TokenType { get; set; }
+
+    [JsonProperty("expiresIn")]
+    public int ExpiresIn { get; set; }
+}
+
+public class ApiResponse
+{
+    public bool IsError { get; set; }
+    public string Content { get; set; }
 }

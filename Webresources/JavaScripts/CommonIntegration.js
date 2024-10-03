@@ -55,7 +55,7 @@ function getFormByCompany(companyId) {
                         "CompanyId": { typeName: "Edm.Int32", structuralProperty: 1 } 
                     },
                     operationType: 0,
-                    operationName: "new_GetFormByCompany" 
+                    operationName: "ap_GetFormByCompany" 
                 };
             }
         }
