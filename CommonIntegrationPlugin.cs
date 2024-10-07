@@ -148,7 +148,7 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Sending login request to API. " + _apiUrl);
 
-                var response = await client.PostAsync($"{_apiUrl}/login", content);
+                var response = await client.PostAsync($"{_apiUrl}/0.1.0/login", content);
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
                 {
@@ -199,7 +199,7 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Sending request to get company details.");
 
-                var response = await client.GetAsync($"{_apiUrl}/companies/{companyName}");
+                var response = await client.GetAsync($"{_apiUrl}/0.1.0/companies/{companyName}");
 
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
@@ -228,7 +228,7 @@ public class CommonIntegrationPlugin
 
         try
         {
-            _tracingService.Trace($"Retrieving form details for company ID: {companyId}");
+            _tracingService.Trace($"Starting GetFormByCompany for company ID: {companyId}");
 
             using (HttpClient client = new HttpClient())
             {
@@ -236,13 +236,12 @@ public class CommonIntegrationPlugin
                 AddDefaultHeaders(client);
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
 
-                var response = await client.GetAsync($"{_apiUrl}/form/company/{companyId}");
+                _tracingService.Trace("Sending request to retrieve form details.");
+                var response = await client.GetAsync($"{_apiUrl}/0.1.0/form/company/{companyId}");
 
                 if (!response.IsSuccessStatusCode)
                 {
                     _tracingService.Trace($"Failed to retrieve form details for company ID '{companyId}'. Status Code: {response.StatusCode}");
-
-                    // Set the error in the response object
                     apiResponse.IsError = true;
                     apiResponse.Content = $"Error: Failed to retrieve form details for company ID '{companyId}' - Status Code: {response.StatusCode}, Message: {await response.Content.ReadAsStringAsync()}";
                     return apiResponse;
@@ -251,25 +250,138 @@ public class CommonIntegrationPlugin
                 Stream responseStream = await response.Content.ReadAsStreamAsync();
                 string responseContent = await DecompressResponse(response.Content, responseStream);
 
-                _tracingService.Trace($"Form details retrieved successfully for company ID: {companyId}");
+                _tracingService.Trace("Form details received, starting deserialization.");
+                var formData = JsonConvert.DeserializeObject<FormResponse>(responseContent);
+
+                if (formData == null || formData.CustomerData == null)
+                {
+                    _tracingService.Trace("Error: formData or formData.CustomerData is null.");
+                    apiResponse.IsError = true;
+                    apiResponse.Content = "Error: form data or customer data is null.";
+                    return apiResponse;
+                }
+
+                _tracingService.Trace("Processing customerData objects.");
+
+                // Process each customerData object to retrieve field metadata and possibly field selections
+                foreach (var customerData in formData.CustomerData)
+                {
+                    _tracingService.Trace($"Processing customerData ID: {customerData.Id}");
+
+                    // Get field metadata
+                    var fieldMetadata = await GetFieldMetadata(customerData.Id, formData.DocumentId, accessToken);
+
+                    if (fieldMetadata == null)
+                    {
+                        _tracingService.Trace($"Warning: Field metadata for customerData ID '{customerData.Id}' is null.");
+                        continue;
+                    }
+
+                    // Add fieldMetadata to customerData
+                    customerData.FieldMetadata = fieldMetadata;
+
+                    // If the field type is TIERSELECT, get field selections
+                    if (fieldMetadata.Type == "TIERSELECT")
+                    {
+                        _tracingService.Trace($"Field type is TIERSELECT for customerData ID: {customerData.Id}, retrieving field selections.");
+                        var fieldSelections = await GetFieldSelections(customerData.Id, formData.DocumentId, accessToken);
+
+                        if (fieldSelections == null)
+                        {
+                            _tracingService.Trace($"Warning: Field selections for customerData ID '{customerData.Id}' is null.");
+                            continue;
+                        }
+
+                        customerData.FieldSelections = fieldSelections;
+                    }
+                }
+
+                _tracingService.Trace($"Form details successfully processed for company ID: {companyId}");
 
                 // Set the success content in the response object
                 apiResponse.IsError = false;
-                apiResponse.Content = responseContent;
+                apiResponse.Content = JsonConvert.SerializeObject(formData);
                 return apiResponse;
             }
         }
         catch (Exception ex)
         {
             _tracingService.Trace($"Exception in GetFormByCompany: {ex.Message}");
-
-            // Set the exception in the response object
             apiResponse.IsError = true;
             apiResponse.Content = $"Error: Exception occurred while retrieving form details for company ID '{companyId}' - {ex.Message}";
             return apiResponse;
         }
     }
 
+
+    public async Task<FieldMetadata> GetFieldMetadata(int customerDataId, int documentId, string accessToken)
+    {
+        _tracingService.Trace($"Retrieving field metadata for customerDataId: {customerDataId}, documentId: {documentId}");
+
+        try
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                // Add default headers
+                AddDefaultHeaders(client);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+
+                var response = await client.GetAsync($"{_apiUrl}/0.1.1/form/{documentId}/field/{customerDataId}");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    _tracingService.Trace($"Failed to retrieve field metadata for customerDataId '{customerDataId}', documentId '{documentId}'. Status Code: {response.StatusCode}");
+                    return null; // Handle the failure accordingly
+                }
+
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
+                _tracingService.Trace($"Field metadata retrieved successfully for customerDataId: {customerDataId}, documentId: {documentId}");
+                return JsonConvert.DeserializeObject<FieldMetadata>(responseContent);
+            }
+        }
+        catch (Exception ex)
+        {
+            _tracingService.Trace($"Exception in GetFieldMetadata: {ex.Message}");
+            return null;
+        }
+    }
+
+
+    public async Task<List<FieldSelection>> GetFieldSelections(int customerDataId, int documentId, string accessToken)
+    {
+        _tracingService.Trace($"Retrieving field selections for customerDataId: {customerDataId}, documentId: {documentId}");
+
+        try
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                // Add default headers
+                AddDefaultHeaders(client);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+
+                var response = await client.GetAsync($"{_apiUrl}/0.1.1/form/{documentId}/field/{customerDataId}/selections");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    _tracingService.Trace($"Failed to retrieve field selections for customerDataId '{customerDataId}', documentId '{documentId}'. Status Code: {response.StatusCode}");
+                    return null; // Handle the failure accordingly
+                }
+
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
+                _tracingService.Trace($"Field selections retrieved successfully for customerDataId: {customerDataId}, documentId: {documentId}");
+                return JsonConvert.DeserializeObject<List<FieldSelection>>(responseContent);
+            }
+        }
+        catch (Exception ex)
+        {
+            _tracingService.Trace($"Exception in GetFieldSelections: {ex.Message}");
+            return null;
+        }
+    }
 
 
     public async Task<string> PostCase(object caseDetails, string accessToken)
@@ -289,7 +401,7 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Sending POST request to create case.");
 
-                var response = await client.PostAsync($"{_apiUrl}/case", content);
+                var response = await client.PostAsync($"{_apiUrl}/0.1.0/case", content);
 
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
@@ -328,4 +440,48 @@ public class ApiResponse
 {
     public bool IsError { get; set; }
     public string Content { get; set; }
+}
+
+public class FormResponse
+{
+    public int DocumentId { get; set; }
+    public string InternalCaseNumber { get; set; }
+    public string OptionalRecieverInternalCaseNumber { get; set; }
+    public string ProblemSummary { get; set; }
+    public string ProblemDescription { get; set; }
+    public string CasePriority { get; set; }
+    public string ReadonlyAdminNote { get; set; }
+    public string ReadonlyEscalationInstructions { get; set; }
+    public bool TestSubmission { get; set; }
+    public List<CustomerData> CustomerData { get; set; }
+}
+
+public class CustomerData
+{
+    public int Id { get; set; }
+    public string Section { get; set; }
+    public string FieldName { get; set; }
+    public string Value { get; set; }
+    public FieldMetadata FieldMetadata { get; set; }
+    public List<FieldSelection> FieldSelections { get; set; } // Only populated if field type is TIERSELECT
+}
+
+public class FieldMetadata
+{
+    public int DocumentId { get; set; }
+    public int FieldId { get; set; }
+    public string Section { get; set; }
+    public string Label { get; set; }
+    public string Type { get; set; }
+    public int DisplayOrder { get; set; }
+    public bool Required { get; set; }
+    public List<string> Options { get; set; }
+    public string AdditionalSettings { get; set; }
+    public string ValidationRules { get; set; }
+}
+
+public class FieldSelection
+{
+    public string Value { get; set; }
+    public List<FieldSelection> Children { get; set; }
 }

@@ -1,4 +1,10 @@
-﻿function waitForElementsToExist(elementIds, callback, options) {
+﻿// Start polling to ensure the input element is available
+function onFormLoad(executionContext) {
+    const formContext = executionContext.getFormContext();
+    waitForWebResourceElement('WebResource_casecreate', 'companyInput', () => setupCompanySearch(formContext));
+}
+
+function waitForElementsToExist(elementIds, callback, options) {
     options = Object.assign({
         checkFrequency: 500, // check for elements every 500 ms
         timeout: null, // after checking for X amount of ms, stop checking
@@ -167,6 +173,7 @@ function getFormByCompany(companyId) {
                         var formJson = response.FormDetails;
                         var formDetails = JSON.parse(formJson);
                         console.log(formDetails);
+                        displayDynamicForm(formDetails);
                     }
                     else {
                         alert(response.ErrorMessage);
@@ -225,8 +232,177 @@ function getCompanyDetails(companyName) {
     });
 }
 
-// Start polling to ensure the input element is available
-function onFormLoad(executionContext) {
-    const formContext = executionContext.getFormContext();
-    waitForWebResourceElement('WebResource_casecreate', 'companyInput', () => setupCompanySearch(formContext));
+// Function to dynamically create the form
+function displayDynamicForm(formDetails) {
+    const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
+    const webResourceContent = webResourceControl.getObject().contentDocument;
+
+    const formContainer = webResourceContent.getElementById("dynamicFormContainer");
+    formContainer.innerHTML = "";  // Clear existing form if any
+
+    // Create the form
+    const form = document.createElement("form");
+    form.className = "dynamic-form";
+
+    // Add fields based on formDetails
+    form.appendChild(createTextInput("Internal Case Number", formDetails.InternalCaseNumber, "internalCaseNumber"));
+    form.appendChild(createTextInput("Receiver Case Number", formDetails.OptionalRecieverInternalCaseNumber, "receiverCaseNumber"));
+    form.appendChild(createTextInput("Problem Summary", formDetails.ProblemSummary, "problemSummary"));
+    form.appendChild(createTextInput("Problem Description", formDetails.ProblemDescription, "problemDescription"));
+    form.appendChild(createTextInput("Priority", formDetails.CasePriority, "priority"));
+    form.appendChild(createTextInput("Admin Note", formDetails.ReadonlyAdminNote, "adminNote", true));
+    form.appendChild(createTextInput("Escalation Instructions", formDetails.ReadonlyEscalationInstructions, "escalationInstructions", true));
+
+    // CustomerData Fields
+    const customerDataSections = groupBy(formDetails.CustomerData, "Section");
+
+    for (const section in customerDataSections) {
+        const sectionGroup = document.createElement("div");
+        sectionGroup.className = "form-section";
+        sectionGroup.innerHTML = `<h3>${section}</h3>`;
+
+        customerDataSections[section].sort((a, b) => a.FieldMetadata.DisplayOrder - b.FieldMetadata.DisplayOrder);
+
+        customerDataSections[section].forEach(field => {
+            sectionGroup.appendChild(createFieldFromMetadata(field));
+        });
+
+        form.appendChild(sectionGroup);
+    }
+
+    // Submit button
+    const submitButton = document.createElement("button");
+    submitButton.textContent = "Submit";
+    submitButton.type = "submit";
+
+    submitButton.addEventListener("click", function (event) {
+        event.preventDefault();
+        saveFormData(formDetails);
+    });
+
+    form.appendChild(submitButton);
+    formContainer.appendChild(form);
+}
+
+// Helper function to create text inputs with two-column layout
+function createTextInput(label, value, name, isReadOnly = false) {
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group";
+
+    const labelElement = document.createElement("label");
+    labelElement.className = "form-label";
+    labelElement.textContent = label;
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = value || "";
+    input.name = name;
+    input.className = "form-input";
+    if (isReadOnly) {
+        input.readOnly = true;
+        input.classList.add("readonly-input");
+    }
+
+    inputGroup.appendChild(labelElement);
+    inputGroup.appendChild(input);
+
+    return inputGroup;
+}
+
+// Helper function to create fields based on metadata
+function createFieldFromMetadata(field) {
+    const fieldGroup = document.createElement("div");
+    fieldGroup.className = "input-group";  // Use same class for two-column layout
+
+    const labelElement = document.createElement("label");
+    labelElement.className = "form-label";  // Style label
+    labelElement.textContent = field.FieldMetadata.Label;
+
+    let inputElement;
+    switch (field.FieldMetadata.Type) {
+        case "STRING":
+            inputElement = document.createElement("input");
+            inputElement.type = "text";
+            inputElement.value = field.Value || "";
+            inputElement.className = "form-input";  // Style input
+            break;
+        case "INT":
+            inputElement = document.createElement("input");
+            inputElement.type = "number";
+            inputElement.value = field.Value || 0;
+            inputElement.className = "form-input";  // Style input
+            break;
+        case "EMAIL":
+            inputElement = document.createElement("input");
+            inputElement.type = "email";
+            inputElement.value = field.Value || "";
+            inputElement.className = "form-input";  // Style input
+            break;
+        case "PHONE":
+            inputElement = document.createElement("input");
+            inputElement.type = "tel";
+            inputElement.value = field.Value || "";
+            inputElement.className = "form-input";  // Style input
+            break;
+        case "TIERSELECT":
+            inputElement = createTierSelect(field.FieldMetadata.Options, field.Value);
+            inputElement.className = "form-input";  // Style select
+            break;
+        default:
+            inputElement = document.createElement("input");
+            inputElement.type = "text";
+            inputElement.value = field.Value || "";
+            inputElement.className = "form-input";  // Style input
+            break;
+    }
+
+    // Add validation, requirement, and custom styles
+    if (field.FieldMetadata.Required) {
+        inputElement.required = true;
+    }
+    if (field.FieldMetadata.ValidationRules && field.FieldMetadata.ValidationRules.includes("not_numeric")) {
+        inputElement.pattern = "\\D*";  // Regex for non-numeric input
+    }
+
+    fieldGroup.appendChild(labelElement);
+    fieldGroup.appendChild(inputElement);
+    return fieldGroup;
+}
+
+// Helper function to create TIERSELECT dropdowns
+function createTierSelect(options, selectedValue) {
+    const selectElement = document.createElement("select");
+
+    function createOptions(optionList, parentElement) {
+        optionList.forEach(option => {
+            const opt = document.createElement("option");
+            opt.value = option.value;
+            opt.textContent = option.value;
+            parentElement.appendChild(opt);
+
+            if (option.children && option.children.length) {
+                createOptions(option.children, parentElement);
+            }
+        });
+    }
+
+    createOptions(options, selectElement);
+    selectElement.value = selectedValue || "";
+    return selectElement;
+}
+
+// Helper function to group data by section
+function groupBy(arr, key) {
+    return arr.reduce((group, item) => {
+        const section = item[key];
+        group[section] = group[section] || [];
+        group[section].push(item);
+        return group;
+    }, {});
+}
+
+// Function to handle form submission and save data
+function saveFormData(formDetails) {
+    // Here you would gather data from the form and update the formDetails object
+    console.log("Form data would be saved:", formDetails);
 }

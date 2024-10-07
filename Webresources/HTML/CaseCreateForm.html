@@ -1,5 +1,98 @@
-﻿<div>
-    <input type="text" id="companyInput" placeholder="Enter Company Name" />
-    <button id="searchCompanyButton">Search</button>
-    <div id="companyResults"></div>
-</div>
+﻿<head>
+    <style>
+        body {
+            font-family: "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+        }
+
+        .dynamic-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem; /* Reduced gap between main fields */
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            align-items: center;
+            margin-bottom: 5px; /* Reduced margin */
+        }
+
+        .form-label {
+            font-size: 14px;
+            margin-right: 10px;
+            font-weight: normal;
+        }
+
+        .form-input, select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            background-color: #f9f9f9;
+            font-size: 14px;
+        }
+
+        .readonly-input {
+            background-color: #f0f0f0;
+            color: #666;
+        }
+
+        .form-section h3 {
+            margin-top: 20px;
+            grid-column: 1 / -1;
+            color: #333;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #0078D4;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            grid-column: 1 / -1;
+            margin-top: 20px;
+        }
+
+            button[type="submit"]:hover {
+                background-color: #005A9E;
+            }
+
+        /* CustomerData fields will remain unchanged */
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        /* Company search dropdown styling */
+        .company-search {
+            margin-bottom: 20px;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .company-results {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Company search and results -->
+    <div class="company-search">
+        <label for="companyInput">Search Company:</label>
+        <input type="text" id="companyInput" class="form-input" placeholder="Enter Company Name" />
+        <button id="searchCompanyButton">Search</button>
+        <div id="companyResults" class="company-results"></div>
+    </div>
+
+    <!-- Dynamic form container -->
+    <div id="dynamicFormContainer"></div>
+</body>
