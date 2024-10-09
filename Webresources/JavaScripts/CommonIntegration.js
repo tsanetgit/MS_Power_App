@@ -1,11 +1,9 @@
-﻿function getCompanyDetails(companyName) {
-    var parameters = {};
-    parameters.CompanyName = companyName;
-
-    var request = {
-        getcompanybynameRequest: {
-            entity: parameters,
-
+﻿// Get company
+function getCompanyDetails(companyName) {
+    return new Promise(function (resolve, reject) {
+        const parameters = { CompanyName: companyName };
+        const request = {
+            CompanyName: parameters.CompanyName,
             getMetadata: function () {
                 return {
                     boundParameter: null,
@@ -16,6 +14,47 @@
                     operationName: "ap_GetCompanyByName"
                 };
             }
+
+        };
+
+        Xrm.WebApi.online.execute(request).then(
+            function success(result) {
+                if (result.ok) {
+                    result.json().then(
+                        function (response) {
+                            const companyDetailsJson = response.CompanyDetails;
+                            const companyDetails = JSON.parse(companyDetailsJson);
+                            resolve(companyDetails);
+                        });
+                } else {
+                    reject(new Error("No result from company search"));
+                }
+            },
+            function (error) {
+                reject(error);
+            }
+        );
+    });
+}
+
+// getFormByCompany function
+function getFormByCompany(companyId, formContext) {
+    const parameters = {
+        CompanyId: companyId
+    };
+
+    // Custom action call
+    const request = {
+        CompanyId: parameters.CompanyId, 
+        getMetadata: function () {
+            return {
+                boundParameter: null, 
+                parameterTypes: {
+                    "CompanyId": { typeName: "Edm.Int32", structuralProperty: 1 } 
+                },
+                operationType: 0, 
+                operationName: "ap_GetFormByCompany"
+            };
         }
     };
 
@@ -23,41 +62,44 @@
         function success(result) {
             if (result.ok) {
                 result.json().then(function (response) {
-                    var companyDetailsJson = response.CompanyDetails;
-                    var companyDetails = JSON.parse(companyDetailsJson);
-
-                    companyDetails.forEach(function (company) {
-                        console.log("ID: " + company.id);
-                        console.log("Name: " + company.name);
-                        console.log("Description: " + company.description);
-                    });
+                    if (!response.IsError) {
+                        var formJson = response.FormDetails;
+                        var formDetails = JSON.parse(formJson);
+                        console.log(formDetails);
+                        displayDynamicForm(formDetails, formContext);
+                    }
+                    else {
+                        alert(response.ErrorMessage);
+                    }
                 });
             }
         },
         function (error) {
-            console.log(error.message);
+            console.error(error.message); // Log any errors in the console
         }
     );
 }
 
-function getFormByCompany(companyId) {
-    var parameters = {};
-    parameters.CompanyId = parseInt(companyId, 10);
+function postCase(submissionData, formContext) {
+    // Convert the submissionData object to a JSON string
+    const submissionDataString = JSON.stringify(submissionData);
 
-    var request = {
-        getformbycompanyRequest: {
-            entity: parameters,
+    const parameters = {
+        CaseDetails: submissionDataString
+    };
 
-            getMetadata: function () {
-                return {
-                    boundParameter: null,
-                    parameterTypes: {
-                        "CompanyId": { typeName: "Edm.Int32", structuralProperty: 1 } 
-                    },
-                    operationType: 0,
-                    operationName: "ap_GetFormByCompany" 
-                };
-            }
+    // Custom action call
+    const request = {
+        CaseDetails: parameters.CaseDetails, 
+        getMetadata: function () {
+            return {
+                boundParameter: null, // No entity bound
+                parameterTypes: {
+                    "CaseDetails": { typeName: "Edm.String", structuralProperty: 1 } 
+                },
+                operationType: 0, 
+                operationName: "ap_PostCase"
+            };
         }
     };
 
@@ -65,52 +107,19 @@ function getFormByCompany(companyId) {
         function success(result) {
             if (result.ok) {
                 result.json().then(function (response) {
-                    var formJson = response.FormDetails;
-                    var formDetails = JSON.parse(formJson);
-
-                    console.log(formDetails);
+                    if (!response.IsError) {
+                        var formJson = response.PostCaseResponse;
+                        console.log(formJson);
+                    }
+                    else {
+                        alert(response.ErrorMessage);
+                    }
                 });
             }
         },
         function (error) {
-            console.log(error.message);
+            console.error(error.message);
+            alert(error.message);
         }
     );
 }
-
-function postCase(caseDetails) {
-    var parameters = {};
-    parameters.CaseDetails = caseDetails;
-
-    var request = {
-        postcaseRequest: {
-            entity: parameters,
-
-            getMetadata: function () {
-                return {
-                    boundParameter: null,
-                    parameterTypes: {
-                        "CaseDetails": { typeName: "Edm.String", structuralProperty: 1 } 
-                    },
-                    operationType: 0,
-                    operationName: "ap_PostCase"
-                };
-            }
-        }
-    };
-
-    Xrm.WebApi.online.execute(request).then(
-        function success(result) {
-            if (result.ok) {
-                result.json().then(function (response) {
-                    console.log("Post Case Response: ", response.PostCaseResponse);
-                });
-            }
-        },
-        function (error) {
-            console.log(error.message);
-        }
-    );
-}
-
-

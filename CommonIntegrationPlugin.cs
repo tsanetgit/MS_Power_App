@@ -398,16 +398,19 @@ public class CommonIntegrationPlugin
 
                 var json = JsonConvert.SerializeObject(caseDetails);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                content.Headers.ContentLength = json.Length;
 
                 _tracingService.Trace("Sending POST request to create case.");
 
-                var response = await client.PostAsync($"{_apiUrl}/0.1.0/case", content);
+                var response = await client.PostAsync($"{_apiUrl}/0.1.0/cases/create", content);
 
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
                 {
-                    _tracingService.Trace("Failed to create case. Response: " + await response.Content.ReadAsStringAsync());
-                    throw new InvalidOperationException("Failed to create case.");
+                    string resp = await response.Content.ReadAsStringAsync();
+                    _tracingService.Trace("Failed to create case. Response: " + resp);
+                    return resp;
                 }
 
                 Stream responseStream = await response.Content.ReadAsStreamAsync();
@@ -444,44 +447,94 @@ public class ApiResponse
 
 public class FormResponse
 {
+    [JsonProperty("documentId")]
     public int DocumentId { get; set; }
+
+    [JsonProperty("internalCaseNumber")]
     public string InternalCaseNumber { get; set; }
+
+    [JsonProperty("optionalRecieverInternalCaseNumber")]
     public string OptionalRecieverInternalCaseNumber { get; set; }
+
+    [JsonProperty("problemSummary")]
     public string ProblemSummary { get; set; }
+
+    [JsonProperty("problemDescription")]
     public string ProblemDescription { get; set; }
+
+    [JsonProperty("casePriority")]
     public string CasePriority { get; set; }
+
+    [JsonProperty("readonlyAdminNote")]
     public string ReadonlyAdminNote { get; set; }
+
+    [JsonProperty("readonlyEscalationInstructions")]
     public string ReadonlyEscalationInstructions { get; set; }
+
+    [JsonProperty("testSubmission")]
     public bool TestSubmission { get; set; }
+
+    [JsonProperty("customerData")]
     public List<CustomerData> CustomerData { get; set; }
 }
 
 public class CustomerData
 {
+    [JsonProperty("id")]
     public int Id { get; set; }
+
+    [JsonProperty("section")]
     public string Section { get; set; }
+
+    [JsonProperty("fieldName")]
     public string FieldName { get; set; }
+
+    [JsonProperty("value")]
     public string Value { get; set; }
+
     public FieldMetadata FieldMetadata { get; set; }
     public List<FieldSelection> FieldSelections { get; set; } // Only populated if field type is TIERSELECT
 }
 
+
 public class FieldMetadata
 {
+    [JsonProperty("documentId")]
     public int DocumentId { get; set; }
+
+    [JsonProperty("fieldId")]
     public int FieldId { get; set; }
+
+    [JsonProperty("section")]
     public string Section { get; set; }
+
+    [JsonProperty("label")]
     public string Label { get; set; }
+
+    [JsonProperty("type")]
     public string Type { get; set; }
+
+    [JsonProperty("displayOrder")]
     public int DisplayOrder { get; set; }
+
+    [JsonProperty("required")]
     public bool Required { get; set; }
+
+    [JsonProperty("options")]
     public List<string> Options { get; set; }
+
+    [JsonProperty("additionalSettings")]
     public string AdditionalSettings { get; set; }
+
+    [JsonProperty("validationRules")]
     public string ValidationRules { get; set; }
 }
 
 public class FieldSelection
 {
+    [JsonProperty("value")]
     public string Value { get; set; }
+
+    [JsonProperty("children")]
     public List<FieldSelection> Children { get; set; }
 }

@@ -95,6 +95,7 @@
     <Content Include="HTML\CaseCreateForm.html" />
     <Content Include="JavaScripts\CaseTSA.js" />
     <Content Include="JavaScripts\CommonIntegration.js" />
+    <Content Include="JavaScripts\CommonScripts.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

@@ -4,68 +4,6 @@ function onFormLoad(executionContext) {
     waitForWebResourceElement('WebResource_casecreate', 'companyInput', () => setupCompanySearch(formContext));
 }
 
-function waitForElementsToExist(elementIds, callback, options) {
-    options = Object.assign({
-        checkFrequency: 500, // check for elements every 500 ms
-        timeout: null, // after checking for X amount of ms, stop checking
-    }, options);
-
-    // poll every X amount of ms for all DOM nodes
-    let intervalHandle = setInterval(() => {
-        let doElementsExist = true;
-        for (let elementId of elementIds) {
-            let element = window.top.document.getElementById(elementId);
-            if (!element) {
-                // if element does not exist, set doElementsExist to false and stop the loop
-                doElementsExist = false;
-                break;
-            }
-        }
-
-        // if all elements exist, stop polling and invoke the callback function 
-        if (doElementsExist) {
-            clearInterval(intervalHandle);
-            if (callback) {
-                callback();
-            }
-        }
-    }, options.checkFrequency);
-    if (options.timeout != null) {
-        setTimeout(() => clearInterval(intervalHandle), options.timeout);
-    }
-}
-
-function waitForWebResourceElement(webResourceName, elementId, callback, checkFrequency = 500, timeout = 5000) {
-    const startTime = Date.now();
-    const interval = setInterval(function () {
-        try {
-            const webResourceControl = parent.Xrm.Page.getControl(webResourceName);
-            if (webResourceControl) {
-                const webResourceContent = webResourceControl.getObject().contentDocument;
-                console.log("Web resource content found");
-
-                const element = webResourceContent.getElementById(elementId);  // Directly access the element
-                if (element) {
-                    clearInterval(interval);
-                    console.log("Element found! Executing callback.");
-                    callback();
-                } else {
-                    console.log("Element not found yet");
-                }
-            } else {
-                console.log("Web resource control not found");
-            }
-        } catch (e) {
-            console.error("An error occurred: " + e.message);
-        }
-
-        if (Date.now() - startTime > timeout) {
-            clearInterval(interval);
-            console.error("Element not found within the timeout period.");
-        }
-    }, checkFrequency);
-}
-
 // Setup the search functionality once the element is found
 function setupCompanySearch(formContext) {
     const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
@@ -137,54 +75,11 @@ function displayCompanyResults(formContext, companies) {
         const selectedCompanyName = selectList.options[selectList.selectedIndex].text;
         if (selectedCompanyId) {
             selectCompany(formContext, selectedCompanyId, selectedCompanyName);
-            getFormByCompany(selectedCompanyId);
+            getFormByCompany(selectedCompanyId, formContext);
         }
     });
 
     resultsDiv.appendChild(selectList);
-}
-
-// getFormByCompany function
-function getFormByCompany(companyId) {
-    const parameters = {
-        CompanyId: companyId
-    };
-
-    // Custom action call
-    const request = {
-        CompanyId: parameters.CompanyId, // Pass the companyId parameter
-        getMetadata: function () {
-            return {
-                boundParameter: null, // No entity bound
-                parameterTypes: {
-                    "CompanyId": { typeName: "Edm.Int32", structuralProperty: 1 } // Integer type for the CompanyId
-                },
-                operationType: 0, // 0 for actions, 1 for functions
-                operationName: "ap_GetFormByCompany" // The name of your custom action in Dynamics 365
-            };
-        }
-    };
-
-    Xrm.WebApi.online.execute(request).then(
-        function success(result) {
-            if (result.ok) {
-                result.json().then(function (response) {
-                    if (!response.IsError) {
-                        var formJson = response.FormDetails;
-                        var formDetails = JSON.parse(formJson);
-                        console.log(formDetails);
-                        displayDynamicForm(formDetails);
-                    }
-                    else {
-                        alert(response.ErrorMessage);
-                    }
-                });
-            }
-        },
-        function (error) {
-            console.error(error.message); // Log any errors in the console
-        }
-    );
 }
 
 // Function to set selected company data into form fields
@@ -193,80 +88,38 @@ function selectCompany(formContext, companyId, companyName) {
     formContext.getAttribute("ap_companyname").setValue(companyName);
 }
 
-// Get company name
-function getCompanyDetails(companyName) {
-    return new Promise(function (resolve, reject) {
-        const parameters = { CompanyName: companyName };
-        const request = {
-            CompanyName: parameters.CompanyName,
-            getMetadata: function () {
-                return {
-                    boundParameter: null,
-                    parameterTypes: {
-                        "CompanyName": { typeName: "Edm.String", structuralProperty: 1 }
-                    },
-                    operationType: 0,
-                    operationName: "ap_GetCompanyByName"
-                };
-            }
-            
-        };
-
-        Xrm.WebApi.online.execute(request).then(
-            function success(result) {
-                if (result.ok) {
-                    result.json().then(
-                        function (response) {
-                            const companyDetailsJson = response.CompanyDetails;
-                            const companyDetails = JSON.parse(companyDetailsJson);
-                            resolve(companyDetails);
-                    });
-                } else {
-                    reject(new Error("No result from company search"));
-                }
-            },
-            function (error) {
-                reject(error);
-            }
-        );
-    });
-}
-
 // Function to dynamically create the form
-function displayDynamicForm(formDetails) {
+function displayDynamicForm(formDetails, formContext) {
     const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
     const webResourceContent = webResourceControl.getObject().contentDocument;
 
     const formContainer = webResourceContent.getElementById("dynamicFormContainer");
-    formContainer.innerHTML = "";  // Clear existing form if any
+    formContainer.innerHTML = "";  // Clear existing form
 
-    // Create the form
     const form = document.createElement("form");
     form.className = "dynamic-form";
 
     // Add fields based on formDetails
-    form.appendChild(createTextInput("Internal Case Number", formDetails.InternalCaseNumber, "internalCaseNumber"));
-    form.appendChild(createTextInput("Receiver Case Number", formDetails.OptionalRecieverInternalCaseNumber, "receiverCaseNumber"));
-    form.appendChild(createTextInput("Problem Summary", formDetails.ProblemSummary, "problemSummary"));
-    form.appendChild(createTextInput("Problem Description", formDetails.ProblemDescription, "problemDescription"));
-    form.appendChild(createTextInput("Priority", formDetails.CasePriority, "priority"));
-    form.appendChild(createTextInput("Admin Note", formDetails.ReadonlyAdminNote, "adminNote", true));
-    form.appendChild(createTextInput("Escalation Instructions", formDetails.ReadonlyEscalationInstructions, "escalationInstructions", true));
+    form.appendChild(createTextInput("Internal Case Number", formDetails.internalCaseNumber, "internalCaseNumber"));
+    form.appendChild(createTextInput("Receiver Case Number", formDetails.optionalRecieverInternalCaseNumber, "receiverCaseNumber"));
+    form.appendChild(createTextInput("Problem Summary", formDetails.problemSummary, "problemSummary"));
+    form.appendChild(createTextInput("Problem Description", formDetails.problemDescription, "problemDescription"));
 
-    // CustomerData Fields
-    const customerDataSections = groupBy(formDetails.CustomerData, "Section");
+    form.appendChild(createPrioritySelect("Priority", formDetails.casePriority, "priority"));
+    form.appendChild(createHtmlField("Admin Note", formDetails.readonlyAdminNote, "adminNote"));
+    form.appendChild(createHtmlField("Escalation Instructions", formDetails.readonlyEscalationInstructions, "escalationInstructions"));
 
+    // CustomerData fields
+    const customerDataSections = groupBy(formDetails.customerData, "section");
     for (const section in customerDataSections) {
         const sectionGroup = document.createElement("div");
         sectionGroup.className = "form-section";
         sectionGroup.innerHTML = `<h3>${section}</h3>`;
 
-        customerDataSections[section].sort((a, b) => a.FieldMetadata.DisplayOrder - b.FieldMetadata.DisplayOrder);
-
+        customerDataSections[section].sort((a, b) => a.FieldMetadata.displayOrder - b.FieldMetadata.displayOrder);
         customerDataSections[section].forEach(field => {
             sectionGroup.appendChild(createFieldFromMetadata(field));
         });
-
         form.appendChild(sectionGroup);
     }
 
@@ -277,7 +130,13 @@ function displayDynamicForm(formDetails) {
 
     submitButton.addEventListener("click", function (event) {
         event.preventDefault();
-        saveFormData(formDetails);
+        if (validateForm(form)) {
+            const submissionData = buildFormObject(formDetails);
+            saveToFormField("ap_formjson", submissionData, formContext);  // Save JSON
+            postCase(submissionData, formContext);  // Send the object via existing unbound action
+        } else {
+            alert("Please correct the data.");
+        }
     });
 
     form.appendChild(submitButton);
@@ -309,58 +168,63 @@ function createTextInput(label, value, name, isReadOnly = false) {
     return inputGroup;
 }
 
-// Helper function to create fields based on metadata
+// Helper function for dynamically creating fields based on FieldMetadata.Type
 function createFieldFromMetadata(field) {
     const fieldGroup = document.createElement("div");
-    fieldGroup.className = "input-group";  // Use same class for two-column layout
+    fieldGroup.className = "input-group";
 
     const labelElement = document.createElement("label");
-    labelElement.className = "form-label";  // Style label
-    labelElement.textContent = field.FieldMetadata.Label;
+    labelElement.className = "form-label";
+    labelElement.textContent = field.FieldMetadata.label;
 
     let inputElement;
-    switch (field.FieldMetadata.Type) {
-        case "STRING":
-            inputElement = document.createElement("input");
-            inputElement.type = "text";
-            inputElement.value = field.Value || "";
-            inputElement.className = "form-input";  // Style input
-            break;
-        case "INT":
+    switch (field.FieldMetadata.type.toLowerCase()) {
+        case "integer":
             inputElement = document.createElement("input");
             inputElement.type = "number";
-            inputElement.value = field.Value || 0;
-            inputElement.className = "form-input";  // Style input
+            inputElement.value = field.value || 0;
+            inputElement.className = "form-input";
             break;
-        case "EMAIL":
+        case "email":
             inputElement = document.createElement("input");
             inputElement.type = "email";
-            inputElement.value = field.Value || "";
-            inputElement.className = "form-input";  // Style input
+            inputElement.value = field.value || "";
+            inputElement.className = "form-input";
             break;
-        case "PHONE":
+        case "phone":
             inputElement = document.createElement("input");
             inputElement.type = "tel";
-            inputElement.value = field.Value || "";
-            inputElement.className = "form-input";  // Style input
+            inputElement.pattern = "\\d+";  // Only digits
+            inputElement.value = field.value || "";
+            inputElement.className = "form-input";
             break;
-        case "TIERSELECT":
-            inputElement = createTierSelect(field.FieldMetadata.Options, field.Value);
-            inputElement.className = "form-input";  // Style select
+        case "select":
+            inputElement = document.createElement("select");
+            inputElement.className = "form-input";
+            (field.FieldMetadata.options || []).forEach(option => {
+                const opt = document.createElement("option");
+                opt.value = option;
+                opt.textContent = option;
+                inputElement.appendChild(opt);
+            });
+            break;
+        case "tierselect":
+            inputElement = createTierSelect(field.FieldMetadata.options, field.value);
+            inputElement.className = "form-input";
             break;
         default:
             inputElement = document.createElement("input");
             inputElement.type = "text";
-            inputElement.value = field.Value || "";
-            inputElement.className = "form-input";  // Style input
+            inputElement.value = field.value || "";
+            inputElement.className = "form-input";
             break;
     }
 
-    // Add validation, requirement, and custom styles
-    if (field.FieldMetadata.Required) {
-        inputElement.required = true;
-    }
-    if (field.FieldMetadata.ValidationRules && field.FieldMetadata.ValidationRules.includes("not_numeric")) {
+    // Assign a unique name using the FieldId
+    inputElement.name = `field_${field.FieldMetadata.fieldId}`;
+
+    // Apply validation for "not_numeric"
+    if (field.FieldMetadata.validationRules && field.FieldMetadata.validationRules.includes("not_numeric")) {
         inputElement.pattern = "\\D*";  // Regex for non-numeric input
     }
 
@@ -405,4 +269,91 @@ function groupBy(arr, key) {
 function saveFormData(formDetails) {
     // Here you would gather data from the form and update the formDetails object
     console.log("Form data would be saved:", formDetails);
+}
+
+// Helper function for priority dropdown
+function createPrioritySelect(label, value, name) {
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group";
+
+    const labelElement = document.createElement("label");
+    labelElement.className = "form-label";
+    labelElement.textContent = label;
+
+    const select = document.createElement("select");
+    select.className = "form-input";
+    select.name = name;
+
+    ["low", "medium", "high"].forEach(optionValue => {
+        const option = document.createElement("option");
+        option.value = optionValue;
+        option.textContent = optionValue.charAt(0).toUpperCase() + optionValue.slice(1);
+        if (optionValue === value.toLowerCase()) option.selected = true;
+        select.appendChild(option);
+    });
+
+    inputGroup.appendChild(labelElement);
+    inputGroup.appendChild(select);
+    return inputGroup;
+}
+
+// Helper function for HTML read-only fields
+function createHtmlField(label, value, name) {
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group";
+
+    const labelElement = document.createElement("label");
+    labelElement.className = "form-label";
+    labelElement.textContent = label;
+
+    const div = document.createElement("div");
+    div.className = "readonly-html";
+    div.innerHTML = value;  // Render HTML
+
+    inputGroup.appendChild(labelElement);
+    inputGroup.appendChild(div);
+    return inputGroup;
+}
+
+// Helper function to validate the form
+function validateForm(form) {   
+    return form.checkValidity();  
+}
+
+// Helper function to build the form object, saving current form values
+function buildFormObject(formDetails) {
+    const formContext = parent.Xrm.Page.getControl("WebResource_casecreate").getObject().contentDocument;
+    const cleanedObject = JSON.parse(JSON.stringify(formDetails));  // Deep clone
+
+    // Update main fields with current values from the form
+    cleanedObject.casePriority = formContext.querySelector('[name="priority"]').value;
+    cleanedObject.internalCaseNumber = formContext.querySelector('[name="internalCaseNumber"]').value;
+    cleanedObject.optionalRecieverInternalCaseNumber = formContext.querySelector('[name="receiverCaseNumber"]').value;
+    cleanedObject.problemSummary = formContext.querySelector('[name="problemSummary"]').value;
+    cleanedObject.problemDescription = formContext.querySelector('[name="problemDescription"]').value;
+
+    // For customer data, update the current values from the form inputs
+    cleanedObject.customerData.forEach(data => {
+        const fieldElement = formContext.querySelector(`[name="field_${data.FieldMetadata.fieldId}"]`);
+
+        if (fieldElement) {
+            if (fieldElement.tagName === "SELECT") {
+                data.value = fieldElement.value;  // For select dropdowns
+            } else {
+                data.value = fieldElement.value;  // For text, number, email, etc.
+            }
+        }
+
+        // Remove metadata and selections to keep the structure clean
+        delete data.FieldMetadata;
+        delete data.FieldSelections;
+    });
+
+    return cleanedObject;
+}
+
+
+// Helper function to save the object to a field
+function saveToFormField(fieldName, formData, formContext) {
+    formContext.getAttribute(fieldName).setValue(JSON.stringify(formData));
 }
