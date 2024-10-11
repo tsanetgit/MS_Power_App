@@ -59,3 +59,24 @@ function waitForWebResourceElement(webResourceName, elementId, callback, checkFr
         }
     }, checkFrequency);
 }
+
+// Helper function to disableSubmit
+function disableButton(disable, webResource) {
+    // Disable the submit button in the dynamic form
+    const webResourceControl = parent.Xrm.Page.getControl(webResource);
+    const webResourceContent = webResourceControl.getObject().contentDocument;
+    const submitButton = webResourceContent.querySelector("button[type='submit']");
+    if (submitButton) {
+        submitButton.disabled = disable;
+    }
+}
+
+// Helper that shows an error and removes it after 5 seconds
+function showError(formContext, message) {
+    formContext.ui.setFormNotification(message, "ERROR", "tsaerror");
+
+    // Set a timeout to remove the error notification after 5 seconds (5000 milliseconds)
+    setTimeout(function () {
+        formContext.ui.clearFormNotification("tsaerror");
+    }, 5000);
+}

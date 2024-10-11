@@ -69,18 +69,20 @@ function getFormByCompany(companyId, formContext) {
                         displayDynamicForm(formDetails, formContext);
                     }
                     else {
-                        alert(response.ErrorMessage);
+                        showError(formContext, response.ErrorMessage);
                     }
                 });
             }
         },
         function (error) {
             console.error(error.message); // Log any errors in the console
+            showError(formContext, error.message);
         }
     );
 }
 
 function postCase(submissionData, formContext) {
+    disableButton(true, "WebResource_casecreate");
     // Convert the submissionData object to a JSON string
     const submissionDataString = JSON.stringify(submissionData);
 
@@ -109,17 +111,26 @@ function postCase(submissionData, formContext) {
                 result.json().then(function (response) {
                     if (!response.IsError) {
                         var formJson = response.PostCaseResponse;
-                        console.log(formJson);
+                        var formResponse = JSON.parse(formJson);
+                        console.log(formResponse);
+                        //save data
+                        formContext.getAttribute("ap_name").setValue(formResponse.id.toString());
+                        saveToFormField("ap_formjson", formResponse, formContext);  // Save JSON
+                        formContext.ui.setFormNotification("Successfully created!", "INFO", "success");
+                        // Save the record
+                        formContext.data.entity.save();
                     }
                     else {
-                        alert(response.ErrorMessage);
+                        showError(formContext, response.ErrorMessage);
+                        disableButton(false, "WebResource_casecreate");
                     }
                 });
             }
         },
         function (error) {
             console.error(error.message);
-            alert(error.message);
+            showError(formContext, error.message);
+            disableButton(false, "WebResource_casecreate");
         }
     );
 }

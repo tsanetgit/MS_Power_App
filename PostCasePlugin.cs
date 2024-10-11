@@ -13,8 +13,9 @@ public class PostCasePlugin : IPlugin
         try
         {
             // Retrieve case details from input parameters
-            var caseDetails = context.InputParameters["CaseDetails"];
-            if (caseDetails == null)
+            string caseDetails = (string)context.InputParameters["CaseDetails"];
+
+            if (string.IsNullOrEmpty(caseDetails))
             {
                 throw new InvalidPluginExecutionException("Case details are required.");
             }

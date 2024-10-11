@@ -32,7 +32,7 @@ function setupCompanySearch(formContext) {
 // Function to trigger search
 function searchCompany(formContext, companyName) {
     if (!companyName) {
-        alert("Please enter a company name");
+        showError(formContext, "Please enter a company name");
         return;
     }
 
@@ -135,7 +135,7 @@ function displayDynamicForm(formDetails, formContext) {
             saveToFormField("ap_formjson", submissionData, formContext);  // Save JSON
             postCase(submissionData, formContext);  // Send the object via existing unbound action
         } else {
-            alert("Please correct the data.");
+            showError(formContext, "Please correct the data.");
         }
     });
 
@@ -357,3 +357,4 @@ function buildFormObject(formDetails) {
 function saveToFormField(fieldName, formData, formContext) {
     formContext.getAttribute(fieldName).setValue(JSON.stringify(formData));
 }
+

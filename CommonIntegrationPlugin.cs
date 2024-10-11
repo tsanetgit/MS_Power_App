@@ -384,7 +384,7 @@ public class CommonIntegrationPlugin
     }
 
 
-    public async Task<string> PostCase(object caseDetails, string accessToken)
+    public async Task<string> PostCase(string caseDetailsString, string accessToken)
     {
         try
         {
@@ -392,6 +392,9 @@ public class CommonIntegrationPlugin
 
             using (HttpClient client = new HttpClient())
             {
+                _tracingService.Trace("Deserializing caseDetails to object.");
+                var caseDetails = JsonConvert.DeserializeObject<FormResponse>(caseDetailsString);
+
                 // Add default headers
                 AddDefaultHeaders(client);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
