@@ -385,12 +385,6 @@ function buildFormObject(formDetails) {
     return cleanedObject;
 }
 
-
-// Helper function to save the object to a field
-function saveToFormField(fieldName, formData, formContext) {
-    formContext.getAttribute(fieldName).setValue(JSON.stringify(formData));
-}
-
 function buildReadOnlyForm(formJsonData, formContext) {
     const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
     const webResourceContent = webResourceControl.getObject().contentDocument;

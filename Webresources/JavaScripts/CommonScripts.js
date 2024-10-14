@@ -80,3 +80,16 @@ function showError(formContext, message) {
         formContext.ui.clearFormNotification("tsaerror");
     }, 5000);
 }
+
+// Helper function to save the object to a field
+function saveToFormField(fieldName, formData, formContext) {
+    const newValue = JSON.stringify(formData);
+    const currentValue = formContext.getAttribute(fieldName).getValue();
+
+    // Only update the field if the new value is different from the current value
+    if (currentValue !== newValue) {
+        formContext.getAttribute(fieldName).setValue(newValue);
+        formContext.getAttribute(fieldName).setSubmitMode("dirty");
+        formContext.getAttribute(fieldName).fireOnChange();
+    }
+}

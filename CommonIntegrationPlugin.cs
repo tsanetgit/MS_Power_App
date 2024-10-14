@@ -470,8 +470,8 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Raw JSON response content: " + responseContent);
 
-                _tracingService.Trace("Deserializing response content to list of FormResponse objects.");
-                var caseList = JsonConvert.DeserializeObject<List<FormResponseExistingCase>>(responseContent);
+                _tracingService.Trace("Deserializing response content to list of Case objects.");
+                var caseList = JsonConvert.DeserializeObject<List<Case>>(responseContent);
 
                 if (caseList == null || caseList.Count == 0)
                 {
@@ -611,7 +611,7 @@ public class FieldSelection
     public List<FieldSelection> Children { get; set; }
 }
 
-class FormResponseExistingCase
+class Case
 {
     [JsonProperty("id")]
     public int Id { get; set; }
