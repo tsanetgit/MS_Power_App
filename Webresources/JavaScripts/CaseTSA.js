@@ -1,7 +1,35 @@
 ﻿// Start polling to ensure the input element is available
 function onFormLoad(executionContext) {
     const formContext = executionContext.getFormContext();
-    waitForWebResourceElement('WebResource_casecreate', 'companyInput', () => setupCompanySearch(formContext));
+    const formJsonField = formContext.getAttribute("ap_formjson").getValue();
+    //waitForWebResourceElement('WebResource_casecreate', 'companyInput', () => setupCompanySearch(formContext));
+
+    // Wait for the web resource element to load
+    waitForWebResourceElement('WebResource_casecreate', 'dynamicFormContainer', () => {
+        if (formJsonField) {
+            // If `ap_formjson` contains data, parse it and build the read-only form            
+            const formJsonData = JSON.parse(formJsonField);
+            buildReadOnlyForm(formJsonData, formContext);
+        } else {
+            // Call your existing logic to display editable form
+            setupCompanySearch(formContext);
+        }
+    });
+}
+
+// On form change
+function onFormChange(executionContext) {
+    const formContext = executionContext.getFormContext();
+    const formJsonField = formContext.getAttribute("ap_formjson").getValue();
+
+    if (formJsonField) {
+        // If `ap_formjson` contains data, parse it and build the read-only form
+        const formJsonData = JSON.parse(formJsonField);
+        buildReadOnlyForm(formJsonData, formContext);
+    } else {
+        // Call your existing logic to display editable form
+        setupCompanySearch(formContext);
+    }
 }
 
 // Setup the search functionality once the element is found
@@ -358,3 +386,83 @@ function saveToFormField(fieldName, formData, formContext) {
     formContext.getAttribute(fieldName).setValue(JSON.stringify(formData));
 }
 
+function buildReadOnlyForm(formJsonData, formContext) {
+    const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
+    const webResourceContent = webResourceControl.getObject().contentDocument;
+
+    const formContainer = webResourceContent.getElementById("dynamicFormContainer");
+    formContainer.innerHTML = "";  // Clear existing form
+
+
+    // Hide the company search element
+    const companySearchElement = webResourceContent.getElementById("company-search");
+    if (companySearchElement) {
+        companySearchElement.style.display = "none";  // Hide the company search section
+    }
+
+    const form = document.createElement("form");
+    form.className = "dynamic-form";
+
+    // Add form fields as read-only, no company search or submit button
+    form.appendChild(createReadOnlyTextField("Submitter Case Number", formJsonData.submitterCaseNumber));
+    form.appendChild(createReadOnlyTextField("Receiver Case Number", formJsonData.receiverCaseNumber));
+    form.appendChild(createReadOnlyTextField("Summary", formJsonData.summary));
+    form.appendChild(createReadOnlyTextField("Description", formJsonData.description));
+    form.appendChild(createReadOnlyTextField("Priority", formJsonData.priority));
+
+    form.appendChild(createReadOnlyHtmlField("Escalation Instructions", formJsonData.escalationInstructions));
+    form.appendChild(createReadOnlyHtmlField("Priority Note", formJsonData.priorityNote));
+
+    // Add custom fields
+    const customFields = groupBy(formJsonData.customFields, "section");
+    for (const section in customFields) {
+        const sectionGroup = document.createElement("div");
+        sectionGroup.className = "form-section";
+        sectionGroup.innerHTML = `<h3>${section}</h3>`;
+
+        customFields[section].forEach(field => {
+            sectionGroup.appendChild(createReadOnlyTextField(field.fieldName, field.value));
+        });
+        form.appendChild(sectionGroup);
+    }
+
+    formContainer.appendChild(form);
+}
+
+// Helper function for read-only text fields
+function createReadOnlyTextField(label, value) {
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group";
+
+    const labelElement = document.createElement("label");
+    labelElement.className = "form-label";
+    labelElement.textContent = label;
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = value || "";
+    input.className = "form-input";
+    input.readOnly = true;
+
+    inputGroup.appendChild(labelElement);
+    inputGroup.appendChild(input);
+    return inputGroup;
+}
+
+// Helper function for read-only HTML fields
+function createReadOnlyHtmlField(label, value) {
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group";
+
+    const labelElement = document.createElement("label");
+    labelElement.className = "form-label";
+    labelElement.textContent = label;
+
+    const div = document.createElement("div");
+    div.className = "readonly-html";
+    div.innerHTML = value || "";  // Render HTML content
+
+    inputGroup.appendChild(labelElement);
+    inputGroup.appendChild(div);
+    return inputGroup;
+}
