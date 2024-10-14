@@ -32,6 +32,11 @@ function onFormChange(executionContext) {
     }
 }
 
+function buttonRefreshCase(formContext) {
+    getCase(formContext);
+}
+
+
 // Setup the search functionality once the element is found
 function setupCompanySearch(formContext) {
     const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");

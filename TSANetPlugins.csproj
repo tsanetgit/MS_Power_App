@@ -105,6 +105,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonIntegrationPlugin.cs" />
+    <Compile Include="GetCasePlugin.cs" />
     <Compile Include="GetCompanyPlugin.cs" />
     <Compile Include="GetFormByCompanyPlugin.cs" />
     <Compile Include="PostCasePlugin.cs" />

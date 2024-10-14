@@ -384,8 +384,10 @@ public class CommonIntegrationPlugin
     }
 
 
-    public async Task<string> PostCase(string caseDetailsString, string accessToken)
+    public async Task<ApiResponse> PostCase(string caseDetailsString, string accessToken)
     {
+        var apiResponse = new ApiResponse();
+
         try
         {
             _tracingService.Trace("Sending case details to API.");
@@ -413,20 +415,87 @@ public class CommonIntegrationPlugin
                 {
                     string resp = await response.Content.ReadAsStringAsync();
                     _tracingService.Trace("Failed to create case. Response: " + resp);
-                    return resp;
+                    apiResponse.IsError = true;
+                    apiResponse.Content = resp;
+                    return apiResponse;
                 }
 
                 Stream responseStream = await response.Content.ReadAsStreamAsync();
                 string responseContent = await DecompressResponse(response.Content, responseStream);
 
                 _tracingService.Trace("Case created successfully.");
-                return responseContent;
+                apiResponse.IsError = false;
+                apiResponse.Content = responseContent;
+                return apiResponse;
             }
         }
         catch (Exception ex)
         {
             _tracingService.Trace($"Exception in PostCase: {ex.Message}");
-            throw;
+            apiResponse.IsError = true;
+            apiResponse.Content = $"Exception: {ex.Message}";
+            return apiResponse;
+        }
+    }
+    public async Task<ApiResponse> GetCase(string internalCaseNumber, string accessToken)
+    {
+        var apiResponse = new ApiResponse();
+
+        try
+        {
+            _tracingService.Trace($"Retrieving case update for internal case number: {internalCaseNumber}");
+
+            using (HttpClient client = new HttpClient())
+            {
+                // Add default headers
+                AddDefaultHeaders(client);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                _tracingService.Trace("Sending request to get case update.");
+
+                var response = await client.GetAsync($"{_apiUrl}/0.1.0/cases/{internalCaseNumber}");
+
+                // Check if the response was successful
+                if (!response.IsSuccessStatusCode)
+                {
+                    string resp = await response.Content.ReadAsStringAsync();
+                    _tracingService.Trace($"Failed to retrieve case update for internal case number '{internalCaseNumber}'. Response: " + resp);
+                    apiResponse.IsError = true;
+                    apiResponse.Content = resp;
+                    return apiResponse;
+                }
+
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
+                _tracingService.Trace("Raw JSON response content: " + responseContent);
+
+                _tracingService.Trace("Deserializing response content to list of FormResponse objects.");
+                var caseList = JsonConvert.DeserializeObject<List<FormResponseExistingCase>>(responseContent);
+
+                if (caseList == null || caseList.Count == 0)
+                {
+                    _tracingService.Trace("No cases found in the response.");
+                    apiResponse.IsError = true;
+                    apiResponse.Content = "No cases found.";
+                    return apiResponse;
+                }
+
+                var firstCase = caseList[0];
+                _tracingService.Trace($"First case object: " + JsonConvert.SerializeObject(firstCase));
+
+                _tracingService.Trace($"Case update for internal case number {internalCaseNumber} retrieved successfully. Result: " + JsonConvert.SerializeObject(firstCase));
+                apiResponse.IsError = false;
+                apiResponse.Content = JsonConvert.SerializeObject(firstCase);
+                return apiResponse;
+            }
+        }
+        catch (Exception ex)
+        {
+            _tracingService.Trace($"Exception in GetCase: {ex.Message}");
+            apiResponse.IsError = true;
+            apiResponse.Content = $"Exception: {ex.Message}";
+            return apiResponse;
         }
     }
 }
@@ -540,4 +609,122 @@ public class FieldSelection
 
     [JsonProperty("children")]
     public List<FieldSelection> Children { get; set; }
+}
+
+class FormResponseExistingCase
+{
+    [JsonProperty("id")]
+    public int Id { get; set; }
+
+    [JsonProperty("submitCompanyName")]
+    public string SubmitCompanyName { get; set; }
+
+    [JsonProperty("submitCompanyId")]
+    public int SubmitCompanyId { get; set; }
+
+    [JsonProperty("submitterCaseNumber")]
+    public string SubmitterCaseNumber { get; set; }
+
+    [JsonProperty("receiveCompanyName")]
+    public string ReceiveCompanyName { get; set; }
+
+    [JsonProperty("receiveCompanyId")]
+    public int ReceiveCompanyId { get; set; }
+
+    [JsonProperty("receiverCaseNumber")]
+    public string ReceiverCaseNumber { get; set; }
+
+    [JsonProperty("summary")]
+    public string Summary { get; set; }
+
+    [JsonProperty("description")]
+    public string Description { get; set; }
+
+    [JsonProperty("priority")]
+    public string Priority { get; set; }
+
+    [JsonProperty("status")]
+    public string Status { get; set; }
+
+    [JsonProperty("token")]
+    public string Token { get; set; }
+
+    [JsonProperty("createdAt")]
+    public DateTime CreatedAt { get; set; }
+
+    [JsonProperty("updatedAt")]
+    public DateTime UpdatedAt { get; set; }
+
+    [JsonProperty("deletedAt")]
+    public DateTime? DeletedAt { get; set; }
+
+    [JsonProperty("responded")]
+    public bool Responded { get; set; }
+
+    [JsonProperty("respondBy")]
+    public DateTime RespondBy { get; set; }
+
+    [JsonProperty("feedbackRequested")]
+    public bool FeedbackRequested { get; set; }
+
+    [JsonProperty("reminderSent")]
+    public bool ReminderSent { get; set; }
+
+    [JsonProperty("priorityNote")]
+    public string PriorityNote { get; set; }
+
+    [JsonProperty("escalationInstructions")]
+    public string EscalationInstructions { get; set; }
+
+    [JsonProperty("testCase")]
+    public bool TestCase { get; set; }
+
+    [JsonProperty("customFields")]
+    public List<CustomerData> CustomFields { get; set; }
+
+    [JsonProperty("submittedBy")]
+    public SubmittedBy SubmittedBy { get; set; }
+
+    [JsonProperty("caseNotes")]
+    public List<CaseNote> CaseNotes { get; set; }
+
+    [JsonProperty("caseResponses")]
+    public List<CaseResponse> CaseResponses { get; set; }
+}
+
+class SubmittedBy
+{
+    [JsonProperty("id")]
+    public int Id { get; set; }
+
+    [JsonProperty("username")]
+    public string Username { get; set; }
+
+    [JsonProperty("firstName")]
+    public string FirstName { get; set; }
+
+    [JsonProperty("lastName")]
+    public string LastName { get; set; }
+
+    [JsonProperty("email")]
+    public string Email { get; set; }
+
+    [JsonProperty("phone")]
+    public string Phone { get; set; }
+
+    [JsonProperty("phoneCountryCode")]
+    public string PhoneCountryCode { get; set; }
+
+    [JsonProperty("city")]
+    public string City { get; set; }
+}
+
+class CaseNote
+{
+    // Define properties based on the actual structure of case notes in the JSON response
+}
+
+class CaseResponse
+{
+    // Define properties based on the actual structure of case responses in the JSON response
 }

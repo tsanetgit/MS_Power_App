@@ -1,4 +1,57 @@
-﻿// Get company
+﻿// Get Case
+function getCase(formContext) {
+    // Retrieve the internal case number from the form field
+    const internalCaseNumber = formContext.getAttribute("ap_submittercasenumber").getValue();
+
+    if (!internalCaseNumber) {
+        showError(formContext, "Internal case number is required.");
+        return;
+    }
+
+    const parameters = {
+        InternalCaseNumber: internalCaseNumber
+    };
+
+    // Custom action call
+    const request = {
+        InternalCaseNumber: parameters.InternalCaseNumber,
+        getMetadata: function () {
+            return {
+                boundParameter: null, // No entity bound
+                parameterTypes: {
+                    "InternalCaseNumber": { typeName: "Edm.String", structuralProperty: 1 }
+                },
+                operationType: 0, // Action
+                operationName: "ap_GetCase"
+            };
+        }
+    };
+
+    Xrm.WebApi.online.execute(request).then(
+        function success(result) {
+            if (result.ok) {
+                result.json().then(function (response) {
+                    if (!response.IsError) {
+                        var formJson = response.GetCaseResponse;
+                        var formResponse = JSON.parse(formJson);
+                        console.log(formResponse);
+                        saveToFormField("ap_formjson", formResponse, formContext);  // Save JSON
+                        formContext.ui.setFormNotification("Successfully updated!", "INFO", "success");
+                        formContext.data.entity.save();
+                    } else {
+                        showError(formContext, response.GetCaseResponse);
+                    }
+                });
+            }
+        },
+        function (error) {
+            console.error(error.message);
+            showError(formContext, error.message);
+        }
+    );
+}
+
+// Get company
 function getCompanyDetails(companyName) {
     return new Promise(function (resolve, reject) {
         const parameters = { CompanyName: companyName };
@@ -115,13 +168,14 @@ function postCase(submissionData, formContext) {
                         console.log(formResponse);
                         //save data
                         formContext.getAttribute("ap_name").setValue(formResponse.id.toString());
+                        formContext.getAttribute("ap_submittercasenumber").setValue(formResponse.submitterCaseNumber.toString());
                         saveToFormField("ap_formjson", formResponse, formContext);  // Save JSON
                         formContext.ui.setFormNotification("Successfully created!", "INFO", "success");
                         // Save the record
                         formContext.data.entity.save();
                     }
                     else {
-                        showError(formContext, response.ErrorMessage);
+                        showError(formContext, response.PostCaseResponse);
                         disableButton(false, "WebResource_casecreate");
                     }
                 });

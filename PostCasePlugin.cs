@@ -27,10 +27,11 @@ public class PostCasePlugin : IPlugin
             string accessToken = commonIntegration.Login().Result;
 
             // Send case details to the API
-            string response = commonIntegration.PostCase(caseDetails, accessToken).Result;
-
+            ApiResponse response = commonIntegration.PostCase(caseDetails, accessToken).Result;
+            context.OutputParameters["IsError"] = response.IsError;
             // Return the raw JSON response to the context output parameters
-            context.OutputParameters["PostCaseResponse"] = response;
+            context.OutputParameters["PostCaseResponse"] = response.Content;
+
         }
         catch (Exception ex)
         {
