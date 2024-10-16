@@ -165,7 +165,7 @@ function displayDynamicForm(formDetails, formContext) {
         event.preventDefault();
         if (validateForm(form)) {
             const submissionData = buildFormObject(formDetails);
-            saveToFormField("ap_formjson", submissionData, formContext);  // Save JSON
+            saveToFormField("ap_sentjson", submissionData, formContext);  // Save JSON
             postCase(submissionData, formContext);  // Send the object via existing unbound action
         } else {
             showError(formContext, "Please correct the data.");
