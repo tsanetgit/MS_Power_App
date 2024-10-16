@@ -317,11 +317,11 @@ function createPrioritySelect(label, value, name) {
     select.className = "form-input";
     select.name = name;
 
-    ["low", "medium", "high"].forEach(optionValue => {
+    ["LOW", "MEDIUM", "HIGH"].forEach(optionValue => {
         const option = document.createElement("option");
         option.value = optionValue;
-        option.textContent = optionValue.charAt(0).toUpperCase() + optionValue.slice(1);
-        if (optionValue === value.toLowerCase()) option.selected = true;
+        option.textContent = optionValue;
+        if (optionValue.toLowerCase() === value.toLowerCase()) option.selected = true;
         select.appendChild(option);
     });
 
