@@ -7,7 +7,7 @@ function getCase(formContext) {
         showError(formContext, "Internal case number is required.");
         return;
     }
-
+    Xrm.Utility.showProgressIndicator("Retrieving case details...");
     const parameters = {
         InternalCaseNumber: internalCaseNumber
     };
@@ -36,15 +36,18 @@ function getCase(formContext) {
                         var formResponse = JSON.parse(formJson);
                         console.log(formResponse);
                         saveToFormField("ap_formjson", formResponse, formContext);  // Save JSON
+                        Xrm.Utility.closeProgressIndicator();
                         formContext.ui.setFormNotification("Successfully updated!", "INFO", "success");
                         formContext.data.entity.save();
                     } else {
+                        Xrm.Utility.closeProgressIndicator();
                         showError(formContext, response.GetCaseResponse);
                     }
                 });
             }
         },
         function (error) {
+            Xrm.Utility.closeProgressIndicator();
             console.error(error.message);
             showError(formContext, error.message);
         }
@@ -54,6 +57,7 @@ function getCase(formContext) {
 // Get company
 function getCompanyDetails(companyName) {
     return new Promise(function (resolve, reject) {
+        Xrm.Utility.showProgressIndicator("Retrieving company details...");
         const parameters = { CompanyName: companyName };
         const request = {
             CompanyName: parameters.CompanyName,
@@ -77,13 +81,16 @@ function getCompanyDetails(companyName) {
                         function (response) {
                             const companyDetailsJson = response.CompanyDetails;
                             const companyDetails = JSON.parse(companyDetailsJson);
+                            Xrm.Utility.closeProgressIndicator();
                             resolve(companyDetails);
                         });
                 } else {
+                    Xrm.Utility.closeProgressIndicator();
                     reject(new Error("No result from company search"));
                 }
             },
             function (error) {
+                Xrm.Utility.closeProgressIndicator();
                 reject(error);
             }
         );
@@ -92,6 +99,8 @@ function getCompanyDetails(companyName) {
 
 // getFormByCompany function
 function getFormByCompany(companyId, formContext) {
+
+    Xrm.Utility.showProgressIndicator("Retrieving form details...");
     const parameters = {
         CompanyId: companyId
     };
@@ -119,15 +128,18 @@ function getFormByCompany(companyId, formContext) {
                         var formJson = response.FormDetails;
                         var formDetails = JSON.parse(formJson);
                         console.log(formDetails);
+                        Xrm.Utility.closeProgressIndicator();
                         displayDynamicForm(formDetails, formContext);
                     }
                     else {
+                        Xrm.Utility.closeProgressIndicator();
                         showError(formContext, response.ErrorMessage);
                     }
                 });
             }
         },
         function (error) {
+            Xrm.Utility.closeProgressIndicator();
             console.error(error.message); // Log any errors in the console
             showError(formContext, error.message);
         }
@@ -138,7 +150,7 @@ function postCase(submissionData, formContext) {
     disableButton(true, "WebResource_casecreate");
     // Convert the submissionData object to a JSON string
     const submissionDataString = JSON.stringify(submissionData);
-
+    Xrm.Utility.showProgressIndicator("Sending case...");
     const parameters = {
         CaseDetails: submissionDataString
     };
@@ -170,11 +182,13 @@ function postCase(submissionData, formContext) {
                         formContext.getAttribute("ap_name").setValue(formResponse.id.toString());
                         formContext.getAttribute("ap_submittercasenumber").setValue(formResponse.submitterCaseNumber.toString());
                         saveToFormField("ap_formjson", formResponse, formContext);  // Save JSON
+                        Xrm.Utility.closeProgressIndicator();
                         formContext.ui.setFormNotification("Successfully created!", "INFO", "success");
                         // Save the record
                         formContext.data.entity.save();
                     }
                     else {
+                        Xrm.Utility.closeProgressIndicator();
                         showError(formContext, response.PostCaseResponse);
                         disableButton(false, "WebResource_casecreate");
                     }
@@ -182,6 +196,7 @@ function postCase(submissionData, formContext) {
             }
         },
         function (error) {
+            Xrm.Utility.closeProgressIndicator();
             console.error(error.message);
             showError(formContext, error.message);
             disableButton(false, "WebResource_casecreate");
