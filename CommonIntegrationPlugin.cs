@@ -498,6 +498,181 @@ public class CommonIntegrationPlugin
             return apiResponse;
         }
     }
+    public async Task<ApiResponse> PostCaseNote(int caseId, string summary, string description, string priority, string accessToken)
+    {
+        var apiResponse = new ApiResponse();
+
+        try
+        {
+            _tracingService.Trace("Sending case note details to API.");
+
+            using (HttpClient client = new HttpClient())
+            {
+                var noteDetails = new
+                {
+                    summary = summary,
+                    description = description,
+                    priority = priority
+                };
+
+                // Add default headers
+                AddDefaultHeaders(client);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                var json = JsonConvert.SerializeObject(noteDetails);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                content.Headers.ContentLength = json.Length;
+
+                _tracingService.Trace("Sending POST request to create case note.");
+
+                var response = await client.PostAsync($"{_apiUrl}/0.1.0/cases/{caseId}/notes/create", content);
+
+                // Check if the response was successful
+                if (!response.IsSuccessStatusCode)
+                {
+                    string resp = await response.Content.ReadAsStringAsync();
+                    _tracingService.Trace("Failed to create case note. Response: " + resp);
+                    apiResponse.IsError = true;
+                    apiResponse.Content = resp;
+                    return apiResponse;
+                }
+
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
+                _tracingService.Trace("Case note created successfully.");
+                apiResponse.IsError = false;
+                apiResponse.Content = responseContent;
+                return apiResponse;
+            }
+        }
+        catch (Exception ex)
+        {
+            _tracingService.Trace($"Exception in PostCaseNote: {ex.Message}");
+            apiResponse.IsError = true;
+            apiResponse.Content = $"Exception: {ex.Message}";
+            return apiResponse;
+        }
+    }
+    public async Task<ApiResponse> PostCaseApproval(int caseId, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string nextSteps, string accessToken)
+    {
+        var apiResponse = new ApiResponse();
+
+        try
+        {
+            _tracingService.Trace("Sending case approval update details to API.");
+
+            using (HttpClient client = new HttpClient())
+            {
+                var approvalDetails = new
+                {
+                    caseNumber = caseNumber,
+                    engineerName = engineerName,
+                    engineerPhone = engineerPhone,
+                    engineerEmail = engineerEmail,
+                    nextSteps = nextSteps
+                };
+
+                // Add default headers
+                AddDefaultHeaders(client);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                var json = JsonConvert.SerializeObject(approvalDetails);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                content.Headers.ContentLength = json.Length;
+
+                _tracingService.Trace("Sending POST request to post case approval.");
+
+                var response = await client.PostAsync($"{_apiUrl}/0.1.0/cases/{caseId}/approve", content);
+
+                // Check if the response was successful
+                if (!response.IsSuccessStatusCode)
+                {
+                    string resp = await response.Content.ReadAsStringAsync();
+                    _tracingService.Trace("Failed to post case approval. Response: " + resp);
+                    apiResponse.IsError = true;
+                    apiResponse.Content = resp;
+                    return apiResponse;
+                }
+
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
+                _tracingService.Trace("Case approval created successfully.");
+                apiResponse.IsError = false;
+                apiResponse.Content = responseContent;
+                return apiResponse;
+            }
+        }
+        catch (Exception ex)
+        {
+            _tracingService.Trace($"Exception in UpdateCaseApproval: {ex.Message}");
+            apiResponse.IsError = true;
+            apiResponse.Content = $"Exception: {ex.Message}";
+            return apiResponse;
+        }
+    }
+    public async Task<ApiResponse> UpdateCaseApproval(int caseId, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string nextSteps, string accessToken)
+    {
+        var apiResponse = new ApiResponse();
+
+        try
+        {
+            _tracingService.Trace("Sending case approval update details to API.");
+
+            using (HttpClient client = new HttpClient())
+            {
+                var approvalDetails = new
+                {
+                    caseNumber = caseNumber,
+                    engineerName = engineerName,
+                    engineerPhone = engineerPhone,
+                    engineerEmail = engineerEmail,
+                    nextSteps = nextSteps
+                };
+
+                // Add default headers
+                AddDefaultHeaders(client);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                var json = JsonConvert.SerializeObject(approvalDetails);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                content.Headers.ContentLength = json.Length;
+
+                _tracingService.Trace("Sending POST request to update case approval.");
+
+                var response = await client.PostAsync($"{_apiUrl}/0.1.1/cases/{caseId}/update/approval", content);
+
+                // Check if the response was successful
+                if (!response.IsSuccessStatusCode)
+                {
+                    string resp = await response.Content.ReadAsStringAsync();
+                    _tracingService.Trace("Failed to update case approval. Response: " + resp);
+                    apiResponse.IsError = true;
+                    apiResponse.Content = resp;
+                    return apiResponse;
+                }
+
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
+                _tracingService.Trace("Case approval updated successfully.");
+                apiResponse.IsError = false;
+                apiResponse.Content = responseContent;
+                return apiResponse;
+            }
+        }
+        catch (Exception ex)
+        {
+            _tracingService.Trace($"Exception in UpdateCaseApproval: {ex.Message}");
+            apiResponse.IsError = true;
+            apiResponse.Content = $"Exception: {ex.Message}";
+            return apiResponse;
+        }
+    }
 }
 public class TokenResponse
 {

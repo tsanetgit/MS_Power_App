@@ -108,7 +108,10 @@
     <Compile Include="GetCasePlugin.cs" />
     <Compile Include="GetCompanyPlugin.cs" />
     <Compile Include="GetFormByCompanyPlugin.cs" />
+    <Compile Include="PostCaseApprovalPlugin.cs" />
+    <Compile Include="PostCaseApprovalUpdatePlugin.cs" />
     <Compile Include="PostCasePlugin.cs" />
+    <Compile Include="PostCaseNotePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PluginBase.cs" />
   </ItemGroup>
