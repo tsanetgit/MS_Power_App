@@ -1,6 +1,8 @@
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
+using Newtonsoft.Json;
 using System;
+using System.Linq;
 
 public class PostCaseNoteOnCreatePlugin : IPlugin
 {
@@ -47,6 +49,19 @@ public class PostCaseNoteOnCreatePlugin : IPlugin
             if (response.IsError)
             {
                 throw new InvalidPluginExecutionException(response.Content);
+            }
+            else
+            {
+                var caseResponse = JsonConvert.DeserializeObject<Case>(response.Content);
+                // Get the CaseNote with the highest id
+                var lastCaseNote = caseResponse.CaseNotes.OrderByDescending(note => note.Id).FirstOrDefault();
+
+                if (lastCaseNote != null)
+                {
+                    // Update the ap_tsanotecode field with the lastCaseNoteId
+                    entity["ap_tsanotecode"] = lastCaseNote.Id.ToString();
+                    service.Update(entity);
+                }
             }
         }
     }

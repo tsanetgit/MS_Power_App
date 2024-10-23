@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 
 public class CommonIntegrationPlugin
 {
@@ -538,6 +539,7 @@ public class CommonIntegrationPlugin
                     return apiResponse;
                 }
 
+                // Deserialize the response content into a Case object
                 Stream responseStream = await response.Content.ReadAsStreamAsync();
                 string responseContent = await DecompressResponse(response.Content, responseStream);
 
@@ -896,7 +898,41 @@ class SubmittedBy
 
 class CaseNote
 {
-    // Define properties based on the actual structure of case notes in the JSON response
+    [JsonProperty("id")]
+    public int Id { get; set; }
+
+    [JsonProperty("caseId")]
+    public int CaseId { get; set; }
+
+    [JsonProperty("creatorUsername")]
+    public string CreatorUsername { get; set; }
+
+    [JsonProperty("creatorEmail")]
+    public string CreatorEmail { get; set; }
+
+    [JsonProperty("creatorName")]
+    public string CreatorName { get; set; }
+
+    [JsonProperty("summary")]
+    public string Summary { get; set; }
+
+    [JsonProperty("description")]
+    public string Description { get; set; }
+
+    [JsonProperty("priority")]
+    public string Priority { get; set; }
+
+    [JsonProperty("status")]
+    public string Status { get; set; }
+
+    [JsonProperty("token")]
+    public string Token { get; set; }
+
+    [JsonProperty("createdAt")]
+    public DateTime CreatedAt { get; set; }
+
+    [JsonProperty("updatedAt")]
+    public DateTime UpdatedAt { get; set; }
 }
 
 class CaseResponse
