@@ -110,6 +110,7 @@
     <Compile Include="GetFormByCompanyPlugin.cs" />
     <Compile Include="PostCaseApprovalPlugin.cs" />
     <Compile Include="PostCaseApprovalUpdatePlugin.cs" />
+    <Compile Include="PostCaseNoteOnCreatePlugin.cs" />
     <Compile Include="PostCasePlugin.cs" />
     <Compile Include="PostCaseNotePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
