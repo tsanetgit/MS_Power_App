@@ -17,16 +17,17 @@ public class PostCaseNoteOnCreatePlugin : IPlugin
         {
             Entity entity = (Entity)context.InputParameters["Target"];
 
+            string noteId = entity.Contains("ap_tsanotecode") ? entity["ap_tsanotecode"].ToString() : string.Empty;
+
+            if (!string.IsNullOrEmpty(noteId))
+            {
+                return;
+            }
+
             // Retrieve case note details from the entity fields
             string summary = entity.Contains("ap_name") ? entity["ap_name"].ToString() : string.Empty;
             string description = entity.Contains("ap_description") ? entity["ap_description"].ToString() : string.Empty;
             string priority = entity.Contains("ap_priority") ? GetPriority(entity.GetAttributeValue<OptionSetValue>("ap_priority").Value) : "LOW";
-            string noteId = entity.Contains("ap_tsanotecode") ? entity["ap_tsanotecode"].ToString() : string.Empty;
-
-            if (noteId != string.Empty)
-            {
-                return;
-            }
 
             // Retrieve the related tsanetcase record using ap_tsanetcaseid
             if (!entity.Contains("ap_tsanetcaseid"))
