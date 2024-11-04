@@ -1,6 +1,5 @@
 ﻿// Get Case
 function getCase(formContext) {
-    // Retrieve the internal case number from the form field
     const internalCaseNumber = formContext.getAttribute("ap_submittercasenumber").getValue();
 
     if (!internalCaseNumber) {
@@ -8,20 +7,20 @@ function getCase(formContext) {
         return;
     }
     Xrm.Utility.showProgressIndicator("Retrieving case details...");
+
     const parameters = {
         InternalCaseNumber: internalCaseNumber
     };
 
-    // Custom action call
     const request = {
         InternalCaseNumber: parameters.InternalCaseNumber,
         getMetadata: function () {
             return {
-                boundParameter: null, // No entity bound
+                boundParameter: null,
                 parameterTypes: {
                     "InternalCaseNumber": { typeName: "Edm.String", structuralProperty: 1 }
                 },
-                operationType: 0, // Action
+                operationType: 0,
                 operationName: "ap_GetCase"
             };
         }
@@ -35,10 +34,43 @@ function getCase(formContext) {
                         var formJson = response.GetCaseResponse;
                         var formResponse = JSON.parse(formJson);
                         console.log(formResponse);
-                        saveToFormField("ap_formjson", formResponse, formContext);  // Save JSON
-                        Xrm.Utility.closeProgressIndicator();
-                        formContext.ui.setFormNotification("Successfully updated!", "INFO", "success");
-                        formContext.data.entity.save();
+
+                        // Process caseNotes array to patch each note
+                        let caseNotes = formResponse.caseNotes;
+                        let updatePromises = caseNotes.map(note => {
+                            // Step 1: Prepare the update data for each note
+                            let updateData = {
+                                ap_name: note.summary,
+                                ap_priority: getPriorityValue(note.priority),
+                                ap_description: note.description,
+                                ap_creatoremail: note.creatorEmail,
+                                ap_creatorname: note.creatorName,
+                                "ap_tsanetcaseid@odata.bind": `/ap_tsanetcases(${formContext.data.entity.getId().replace("{", "").replace("}", "")})`
+                            };
+
+                            // Step 2: Construct the URL with alternate key
+                            let apiUrl = Xrm.Utility.getGlobalContext().getClientUrl() +
+                                `/api/data/v9.2/ap_tsanetnotes(ap_tsanotecode='${note.id}')`;
+
+                            // Step 3: Create the PATCH request using Web API
+                            return sendPatchRequest(apiUrl, updateData);
+                        });
+
+                        // Execute all PATCH requests and handle final actions
+                        Promise.all(updatePromises)
+                            .then(() => {
+                                Xrm.Utility.closeProgressIndicator();
+                                formContext.ui.setFormNotification("Successfully updated!", "INFO", "success");
+                                // Refresh the notes subgrid
+                                formContext.getControl("notesubgrid").refresh();
+                                formContext.data.entity.save();
+                            })
+                            .catch(error => {
+                                Xrm.Utility.closeProgressIndicator();
+                                console.error(error.message);
+                                showError(formContext, "Error updating case notes: " + error.message);
+                            });
+
                     } else {
                         Xrm.Utility.closeProgressIndicator();
                         showError(formContext, response.GetCaseResponse);
@@ -53,6 +85,41 @@ function getCase(formContext) {
         }
     );
 }
+
+// Helper function to send PATCH request
+function sendPatchRequest(url, data) {
+    return new Promise((resolve, reject) => {
+        const req = new XMLHttpRequest();
+        req.open("PATCH", url, true);
+        req.setRequestHeader("Accept", "application/json");
+        req.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+        req.setRequestHeader("OData-MaxVersion", "4.0");
+        req.setRequestHeader("OData-Version", "4.0");
+
+        req.onreadystatechange = function () {
+            if (req.readyState === 4) {
+                if (req.status === 204) {
+                    resolve(); // Success
+                } else {
+                    reject(new Error(`Failed to update record. Status: ${req.status}, Error: ${req.responseText}`));
+                }
+            }
+        };
+
+        req.send(JSON.stringify(data));
+    });
+}
+
+// Helper function to map priority from string to option set value
+function getPriorityValue(priority) {
+    switch (priority.toLowerCase()) {
+        case "low": return 3;
+        case "medium": return 2;
+        case "high": return 1;
+        default: return null;
+    }
+}
+
 
 // Get company
 function getCompanyDetails(companyName) {
