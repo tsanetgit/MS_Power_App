@@ -52,12 +52,12 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                     ApiResponse response = new ApiResponse();
                     // Send case request details to the API
                     // approval
-                    if (type == 0)
+                    if (type == 1)
                     {
                         response = commonIntegration.PostCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
                     }
                     // reject
-                    else if (type == 1)
+                    else if (type == 0)
                     {
                         response = commonIntegration.PostCaseReject(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
                     }
