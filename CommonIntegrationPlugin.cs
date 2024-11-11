@@ -610,12 +610,73 @@ public class CommonIntegrationPlugin
         }
         catch (Exception ex)
         {
-            _tracingService.Trace($"Exception in UpdateCaseApproval: {ex.Message}");
+            _tracingService.Trace($"Exception in Case Approval: {ex.Message}");
             apiResponse.IsError = true;
             apiResponse.Content = $"Exception: {ex.Message}";
             return apiResponse;
         }
     }
+
+    public async Task<ApiResponse> PostCaseReject(int caseId, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string nextSteps, string accessToken)
+    {
+        var apiResponse = new ApiResponse();
+
+        try
+        {
+            _tracingService.Trace("Sending case reject update details to API.");
+
+            using (HttpClient client = new HttpClient())
+            {
+                var approvalDetails = new
+                {
+                    caseNumber = caseNumber,
+                    engineerName = engineerName,
+                    engineerPhone = engineerPhone,
+                    engineerEmail = engineerEmail,
+                    nextSteps = nextSteps
+                };
+
+                // Add default headers
+                AddDefaultHeaders(client);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                var json = JsonConvert.SerializeObject(approvalDetails);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                content.Headers.ContentLength = json.Length;
+
+                _tracingService.Trace("Sending POST request to post case reject.");
+
+                var response = await client.PostAsync($"{_apiUrl}/1.0.3/cases/{caseId}/reject", content);
+
+                // Check if the response was successful
+                if (!response.IsSuccessStatusCode)
+                {
+                    string resp = await response.Content.ReadAsStringAsync();
+                    _tracingService.Trace("Failed to post case reject. Response: " + resp);
+                    apiResponse.IsError = true;
+                    apiResponse.Content = resp;
+                    return apiResponse;
+                }
+
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
+                _tracingService.Trace("Case reject created successfully.");
+                apiResponse.IsError = false;
+                apiResponse.Content = responseContent;
+                return apiResponse;
+            }
+        }
+        catch (Exception ex)
+        {
+            _tracingService.Trace($"Exception in Post Case Reject: {ex.Message}");
+            apiResponse.IsError = true;
+            apiResponse.Content = $"Exception: {ex.Message}";
+            return apiResponse;
+        }
+    }
+
     public async Task<ApiResponse> UpdateCaseApproval(int caseId, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string nextSteps, string accessToken)
     {
         var apiResponse = new ApiResponse();

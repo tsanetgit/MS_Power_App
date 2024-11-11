@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Linq;
 
-public class PostCaseApprovalOnCreatePlugin : IPlugin
+public class PostCaseResponseOnCreatePlugin : IPlugin
 {
     public void Execute(IServiceProvider serviceProvider)
     {
@@ -22,6 +22,12 @@ public class PostCaseApprovalOnCreatePlugin : IPlugin
                 // Retrieve related tsanetcase details
                 if (entity.Contains("ap_tsanetcaseid") && entity["ap_tsanetcaseid"] is EntityReference)
                 {
+                    string respId = entity.Contains("ap_tsaresponsecode") ? entity["ap_tsaresponsecode"].ToString() : string.Empty;
+
+                    if (!string.IsNullOrEmpty(respId))
+                    {
+                        return;
+                    }
                     EntityReference tsanetcaseRef = (EntityReference)entity["ap_tsanetcaseid"];
                     Entity tsanetcase = service.Retrieve(tsanetcaseRef.LogicalName, tsanetcaseRef.Id, new ColumnSet("ap_submittercasenumber", "ap_name"));
 
@@ -31,7 +37,7 @@ public class PostCaseApprovalOnCreatePlugin : IPlugin
 
                     // Retrieve nextSteps from the current entity
                     string nextSteps = entity.GetAttributeValue<string>("ap_description");
-
+                    int type = entity.GetAttributeValue<OptionSetValue>("ap_type").Value;
                     // Retrieve current user details
                     Entity user = service.Retrieve("systemuser", context.UserId, new ColumnSet("fullname", "address1_telephone1", "internalemailaddress"));
                     string engineerName = user.GetAttributeValue<string>("fullname");
@@ -43,9 +49,29 @@ public class PostCaseApprovalOnCreatePlugin : IPlugin
 
                     // Login and get access token
                     string accessToken = commonIntegration.Login().Result;
-
-                    // Send case approval details to the API
-                    ApiResponse response = commonIntegration.PostCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
+                    ApiResponse response = new ApiResponse();
+                    // Send case request details to the API
+                    // approval
+                    if (type == 0)
+                    {
+                        response = commonIntegration.PostCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
+                    }
+                    // reject
+                    else if (type == 1)
+                    {
+                        response = commonIntegration.PostCaseReject(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
+                    }
+                    // request information
+                    else if (type == 2)
+                    {
+                        response = commonIntegration.PostCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
+                    }
+                    //information response
+                    else if (type == 3)
+                    {
+                        response = commonIntegration.PostCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
+                    }
+                    //Process response
                     if (response.IsError)
                     {
                         throw new InvalidPluginExecutionException(response.Content);
