@@ -36,7 +36,7 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                     int caseId = int.Parse(tsanetcase["ap_name"].ToString());
 
                     // Retrieve nextSteps from the current entity
-                    string nextSteps = entity.GetAttributeValue<string>("ap_description");
+                    string description = entity.GetAttributeValue<string>("ap_description");
                     int type = entity.GetAttributeValue<OptionSetValue>("ap_type").Value;
                     // Retrieve current user details
                     Entity user = service.Retrieve("systemuser", context.UserId, new ColumnSet("fullname", "address1_telephone1", "internalemailaddress"));
@@ -54,22 +54,22 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                     // approval
                     if (type == 1)
                     {
-                        response = commonIntegration.PostCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
+                        response = commonIntegration.PostCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
                     }
                     // reject
                     else if (type == 0)
                     {
-                        response = commonIntegration.PostCaseReject(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
+                        response = commonIntegration.PostCaseReject(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
                     }
                     // request information
                     else if (type == 2)
                     {
-                        response = commonIntegration.PostCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
+                        //response = commonIntegration.PostCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
                     }
                     //information response
                     else if (type == 3)
                     {
-                        response = commonIntegration.PostCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
+                        //response = commonIntegration.PostCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
                     }
                     //Process response
                     if (response.IsError)

@@ -617,7 +617,7 @@ public class CommonIntegrationPlugin
         }
     }
 
-    public async Task<ApiResponse> PostCaseReject(int caseId, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string nextSteps, string accessToken)
+    public async Task<ApiResponse> PostCaseReject(int caseId, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string reason, string accessToken)
     {
         var apiResponse = new ApiResponse();
 
@@ -627,20 +627,19 @@ public class CommonIntegrationPlugin
 
             using (HttpClient client = new HttpClient())
             {
-                var approvalDetails = new
+                var rejectDetails = new
                 {
-                    caseNumber = caseNumber,
                     engineerName = engineerName,
                     engineerPhone = engineerPhone,
                     engineerEmail = engineerEmail,
-                    nextSteps = nextSteps
+                    reason = reason
                 };
 
                 // Add default headers
                 AddDefaultHeaders(client);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-                var json = JsonConvert.SerializeObject(approvalDetails);
+                var json = JsonConvert.SerializeObject(rejectDetails);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 content.Headers.ContentLength = json.Length;
