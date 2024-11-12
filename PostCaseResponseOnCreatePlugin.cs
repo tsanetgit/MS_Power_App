@@ -64,12 +64,12 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                     // request information
                     else if (type == 2)
                     {
-                        //response = commonIntegration.PostCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
+                        response = commonIntegration.PostCaseRequestInformation(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
                     }
                     //information response
                     else if (type == 3)
                     {
-                        //response = commonIntegration.PostCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
+                        response = commonIntegration.PostCaseInformationResponse(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
                     }
                     //Process response
                     if (response.IsError)

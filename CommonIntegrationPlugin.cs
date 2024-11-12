@@ -616,6 +616,120 @@ public class CommonIntegrationPlugin
             return apiResponse;
         }
     }
+    public async Task<ApiResponse> PostCaseInformationResponse(int caseId, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string requestedInformation, string accessToken)
+    {
+        var apiResponse = new ApiResponse();
+
+        try
+        {
+            _tracingService.Trace("Sending case information details to API.");
+
+            using (HttpClient client = new HttpClient())
+            {
+                var approvalDetails = new
+                {
+                    requestedInformation = requestedInformation
+                };
+
+                // Add default headers
+                AddDefaultHeaders(client);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                var json = JsonConvert.SerializeObject(approvalDetails);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                content.Headers.ContentLength = json.Length;
+
+                _tracingService.Trace("Sending POST request to post case information response information.");
+
+                var response = await client.PostAsync($"{_apiUrl}/1.0.3/cases/{caseId}/information-response", content);
+
+                // Check if the response was successful
+                if (!response.IsSuccessStatusCode)
+                {
+                    string resp = await response.Content.ReadAsStringAsync();
+                    _tracingService.Trace("Failed to post case response information. Response: " + resp);
+                    apiResponse.IsError = true;
+                    apiResponse.Content = resp;
+                    return apiResponse;
+                }
+
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
+                _tracingService.Trace("Case information response created successfully.");
+                apiResponse.IsError = false;
+                apiResponse.Content = responseContent;
+                return apiResponse;
+            }
+        }
+        catch (Exception ex)
+        {
+            _tracingService.Trace($"Exception in Case response information: {ex.Message}");
+            apiResponse.IsError = true;
+            apiResponse.Content = $"Exception: {ex.Message}";
+            return apiResponse;
+        }
+    }
+
+    public async Task<ApiResponse> PostCaseRequestInformation(int caseId, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string requestedInformation, string accessToken)
+    {
+        var apiResponse = new ApiResponse();
+
+        try
+        {
+            _tracingService.Trace("Sending case information details to API.");
+
+            using (HttpClient client = new HttpClient())
+            {
+                var approvalDetails = new
+                {
+                    engineerName = engineerName,
+                    engineerPhone = engineerPhone,
+                    engineerEmail = engineerEmail,
+                    requestedInformation = requestedInformation
+                };
+
+                // Add default headers
+                AddDefaultHeaders(client);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                var json = JsonConvert.SerializeObject(approvalDetails);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                content.Headers.ContentLength = json.Length;
+
+                _tracingService.Trace("Sending POST request to post case requested information.");
+
+                var response = await client.PostAsync($"{_apiUrl}/1.0.3/cases/{caseId}/request-information", content);
+
+                // Check if the response was successful
+                if (!response.IsSuccessStatusCode)
+                {
+                    string resp = await response.Content.ReadAsStringAsync();
+                    _tracingService.Trace("Failed to post case request information. Response: " + resp);
+                    apiResponse.IsError = true;
+                    apiResponse.Content = resp;
+                    return apiResponse;
+                }
+
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
+                _tracingService.Trace("Case information request created successfully.");
+                apiResponse.IsError = false;
+                apiResponse.Content = responseContent;
+                return apiResponse;
+            }
+        }
+        catch (Exception ex)
+        {
+            _tracingService.Trace($"Exception in Case request information: {ex.Message}");
+            apiResponse.IsError = true;
+            apiResponse.Content = $"Exception: {ex.Message}";
+            return apiResponse;
+        }
+    }
 
     public async Task<ApiResponse> PostCaseReject(int caseId, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string reason, string accessToken)
     {
