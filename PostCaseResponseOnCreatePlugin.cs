@@ -88,6 +88,9 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                             entity["ap_tsaresponsecode"] = lastCaseResp.Id.ToString();
                             service.Update(entity);
                         }
+
+                        // Update statecode and statuscode based on type
+                        UpdateStateAndStatus(service, entity, type);
                     }
                 }
             }
@@ -97,5 +100,31 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
             tracingService.Trace($"Exception: {ex.Message}");
             throw;
         }
+    }
+
+    private void UpdateStateAndStatus(IOrganizationService service, Entity entity, int type)
+    {
+        int statecode = 0;
+        int statuscode = 0;
+
+        switch (type)
+        {
+            case 0:
+                statecode = 1;
+                statuscode = 120950002;
+                break;
+            case 1:
+                statecode = 0;
+                statuscode = 120950003;
+                break;
+            case 2:
+                statecode = 0;
+                statuscode = 120950001;
+                break;
+        }
+
+        entity["statecode"] = new OptionSetValue(statecode);
+        entity["statuscode"] = new OptionSetValue(statuscode);
+        service.Update(entity);
     }
 }
