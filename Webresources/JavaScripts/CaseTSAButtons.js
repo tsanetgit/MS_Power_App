@@ -16,8 +16,24 @@
     Xrm.WebApi.updateRecord(formContext.data.entity.getEntityName(), recordId, updatedFields).then(
         function success(result) {
             console.log("Record updated successfully");
-            // Refresh the form
-            formContext.data.refresh(true);
+
+            // Create the ap_tsanetresponse record
+            var tsanetResponse = {
+                "ap_tsanetcaseid@odata.bind": "/ap_tsanetcases(" + recordId + ")",
+                "ap_type": 4
+            };
+
+            Xrm.WebApi.createRecord("ap_tsanetresponse", tsanetResponse).then(
+                function success(result) {
+                    console.log("ap_tsanetresponse record created successfully");
+                    // Refresh the form
+                    formContext.data.refresh(true);
+                },
+                function error(error) {
+                    console.log("Error creating ap_tsanetresponse record: " + error.message);
+                    // Optionally, you can add code here to handle the error
+                }
+            );
         },
         function error(error) {
             console.log("Error updating record: " + error.message);

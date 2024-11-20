@@ -71,6 +71,11 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                     {
                         response = commonIntegration.PostCaseInformationResponse(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
                     }
+                    //close
+                    else if (type == 4)
+                    {
+                        response = commonIntegration.PostCaseClose(caseId, caseNumber, accessToken).Result;
+                    }
                     //Process response
                     if (response.IsError)
                     {
