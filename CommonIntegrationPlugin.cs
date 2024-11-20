@@ -567,7 +567,7 @@ public class CommonIntegrationPlugin
 
             using (HttpClient client = new HttpClient())
             {
-                var approvalDetails = new
+                var details = new
                 {
                     caseNumber = caseNumber,
                     engineerName = engineerName,
@@ -580,7 +580,7 @@ public class CommonIntegrationPlugin
                 AddDefaultHeaders(client);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-                var json = JsonConvert.SerializeObject(approvalDetails);
+                var json = JsonConvert.SerializeObject(details);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 content.Headers.ContentLength = json.Length;
@@ -626,7 +626,7 @@ public class CommonIntegrationPlugin
 
             using (HttpClient client = new HttpClient())
             {
-                var approvalDetails = new
+                var details = new
                 {
                     requestedInformation = requestedInformation
                 };
@@ -635,7 +635,7 @@ public class CommonIntegrationPlugin
                 AddDefaultHeaders(client);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-                var json = JsonConvert.SerializeObject(approvalDetails);
+                var json = JsonConvert.SerializeObject(details);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 content.Headers.ContentLength = json.Length;
@@ -682,7 +682,7 @@ public class CommonIntegrationPlugin
 
             using (HttpClient client = new HttpClient())
             {
-                var approvalDetails = new
+                var details = new
                 {
                     engineerName = engineerName,
                     engineerPhone = engineerPhone,
@@ -694,7 +694,7 @@ public class CommonIntegrationPlugin
                 AddDefaultHeaders(client);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-                var json = JsonConvert.SerializeObject(approvalDetails);
+                var json = JsonConvert.SerializeObject(details);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 content.Headers.ContentLength = json.Length;
@@ -741,7 +741,7 @@ public class CommonIntegrationPlugin
 
             using (HttpClient client = new HttpClient())
             {
-                var rejectDetails = new
+                var details = new
                 {
                     engineerName = engineerName,
                     engineerPhone = engineerPhone,
@@ -753,7 +753,7 @@ public class CommonIntegrationPlugin
                 AddDefaultHeaders(client);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-                var json = JsonConvert.SerializeObject(rejectDetails);
+                var json = JsonConvert.SerializeObject(details);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 content.Headers.ContentLength = json.Length;
@@ -776,6 +776,61 @@ public class CommonIntegrationPlugin
                 string responseContent = await DecompressResponse(response.Content, responseStream);
 
                 _tracingService.Trace("Case reject created successfully.");
+                apiResponse.IsError = false;
+                apiResponse.Content = responseContent;
+                return apiResponse;
+            }
+        }
+        catch (Exception ex)
+        {
+            _tracingService.Trace($"Exception in Post Case Reject: {ex.Message}");
+            apiResponse.IsError = true;
+            apiResponse.Content = $"Exception: {ex.Message}";
+            return apiResponse;
+        }
+    }
+
+    public async Task<ApiResponse> PostCaseClose(int caseId, string caseNumber, string accessToken)
+    {
+        var apiResponse = new ApiResponse();
+
+        try
+        {
+            _tracingService.Trace("Sending case close update details to API.");
+
+            using (HttpClient client = new HttpClient())
+            {
+                var details = new
+                {
+                };
+
+                // Add default headers
+                AddDefaultHeaders(client);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                var json = JsonConvert.SerializeObject(details);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                content.Headers.ContentLength = json.Length;
+
+                _tracingService.Trace("Sending POST request to post case close.");
+
+                var response = await client.PostAsync($"{_apiUrl}/1.0.3/cases/{caseId}/close", content);
+
+                // Check if the response was successful
+                if (!response.IsSuccessStatusCode)
+                {
+                    string resp = await response.Content.ReadAsStringAsync();
+                    _tracingService.Trace("Failed to post case close. Response: " + resp);
+                    apiResponse.IsError = true;
+                    apiResponse.Content = resp;
+                    return apiResponse;
+                }
+
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
+                _tracingService.Trace("Case reject close successfully.");
                 apiResponse.IsError = false;
                 apiResponse.Content = responseContent;
                 return apiResponse;
