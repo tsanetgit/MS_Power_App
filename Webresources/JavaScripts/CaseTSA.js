@@ -97,8 +97,8 @@ function displayCompanyResults(formContext, companies) {
 
     companies.forEach(function (company) {
         const option = document.createElement("option");
-        option.text = company.name;
-        option.value = company.id;  // Use company.id which contains the actual ID
+        option.text = company.companyName;
+        option.value = company.companyId;  // Use company.id which contains the actual ID
         selectList.appendChild(option);
     });
 
@@ -134,22 +134,22 @@ function displayDynamicForm(formDetails, formContext) {
 
     // Add fields based on formDetails
     form.appendChild(createTextInput("Internal Case Number", formDetails.internalCaseNumber, "internalCaseNumber"));
-    form.appendChild(createTextInput("Receiver Case Number", formDetails.optionalRecieverInternalCaseNumber, "receiverCaseNumber"));
+    form.appendChild(createTextInput("Receiver Case Number", formDetails.receiverCaseNumber, "receiverCaseNumber"));
     form.appendChild(createTextInput("Problem Summary", formDetails.problemSummary, "problemSummary"));
     form.appendChild(createTextInput("Problem Description", formDetails.problemDescription, "problemDescription"));
 
-    form.appendChild(createPrioritySelect("Priority", formDetails.casePriority, "priority"));
-    form.appendChild(createHtmlField("Admin Note", formDetails.readonlyAdminNote, "adminNote"));
-    form.appendChild(createHtmlField("Escalation Instructions", formDetails.readonlyEscalationInstructions, "escalationInstructions"));
+    form.appendChild(createPrioritySelect("Priority", formDetails.priority, "priority"));
+    form.appendChild(createHtmlField("Admin Note", formDetails.adminNote, "adminNote"));
+    form.appendChild(createHtmlField("Escalation Instructions", formDetails.escalationInstructions, "escalationInstructions"));
 
-    // CustomerData fields
-    const customerDataSections = groupBy(formDetails.customerData, "section");
+    // Custom fields
+    const customerDataSections = groupBy(formDetails.customFields, "section");
     for (const section in customerDataSections) {
         const sectionGroup = document.createElement("div");
         sectionGroup.className = "form-section";
         sectionGroup.innerHTML = `<h3>${section}</h3>`;
 
-        customerDataSections[section].sort((a, b) => a.FieldMetadata.displayOrder - b.FieldMetadata.displayOrder);
+        customerDataSections[section].sort((a, b) => a.displayOrder - b.displayOrder);
         customerDataSections[section].forEach(field => {
             sectionGroup.appendChild(createFieldFromMetadata(field));
         });
@@ -201,17 +201,17 @@ function createTextInput(label, value, name, isReadOnly = false) {
     return inputGroup;
 }
 
-// Helper function for dynamically creating fields based on FieldMetadata.Type
+// Helper function for dynamically creating fields based on Type
 function createFieldFromMetadata(field) {
     const fieldGroup = document.createElement("div");
     fieldGroup.className = "input-group";
 
     const labelElement = document.createElement("label");
     labelElement.className = "form-label";
-    labelElement.textContent = field.FieldMetadata.label;
+    labelElement.textContent = field.label;
 
     let inputElement;
-    switch (field.FieldMetadata.type.toLowerCase()) {
+    switch (field.type.toLowerCase()) {
         case "integer":
             inputElement = document.createElement("input");
             inputElement.type = "number";
@@ -234,7 +234,7 @@ function createFieldFromMetadata(field) {
         case "select":
             inputElement = document.createElement("select");
             inputElement.className = "form-input";
-            (field.FieldMetadata.options || []).forEach(option => {
+            (field.options || []).forEach(option => {
                 const opt = document.createElement("option");
                 opt.value = option;
                 opt.textContent = option;
@@ -242,7 +242,7 @@ function createFieldFromMetadata(field) {
             });
             break;
         case "tierselect":
-            inputElement = createTierSelect(field.FieldMetadata.options, field.value);
+            inputElement = createTierSelect(field.selections, field.value);
             inputElement.className = "form-input";
             break;
         default:
@@ -254,10 +254,10 @@ function createFieldFromMetadata(field) {
     }
 
     // Assign a unique name using the FieldId
-    inputElement.name = `field_${field.FieldMetadata.fieldId}`;
+    inputElement.name = `field_${field.fieldId}`;
 
     // Apply validation for "not_numeric"
-    if (field.FieldMetadata.validationRules && field.FieldMetadata.validationRules.includes("not_numeric")) {
+    if (field.validationRules && field.validationRules.includes("not_numeric")) {
         inputElement.pattern = "\\D*";  // Regex for non-numeric input
     }
 
@@ -365,9 +365,9 @@ function buildFormObject(formDetails) {
     cleanedObject.problemSummary = formContext.querySelector('[name="problemSummary"]').value;
     cleanedObject.problemDescription = formContext.querySelector('[name="problemDescription"]').value;
 
-    // For customer data, update the current values from the form inputs
-    cleanedObject.customerData.forEach(data => {
-        const fieldElement = formContext.querySelector(`[name="field_${data.FieldMetadata.fieldId}"]`);
+    // For customer fields, update the current values from the form inputs
+    cleanedObject.customFields.forEach(data => {
+        const fieldElement = formContext.querySelector(`[name="field_${data.fieldId}"]`);
 
         if (fieldElement) {
             if (fieldElement.tagName === "SELECT") {
@@ -378,8 +378,7 @@ function buildFormObject(formDetails) {
         }
 
         // Remove metadata and selections to keep the structure clean
-        delete data.FieldMetadata;
-        delete data.FieldSelections;
+        //delete data.selections;
     });
 
     return cleanedObject;
