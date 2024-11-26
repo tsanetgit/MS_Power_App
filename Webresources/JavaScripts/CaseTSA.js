@@ -42,6 +42,12 @@ function setupCompanySearch(formContext) {
     const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
     const webResourceContent = webResourceControl.getObject().contentDocument;
 
+    // Show the company search element
+    const companySearchElement = webResourceContent.getElementById("company-search");
+    if (companySearchElement) {
+        companySearchElement.style.display = "block";  // Show the company search section
+    }
+
     const companyInput = webResourceContent.getElementById("companyInput");
     const searchButton = webResourceContent.getElementById("searchCompanyButton");
 
@@ -390,13 +396,6 @@ function buildReadOnlyForm(formJsonData, formContext) {
 
     const formContainer = webResourceContent.getElementById("dynamicFormContainer");
     formContainer.innerHTML = "";  // Clear existing form
-
-
-    // Hide the company search element
-    const companySearchElement = webResourceContent.getElementById("company-search");
-    if (companySearchElement) {
-        companySearchElement.style.display = "none";  // Hide the company search section
-    }
 
     const form = document.createElement("form");
     form.className = "dynamic-form";

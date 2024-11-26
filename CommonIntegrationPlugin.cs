@@ -238,7 +238,7 @@ public class CommonIntegrationPlugin
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
 
                 _tracingService.Trace("Sending request to retrieve form details.");
-                var response = await client.GetAsync($"{_apiUrl}/0.1.8/form/company/{companyId}");
+                var response = await client.GetAsync($"{_apiUrl}/1.0.8/form/company/{companyId}");
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -409,7 +409,7 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Sending POST request to create case.");
 
-                var response = await client.PostAsync($"{_apiUrl}/0.1.8/collaboration-request", content);
+                var response = await client.PostAsync($"{_apiUrl}/1.0.8/collaboration-request", content);
 
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
@@ -499,7 +499,7 @@ public class CommonIntegrationPlugin
             return apiResponse;
         }
     }
-    public async Task<ApiResponse> PostCaseNote(int caseId, string summary, string description, string priority, string accessToken)
+    public async Task<ApiResponse> PostCaseNote(int caseId, string summary, string description, string priority, SubmittedBy submittedBy, string accessToken)
     {
         var apiResponse = new ApiResponse();
 
@@ -513,7 +513,8 @@ public class CommonIntegrationPlugin
                 {
                     summary = summary,
                     description = description,
-                    priority = priority
+                    priority = priority,
+                    submittedBy = submittedBy
                 };
 
                 // Add default headers
@@ -527,7 +528,7 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Sending POST request to create case note.");
 
-                var response = await client.PostAsync($"{_apiUrl}/0.1.0/cases/{caseId}/notes/create", content);
+                var response = await client.PostAsync($"{_apiUrl}/1.0.8/cases/{caseId}/notes/create", content);
 
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
@@ -1100,7 +1101,7 @@ public class CustomerData
     public string Value { get; set; }
 }
 
-class SubmittedBy
+public class SubmittedBy
 {
     [JsonProperty("id")]
     public int Id { get; set; }

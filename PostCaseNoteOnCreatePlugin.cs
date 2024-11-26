@@ -45,28 +45,46 @@ public class PostCaseNoteOnCreatePlugin : IPlugin
 
             int caseId = int.Parse(caseEntity["ap_name"].ToString());
 
+            // Retrieve user details
+            Entity user = service.Retrieve("systemuser", context.UserId, new ColumnSet("firstname", "lastname", "address1_telephone1", "internalemailaddress", "address1_city", "domainname"));
+            string userFirstName = user.GetAttributeValue<string>("firstname");
+            string userLastName = user.GetAttributeValue<string>("lastname");
+            string userName = user.GetAttributeValue<string>("domainname");
+            string userPhone = user.GetAttributeValue<string>("address1_telephone1");
+            string userEmail = user.GetAttributeValue<string>("internalemailaddress");
+            string userCity = user.GetAttributeValue<string>("address1_city");
+
             // Initialize the common integration plugin
             CommonIntegrationPlugin commonIntegration = new CommonIntegrationPlugin(service, tracingService);
 
             // Login and get access token
             string accessToken = commonIntegration.Login().Result;
 
+            // Create SubmittedBy object
+            SubmittedBy submittedBy = new SubmittedBy
+            {
+                Username = userName,
+                FirstName = userFirstName,
+                LastName = userLastName,
+                Phone = userPhone,
+                Email = userEmail,
+                City = userCity
+            };
+
             // Send case note details to the API
-            ApiResponse response = commonIntegration.PostCaseNote(caseId, summary, description, priority, accessToken).Result;
+            ApiResponse response = commonIntegration.PostCaseNote(caseId, summary, description, priority, submittedBy, accessToken).Result;
             if (response.IsError)
             {
                 throw new InvalidPluginExecutionException(response.Content);
             }
             else
             {
-                var caseResponse = JsonConvert.DeserializeObject<Case>(response.Content);
-                // Get the CaseNote with the highest id
-                var lastCaseNote = caseResponse.CaseNotes.OrderByDescending(note => note.Id).FirstOrDefault();
+                var caseNote = JsonConvert.DeserializeObject<CaseNote>(response.Content);
 
-                if (lastCaseNote != null)
+                if (caseNote != null)
                 {
-                    // Update the ap_tsanotecode field with the lastCaseNoteId
-                    entity["ap_tsanotecode"] = lastCaseNote.Id.ToString();
+                    // Update the ap_tsanotecode field with the caseNoteId
+                    entity["ap_tsanotecode"] = caseNote.Id.ToString();
                     service.Update(entity);
                 }
             }

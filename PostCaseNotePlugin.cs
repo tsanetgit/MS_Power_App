@@ -18,6 +18,11 @@ public class PostCaseNotePlugin : IPlugin
             string priority = (string)context.InputParameters["Priority"];
             int caseId = (int)context.InputParameters["CaseID"];
 
+            // Create SubmittedBy object
+            SubmittedBy submittedBy = new SubmittedBy
+            {
+            };
+
             // Initialize the common integration plugin
             CommonIntegrationPlugin commonIntegration = new CommonIntegrationPlugin(service, tracingService);
 
@@ -25,7 +30,7 @@ public class PostCaseNotePlugin : IPlugin
             string accessToken = commonIntegration.Login().Result;
 
             // Send case note details to the API
-            ApiResponse response = commonIntegration.PostCaseNote(caseId, summary, description, priority, accessToken).Result;
+            ApiResponse response = commonIntegration.PostCaseNote(caseId, summary, description, priority, submittedBy, accessToken).Result;
             context.OutputParameters["IsError"] = response.IsError;
             // Return the raw JSON response to the context output parameters
             context.OutputParameters["Response"] = response.Content;
