@@ -234,6 +234,26 @@ function createTextArea(label, value, name) {
     return inputGroup;
 }
 
+// Helper function to create text area inputs
+function createTextArea(label, value, name) {
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group";
+
+    const labelElement = document.createElement("label");
+    labelElement.className = "form-label";
+    labelElement.textContent = label;
+
+    const textArea = document.createElement("textarea");
+    textArea.value = value || "";
+    textArea.name = name;
+    textArea.className = "form-input";
+
+    inputGroup.appendChild(labelElement);
+    inputGroup.appendChild(textArea);
+
+    return inputGroup;
+}
+
 // Helper function for dynamically creating fields based on Type
 function createFieldFromMetadata(field) {
     const fieldGroup = document.createElement("div");
@@ -397,6 +417,10 @@ function buildFormObject(formDetails) {
     cleanedObject.optionalRecieverInternalCaseNumber = formContext.querySelector('[name="receiverCaseNumber"]').value;
     cleanedObject.problemSummary = formContext.querySelector('[name="problemSummary"]').value;
     cleanedObject.problemDescription = formContext.querySelector('[name="problemDescription"]').value;
+
+    // Update internal note
+    const internalNoteValue = formContext.querySelector('[name="internalNote"]').value;
+    cleanedObject.internalNotes = [{ note: internalNoteValue }];
 
     // For customer fields, update the current values from the form inputs
     cleanedObject.customFields.forEach(data => {
