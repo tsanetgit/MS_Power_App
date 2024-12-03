@@ -148,8 +148,9 @@ function displayDynamicForm(formDetails, formContext) {
     form.appendChild(createHtmlField("Admin Note", formDetails.adminNote, "adminNote"));
     form.appendChild(createHtmlField("Escalation Instructions", formDetails.escalationInstructions, "escalationInstructions"));
 
-    // Add internal note field
-    form.appendChild(createTextArea("Internal Note", formDetails.internalNotes.length > 0 ? formDetails.internalNotes[0].note : "", "internalNote"));
+    // Add internal note field as read-only
+    const internalNote = formDetails.internalNotes && formDetails.internalNotes.length > 0 ? formDetails.internalNotes[0].note : "";
+    form.appendChild(createReadOnlyTextArea("Internal Note", internalNote));
 
     // Custom fields
     const customerDataSections = groupBy(formDetails.customFields, "section");
@@ -394,10 +395,6 @@ function buildFormObject(formDetails) {
     cleanedObject.problemSummary = formContext.querySelector('[name="problemSummary"]').value;
     cleanedObject.problemDescription = formContext.querySelector('[name="problemDescription"]').value;
 
-    // Update internal note
-    const internalNoteValue = formContext.querySelector('[name="internalNote"]').value;
-    cleanedObject.internalNotes = [{ note: internalNoteValue }];
-
     // For customer fields, update the current values from the form inputs
     cleanedObject.customFields.forEach(data => {
         const fieldElement = formContext.querySelector(`[name="field_${data.fieldId}"]`);
@@ -433,7 +430,7 @@ function buildReadOnlyForm(formJsonData, formContext) {
     form.appendChild(createReadOnlyTextField("Summary", formJsonData.summary));
     form.appendChild(createReadOnlyTextField("Description", formJsonData.description));
 
-    // Add internal note field
+    // Add internal note field as read-only
     const internalNote = formJsonData.internalNotes && formJsonData.internalNotes.length > 0 ? formJsonData.internalNotes[0].note : "";
     form.appendChild(createReadOnlyTextArea("Internal Note", internalNote));
 
