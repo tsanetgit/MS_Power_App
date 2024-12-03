@@ -148,6 +148,9 @@ function displayDynamicForm(formDetails, formContext) {
     form.appendChild(createHtmlField("Admin Note", formDetails.adminNote, "adminNote"));
     form.appendChild(createHtmlField("Escalation Instructions", formDetails.escalationInstructions, "escalationInstructions"));
 
+    // Add internal note field
+    form.appendChild(createTextArea("Internal Note", formDetails.internalNotes.length > 0 ? formDetails.internalNotes[0].note : "", "internalNote"));
+
     // Custom fields
     const customerDataSections = groupBy(formDetails.customFields, "section");
     for (const section in customerDataSections) {
@@ -203,6 +206,26 @@ function createTextInput(label, value, name, isReadOnly = false) {
 
     inputGroup.appendChild(labelElement);
     inputGroup.appendChild(input);
+
+    return inputGroup;
+}
+
+// Helper function to create text area inputs
+function createTextArea(label, value, name) {
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group";
+
+    const labelElement = document.createElement("label");
+    labelElement.className = "form-label";
+    labelElement.textContent = label;
+
+    const textArea = document.createElement("textarea");
+    textArea.value = value || "";
+    textArea.name = name;
+    textArea.className = "form-input";
+
+    inputGroup.appendChild(labelElement);
+    inputGroup.appendChild(textArea);
 
     return inputGroup;
 }
@@ -371,6 +394,10 @@ function buildFormObject(formDetails) {
     cleanedObject.problemSummary = formContext.querySelector('[name="problemSummary"]').value;
     cleanedObject.problemDescription = formContext.querySelector('[name="problemDescription"]').value;
 
+    // Update internal note
+    const internalNoteValue = formContext.querySelector('[name="internalNote"]').value;
+    cleanedObject.internalNotes = [{ note: internalNoteValue }];
+
     // For customer fields, update the current values from the form inputs
     cleanedObject.customFields.forEach(data => {
         const fieldElement = formContext.querySelector(`[name="field_${data.fieldId}"]`);
@@ -405,6 +432,11 @@ function buildReadOnlyForm(formJsonData, formContext) {
     form.appendChild(createReadOnlyTextField("Receiver Case Number", formJsonData.receiverCaseNumber));
     form.appendChild(createReadOnlyTextField("Summary", formJsonData.summary));
     form.appendChild(createReadOnlyTextField("Description", formJsonData.description));
+
+    // Add internal note field
+    const internalNote = formJsonData.internalNotes && formJsonData.internalNotes.length > 0 ? formJsonData.internalNotes[0].note : "";
+    form.appendChild(createReadOnlyTextArea("Internal Note", internalNote));
+
     form.appendChild(createReadOnlyTextField("Priority", formJsonData.priority));
 
     form.appendChild(createReadOnlyHtmlField("Escalation Instructions", formJsonData.escalationInstructions));
@@ -424,6 +456,25 @@ function buildReadOnlyForm(formJsonData, formContext) {
     }
 
     formContainer.appendChild(form);
+}
+
+// Helper function for read-only text areas
+function createReadOnlyTextArea(label, value) {
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group";
+
+    const labelElement = document.createElement("label");
+    labelElement.className = "form-label";
+    labelElement.textContent = label;
+
+    const textArea = document.createElement("textarea");
+    textArea.value = value || "";
+    textArea.className = "form-input";
+    textArea.readOnly = true;
+
+    inputGroup.appendChild(labelElement);
+    inputGroup.appendChild(textArea);
+    return inputGroup;
 }
 
 // Helper function for read-only text fields
