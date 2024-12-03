@@ -418,10 +418,6 @@ function buildFormObject(formDetails) {
     cleanedObject.problemSummary = formContext.querySelector('[name="problemSummary"]').value;
     cleanedObject.problemDescription = formContext.querySelector('[name="problemDescription"]').value;
 
-    // Update internal note
-    const internalNoteValue = formContext.querySelector('[name="internalNote"]').value;
-    cleanedObject.internalNotes = [{ note: internalNoteValue }];
-
     // For customer fields, update the current values from the form inputs
     cleanedObject.customFields.forEach(data => {
         const fieldElement = formContext.querySelector(`[name="field_${data.fieldId}"]`);
