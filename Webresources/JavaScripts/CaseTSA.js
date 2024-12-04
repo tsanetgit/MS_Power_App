@@ -103,18 +103,21 @@ function displayCompanyResults(formContext, companies) {
 
     companies.forEach(function (company) {
         const option = document.createElement("option");
-        option.text = company.companyName;
-        option.value = company.companyId;  // Use company.id which contains the actual ID
+        const tags = company.tags.map(tag => tag.tag).join(", ");
+        const departmentName = company.departmentName ? ` - ${company.departmentName}` : "";
+        const tagsDisplay = tags ? ` [${tags}]` : "";
+        option.text = `${company.companyName}${departmentName}${tagsDisplay}`;
+        option.value = JSON.stringify({ companyName: company.companyName, companyId: company.companyId, departmentId: company.departmentId });
         selectList.appendChild(option);
     });
 
     // Add an event listener to trigger both selectCompany and getFormByCompany
     selectList.addEventListener("change", function () {
-        const selectedCompanyId = parseInt(selectList.value);
-        const selectedCompanyName = selectList.options[selectList.selectedIndex].text;
-        if (selectedCompanyId) {
-            selectCompany(formContext, selectedCompanyId, selectedCompanyName);
-            getFormByCompany(selectedCompanyId, formContext);
+        const selectedValue = JSON.parse(selectList.value);
+        const selectedCompanyName = selectedValue.companyName;
+        if (selectedValue.companyId) {
+            selectCompany(formContext, selectedValue.companyId, selectedCompanyName);
+            getFormByCompany(selectedValue.companyId, formContext);
         }
     });
 
@@ -147,6 +150,10 @@ function displayDynamicForm(formDetails, formContext) {
     form.appendChild(createPrioritySelect("Priority", formDetails.priority, "priority"));
     form.appendChild(createHtmlField("Admin Note", formDetails.adminNote, "adminNote"));
     form.appendChild(createHtmlField("Escalation Instructions", formDetails.escalationInstructions, "escalationInstructions"));
+
+    // Add internal note field as read-only
+    const internalNote = formDetails.internalNotes && formDetails.internalNotes.length > 0 ? formDetails.internalNotes[0].note : "";
+    form.appendChild(createReadOnlyTextArea("Internal Note", internalNote));
 
     // Custom fields
     const customerDataSections = groupBy(formDetails.customFields, "section");
@@ -203,6 +210,26 @@ function createTextInput(label, value, name, isReadOnly = false) {
 
     inputGroup.appendChild(labelElement);
     inputGroup.appendChild(input);
+
+    return inputGroup;
+}
+
+// Helper function to create text area inputs
+function createTextArea(label, value, name) {
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group";
+
+    const labelElement = document.createElement("label");
+    labelElement.className = "form-label";
+    labelElement.textContent = label;
+
+    const textArea = document.createElement("textarea");
+    textArea.value = value || "";
+    textArea.name = name;
+    textArea.className = "form-input";
+
+    inputGroup.appendChild(labelElement);
+    inputGroup.appendChild(textArea);
 
     return inputGroup;
 }
@@ -405,6 +432,11 @@ function buildReadOnlyForm(formJsonData, formContext) {
     form.appendChild(createReadOnlyTextField("Receiver Case Number", formJsonData.receiverCaseNumber));
     form.appendChild(createReadOnlyTextField("Summary", formJsonData.summary));
     form.appendChild(createReadOnlyTextField("Description", formJsonData.description));
+
+    // Add internal note field as read-only
+    const internalNote = formJsonData.internalNotes && formJsonData.internalNotes.length > 0 ? formJsonData.internalNotes[0].note : "";
+    form.appendChild(createReadOnlyTextArea("Internal Note", internalNote));
+
     form.appendChild(createReadOnlyTextField("Priority", formJsonData.priority));
 
     form.appendChild(createReadOnlyHtmlField("Escalation Instructions", formJsonData.escalationInstructions));
@@ -424,6 +456,25 @@ function buildReadOnlyForm(formJsonData, formContext) {
     }
 
     formContainer.appendChild(form);
+}
+
+// Helper function for read-only text areas
+function createReadOnlyTextArea(label, value) {
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group";
+
+    const labelElement = document.createElement("label");
+    labelElement.className = "form-label";
+    labelElement.textContent = label;
+
+    const textArea = document.createElement("textarea");
+    textArea.value = value || "";
+    textArea.className = "form-input";
+    textArea.readOnly = true;
+
+    inputGroup.appendChild(labelElement);
+    inputGroup.appendChild(textArea);
+    return inputGroup;
 }
 
 // Helper function for read-only text fields
