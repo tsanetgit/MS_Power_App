@@ -107,14 +107,14 @@ function displayCompanyResults(formContext, companies) {
         const departmentName = company.departmentName ? ` - ${company.departmentName}` : "";
         const tagsDisplay = tags ? ` [${tags}]` : "";
         option.text = `${company.companyName}${departmentName}${tagsDisplay}`;
-        option.value = JSON.stringify({ companyId: company.companyId, departmentId: company.departmentId });
+        option.value = JSON.stringify({ companyName: company.companyName, companyId: company.companyId, departmentId: company.departmentId });
         selectList.appendChild(option);
     });
 
     // Add an event listener to trigger both selectCompany and getFormByCompany
     selectList.addEventListener("change", function () {
         const selectedValue = JSON.parse(selectList.value);
-        const selectedCompanyName = selectList.options[selectList.selectedIndex].text.split(" - ")[0];
+        const selectedCompanyName = selectedValue.companyName;
         if (selectedValue.companyId) {
             selectCompany(formContext, selectedValue.companyId, selectedCompanyName);
             getFormByCompany(selectedValue.companyId, formContext);
