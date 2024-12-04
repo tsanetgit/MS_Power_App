@@ -103,18 +103,21 @@ function displayCompanyResults(formContext, companies) {
 
     companies.forEach(function (company) {
         const option = document.createElement("option");
-        option.text = company.companyName;
-        option.value = company.companyId;  // Use company.id which contains the actual ID
+        const tags = company.tags.map(tag => tag.tag).join(", ");
+        const departmentName = company.departmentName ? ` - ${company.departmentName}` : "";
+        const tagsDisplay = tags ? ` [${tags}]` : "";
+        option.text = `${company.companyName}${departmentName}${tagsDisplay}`;
+        option.value = JSON.stringify({ companyId: company.companyId, departmentId: company.departmentId });
         selectList.appendChild(option);
     });
 
     // Add an event listener to trigger both selectCompany and getFormByCompany
     selectList.addEventListener("change", function () {
-        const selectedCompanyId = parseInt(selectList.value);
-        const selectedCompanyName = selectList.options[selectList.selectedIndex].text;
-        if (selectedCompanyId) {
-            selectCompany(formContext, selectedCompanyId, selectedCompanyName);
-            getFormByCompany(selectedCompanyId, formContext);
+        const selectedValue = JSON.parse(selectList.value);
+        const selectedCompanyName = selectList.options[selectList.selectedIndex].text.split(" - ")[0];
+        if (selectedValue.companyId) {
+            selectCompany(formContext, selectedValue.companyId, selectedCompanyName);
+            getFormByCompany(selectedValue.companyId, formContext);
         }
     });
 
