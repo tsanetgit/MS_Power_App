@@ -37,7 +37,6 @@ function buttonRefreshCase(formContext) {
 }
 
 
-// Setup the search functionality once the element is found
 function setupCompanySearch(formContext) {
     const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
     const webResourceContent = webResourceControl.getObject().contentDocument;
@@ -49,25 +48,23 @@ function setupCompanySearch(formContext) {
     }
 
     const companyInput = webResourceContent.getElementById("companyInput");
-    const searchButton = webResourceContent.getElementById("searchCompanyButton");
 
     if (companyInput) {
         console.log("Setting up company search...");
 
-        companyInput.addEventListener("keypress", function (event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                searchCompany(formContext, companyInput.value);
-            }
-        });
+        companyInput.addEventListener("input", function (event) {
+            const inputValue = companyInput.value.trim();
+            const wordCount = inputValue.length;
 
-        searchButton.addEventListener("click", function () {
-            searchCompany(formContext, companyInput.value);
+            if (wordCount >= 3) {
+                searchCompany(formContext, inputValue);
+            }
         });
     } else {
         console.error("companyInput element not found during setup!");
     }
 }
+
 // Function to trigger search
 function searchCompany(formContext, companyName) {
     if (!companyName) {
@@ -87,6 +84,8 @@ function displayCompanyResults(formContext, companies) {
     const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
     const webResourceContent = webResourceControl.getObject().contentDocument;
 
+    const companySearchElement = webResourceContent.getElementById("company-search");
+    const companyInput = webResourceContent.getElementById("companyInput");
     const resultsDiv = webResourceContent.getElementById("companyResults");
     resultsDiv.innerHTML = "";  // Clear previous results
 
@@ -97,9 +96,7 @@ function displayCompanyResults(formContext, companies) {
 
     // Create a dropdown (select element)
     const selectList = document.createElement("select");
-    const defaultOption = document.createElement("option");
-    defaultOption.text = "--Select--";
-    selectList.appendChild(defaultOption);
+    selectList.size = companies.length + 1;  // Show all options
 
     companies.forEach(function (company) {
         const option = document.createElement("option");
@@ -118,11 +115,17 @@ function displayCompanyResults(formContext, companies) {
         if (selectedValue.companyId) {
             selectCompany(formContext, selectedValue.companyId, selectedCompanyName);
             getFormByCompany(selectedValue.companyId, formContext);
+            companySearchElement.style.display = "none";  // Hide the company search section
         }
     });
 
     resultsDiv.appendChild(selectList);
+    resultsDiv.style.width = companyInput.offsetWidth + "px";
+    resultsDiv.style.top = companyInput.offsetTop + companyInput.offsetHeight + "px";
+    resultsDiv.style.left = companyInput.offsetLeft + "px";
 }
+
+
 
 // Function to set selected company data into form fields
 function selectCompany(formContext, companyId, companyName) {

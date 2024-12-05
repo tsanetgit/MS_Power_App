@@ -80,7 +80,9 @@
         }
 
         .company-results {
-            margin-top: 15px;
+            position: absolute;
+            z-index: 1000;
+            width: 100%;
         }
     </style>
 </head>
@@ -90,10 +92,10 @@
     <div class="company-search" id="company-search">
         <label for="companyInput">Search Company:</label>
         <input type="text" id="companyInput" class="form-input" placeholder="Enter Company Name" />
-        <button id="searchCompanyButton">Search</button>
+        <!--<button id="searchCompanyButton">Search</button>-->
         <div id="companyResults" class="company-results"></div>
     </div>
 
     <!-- Dynamic form container -->
-    <div id="dynamicFormContainer"></div>
+        <div id="dynamicFormContainer"></div>
 </body>

@@ -124,7 +124,7 @@ function getPriorityValue(priority) {
 // Get company
 function getCompanyDetails(companyName) {
     return new Promise(function (resolve, reject) {
-        Xrm.Utility.showProgressIndicator("Retrieving company details...");
+        //Xrm.Utility.showProgressIndicator("Retrieving company details...");
         const parameters = { CompanyName: companyName };
         const request = {
             CompanyName: parameters.CompanyName,
@@ -148,16 +148,16 @@ function getCompanyDetails(companyName) {
                         function (response) {
                             const companyDetailsJson = response.CompanyDetails;
                             const companyDetails = JSON.parse(companyDetailsJson);
-                            Xrm.Utility.closeProgressIndicator();
+                            //Xrm.Utility.closeProgressIndicator();
                             resolve(companyDetails);
                         });
                 } else {
-                    Xrm.Utility.closeProgressIndicator();
+                    //Xrm.Utility.closeProgressIndicator();
                     reject(new Error("No result from company search"));
                 }
             },
             function (error) {
-                Xrm.Utility.closeProgressIndicator();
+                //Xrm.Utility.closeProgressIndicator();
                 reject(error);
             }
         );
