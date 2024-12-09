@@ -290,7 +290,8 @@ function createFieldFromMetadata(field) {
         case "select":
             inputElement = document.createElement("select");
             inputElement.className = "form-input";
-            (field.options || []).forEach(option => {
+            const optionsArray = field.options ? field.options.split(/\r?\n/).filter(option => option.trim() !== "") : [];
+            optionsArray.forEach(option => {
                 const opt = document.createElement("option");
                 opt.value = option;
                 opt.textContent = option;
@@ -328,13 +329,16 @@ function createTierSelect(options, selectedValue) {
 
     function createOptions(optionList, parentElement) {
         optionList.forEach(option => {
-            const opt = document.createElement("option");
-            opt.value = option.value;
-            opt.textContent = option.value;
-            parentElement.appendChild(opt);
-
             if (option.children && option.children.length) {
-                createOptions(option.children, parentElement);
+                const optGroup = document.createElement("optgroup");
+                optGroup.label = option.value;
+                createOptions(option.children, optGroup);
+                parentElement.appendChild(optGroup);
+            } else {
+                const opt = document.createElement("option");
+                opt.value = option.value;
+                opt.textContent = option.value;
+                parentElement.appendChild(opt);
             }
         });
     }
