@@ -483,6 +483,8 @@ function buildReadOnlyForm(formJsonData, formContext) {
     }
 
     formContainer.appendChild(form);
+
+    loadCollaborationFeed(formContext, webResourceContent);
 }
 
 // Helper function for read-only text areas
@@ -540,4 +542,61 @@ function createReadOnlyHtmlField(label, value) {
     inputGroup.appendChild(labelElement);
     inputGroup.appendChild(div);
     return inputGroup;
+}
+
+async function loadCollaborationFeed(formContext, webResourceContent) {
+    // Get the current record's case ID
+    const caseId = formContext.data.entity.getId();
+    if (!caseId) return;
+
+    // Fetch data from the ap_tsanetnote table
+    const fetchXml = `
+        <fetch>
+            <entity name="ap_tsanetnote">
+                <attribute name="createdon" />
+                <attribute name="ap_creatoremail" />
+                <attribute name="ap_creatorname" />
+                <attribute name="ap_name" />
+                <attribute name="ap_description" />
+                <order attribute="createdon" descending="true" />
+                <filter>
+                    <condition attribute="ap_tsanetcaseid" operator="eq" value="${caseId.replace(/[{}]/g, '')}" />
+                </filter>
+            </entity>
+        </fetch>
+    `;
+
+    const result = await Xrm.WebApi.retrieveMultipleRecords("ap_tsanetnote", "?fetchXml=" + encodeURIComponent(fetchXml));
+    if (!result.entities || result.entities.length === 0) return;
+
+    // Populate the Collaboration Feed Section
+    const collaborationFeed = webResourceContent.getElementById("collaborationFeed");
+    result.entities.forEach(note => {
+        const noteRow = document.createElement("div");
+        noteRow.className = "note-row";
+
+        // Metadata Section
+        const noteMeta = document.createElement("div");
+        noteMeta.className = "note-meta";
+        noteMeta.innerHTML = `
+            <div>${new Date(note.createdon).toLocaleString()}</div>
+            <div>${note.ap_creatorname || "Unknown"}</div>
+            <div>${note.ap_creatoremail || "No Email"}</div>
+        `;
+
+        // Content Section
+        const noteContent = document.createElement("div");
+        noteContent.className = "note-content";
+        noteContent.innerHTML = `
+            <div class="note-title">${note.ap_name || "No Title"}</div>
+            <div class="note-description">${note.ap_description || "-"}</div>
+        `;
+
+        // Append metadata and content to the row
+        noteRow.appendChild(noteMeta);
+        noteRow.appendChild(noteContent);
+
+        // Add the row to the feed
+        collaborationFeed.appendChild(noteRow);
+    });
 }
