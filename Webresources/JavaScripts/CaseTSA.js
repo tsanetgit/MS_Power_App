@@ -485,6 +485,7 @@ function buildReadOnlyForm(formJsonData, formContext) {
     formContainer.appendChild(form);
 
     loadCollaborationFeed(formContext, webResourceContent);
+    setupAddNoteButton(formContext, webResourceContent);
 }
 
 // Helper function for read-only text areas
@@ -570,7 +571,9 @@ async function loadCollaborationFeed(formContext, webResourceContent) {
     if (!result.entities || result.entities.length === 0) return;
 
     // Populate the Collaboration Feed Section
-    const collaborationFeed = webResourceContent.getElementById("collaborationFeed");
+    const collaborationFeedNotes = webResourceContent.getElementById("collaborationFeedNotes");
+    collaborationFeedNotes.innerHTML = ""; // Clear existing content
+
     result.entities.forEach(note => {
         const noteRow = document.createElement("div");
         noteRow.className = "note-row";
@@ -597,6 +600,40 @@ async function loadCollaborationFeed(formContext, webResourceContent) {
         noteRow.appendChild(noteContent);
 
         // Add the row to the feed
-        collaborationFeed.appendChild(noteRow);
+        collaborationFeedNotes.appendChild(noteRow);
     });
 }
+
+function setupAddNoteButton(formContext, webResourceContent) {
+    const addNoteButton = webResourceContent.getElementById("addNoteButton");
+
+    addNoteButton.addEventListener("click", function () {
+        const currentRecordId = formContext.data.entity.getId(); // Get the current record ID
+        openQuickCreateForm(currentRecordId, formContext, webResourceContent);
+    });
+
+    function openQuickCreateForm(recordId, formContext, webResourceContent) {
+        const entityFormOptions = {
+            entityName: "ap_tsanetnote",
+            useQuickCreateForm: true
+        };
+
+        const formParameters = {
+            "ap_tsanetcaseid": recordId
+        };
+
+        Xrm.Navigation.openForm(entityFormOptions, formParameters).then(
+            function (success) {
+                console.log("Quick create form opened successfully.");
+                // Check if the form was saved
+                if (success.savedEntityReference) {
+                    loadCollaborationFeed(formContext, webResourceContent);
+                }
+            },
+            function (error) {
+                console.error("Error opening quick create form: ", error);
+            }
+        );
+    }
+}
+

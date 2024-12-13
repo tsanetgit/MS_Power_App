@@ -152,6 +152,23 @@
             font-size: 14px;
             color: #444;
         }
+
+        button[type="submit"], #addNoteButton {
+            padding: 10px 20px;
+            background-color: #004080; /* Navy blue */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            grid-column: 1 / -1;
+            margin-top: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover, #addNoteButton:hover {
+            background-color: #003060;
+        }
     </style>
 </head>
 
@@ -172,7 +189,9 @@
         <!-- Collaboration Feed Section -->
         <div class="note-section" id="collaborationFeed">
             <h3>Collaboration Feed</h3>
+            <button id="addNoteButton" type="button">Add Note</button>
             <!-- Notes will be dynamically added here -->
+            <div id="collaborationFeedNotes"></div>
         </div>
     </div>
 </body>
