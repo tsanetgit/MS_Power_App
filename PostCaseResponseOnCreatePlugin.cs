@@ -95,7 +95,7 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                         }
 
                         // Update statecode and statuscode based on type
-                        UpdateStateAndStatus(service, entity, type);
+                        UpdateStateAndStatus(service, tsanetcase, type);
                     }
                 }
             }
@@ -110,7 +110,7 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
     private void UpdateStateAndStatus(IOrganizationService service, Entity entity, int type)
     {
         int statecode = 0;
-        int statuscode = 0;
+        int statuscode = 1;
 
         switch (type)
         {
@@ -125,6 +125,14 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
             case 2:
                 statecode = 0;
                 statuscode = 120950001;
+                break;
+            case 3:
+                statecode = 0;
+                statuscode = 1;
+                break;
+            case 4:
+                statecode = 1;
+                statuscode = 2;
                 break;
         }
 
