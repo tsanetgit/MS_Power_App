@@ -486,6 +486,10 @@ function buildReadOnlyForm(formJsonData, formContext) {
 
     loadCollaborationFeed(formContext, webResourceContent);
     setupAddNoteButton(formContext, webResourceContent);
+
+    // Show the collaboration feed section
+    const collaborationFeed = webResourceContent.getElementById("collaborationFeed");
+    collaborationFeed.style.display = "block";
 }
 
 // Helper function for read-only text areas
