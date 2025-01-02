@@ -63,6 +63,12 @@ function setupCompanySearch(formContext) {
     } else {
         console.error("companyInput element not found during setup!");
     }
+
+    // footer with contact us link
+    const footer = document.createElement("div");
+    footer.className = "company-search-footer";
+    footer.innerHTML = 'Not able to find a Member? <a href="mailto:membership@tsanet.org">Contact Us</a>';
+    companySearchElement.appendChild(footer);
 }
 
 // Function to trigger search
@@ -145,10 +151,10 @@ function displayDynamicForm(formDetails, formContext) {
     form.className = "dynamic-form";
 
     // Add fields based on formDetails
-    form.appendChild(createTextInput("Internal Case Number", formDetails.internalCaseNumber, "internalCaseNumber"));
-    form.appendChild(createTextInput("Receiver Case Number", formDetails.receiverCaseNumber, "receiverCaseNumber"));
-    form.appendChild(createTextInput("Problem Summary", formDetails.problemSummary, "problemSummary"));
-    form.appendChild(createTextInput("Problem Description", formDetails.problemDescription, "problemDescription"));
+    form.appendChild(createTextInput("Internal Case Number", formDetails.internalCaseNumber, "internalCaseNumber", false, true));
+    form.appendChild(createTextInput("Receiver Case Number", formDetails.receiverCaseNumber, "receiverCaseNumber", false, true));
+    form.appendChild(createTextInput("Problem Summary", formDetails.problemSummary, "problemSummary", false, true));
+    form.appendChild(createTextInput("Problem Description", formDetails.problemDescription, "problemDescription", false, true));
 
     form.appendChild(createPrioritySelect("Priority", formDetails.priority, "priority"));
     form.appendChild(createHtmlField("Admin Note", formDetails.adminNote, "adminNote"));
@@ -193,7 +199,7 @@ function displayDynamicForm(formDetails, formContext) {
 }
 
 // Helper function to create text inputs with two-column layout
-function createTextInput(label, value, name, isReadOnly = false) {
+function createTextInput(label, value, name, isReadOnly, isRequired) {
     const inputGroup = document.createElement("div");
     inputGroup.className = "input-group";
 
@@ -206,9 +212,14 @@ function createTextInput(label, value, name, isReadOnly = false) {
     input.value = value || "";
     input.name = name;
     input.className = "form-input";
+
     if (isReadOnly) {
         input.readOnly = true;
         input.classList.add("readonly-input");
+    }
+
+    if (isRequired) {
+        input.required = true;
     }
 
     inputGroup.appendChild(labelElement);
@@ -316,6 +327,10 @@ function createFieldFromMetadata(field) {
     // Apply validation for "not_numeric"
     if (field.validationRules && field.validationRules.includes("not_numeric")) {
         inputElement.pattern = "\\D*";  // Regex for non-numeric input
+    }
+
+    if (field.required) {
+        inputElement.required = true;
     }
 
     fieldGroup.appendChild(labelElement);
@@ -563,7 +578,8 @@ async function loadCollaborationFeed(formContext, webResourceContent) {
                 <attribute name="ap_creatorname" />
                 <attribute name="ap_name" />
                 <attribute name="ap_description" />
-                <order attribute="createdon" descending="true" />
+                <attribute name="ap_tsanotecode" />
+                <order attribute="ap_tsanotecode" descending="true" />
                 <filter>
                     <condition attribute="ap_tsanetcaseid" operator="eq" value="${caseId.replace(/[{}]/g, '')}" />
                 </filter>
@@ -640,4 +656,3 @@ function setupAddNoteButton(formContext, webResourceContent) {
         );
     }
 }
-

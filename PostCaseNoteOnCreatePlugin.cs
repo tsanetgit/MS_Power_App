@@ -85,6 +85,8 @@ public class PostCaseNoteOnCreatePlugin : IPlugin
                 {
                     // Update the ap_tsanotecode field with the caseNoteId
                     entity["ap_tsanotecode"] = caseNote.Id.ToString();
+                    entity["ap_creatorname"] = userFirstName + " " + userLastName;
+                    entity["ap_creatoremail"] = userEmail;
                     service.Update(entity);
                 }
             }
