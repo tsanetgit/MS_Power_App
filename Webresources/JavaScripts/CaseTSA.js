@@ -505,6 +505,9 @@ function buildReadOnlyForm(formJsonData, formContext) {
     // Show the collaboration feed section
     const collaborationFeed = webResourceContent.getElementById("collaborationFeed");
     collaborationFeed.style.display = "block";
+
+    // Load and display responses
+    loadResponses(formContext, webResourceContent);
 }
 
 // Helper function for read-only text areas
@@ -655,4 +658,67 @@ function setupAddNoteButton(formContext, webResourceContent) {
             }
         );
     }
+}
+
+// Function to load and display responses
+async function loadResponses(formContext, webResourceContent) {
+    // Get the current record's case ID
+    const caseId = formContext.data.entity.getId();
+    if (!caseId) return;
+
+    // Fetch data from the ap_tsanetresponse table
+    const fetchXml = `
+        <fetch>
+            <entity name="ap_tsanetresponse">
+                <attribute name="ap_type" />
+                <attribute name="ap_engineername" />
+                <attribute name="ap_engineerphone" />
+                <attribute name="ap_engineeremail" />
+                <attribute name="ap_description" />
+                <attribute name="ap_tsaresponsecode" />
+                <order attribute="ap_tsaresponsecode" descending="true" />
+                <filter>
+                    <condition attribute="ap_tsanetcaseid" operator="eq" value="${caseId.replace(/[{}]/g, '')}" />
+                </filter>
+            </entity>
+        </fetch>
+    `;
+
+    const result = await Xrm.WebApi.retrieveMultipleRecords("ap_tsanetresponse", "?fetchXml=" + encodeURIComponent(fetchXml));
+    if (!result.entities || result.entities.length === 0) return;
+
+    // Create a new section for responses
+    const responsesSection = document.createElement("div");
+    responsesSection.className = "response-feed";
+    responsesSection.innerHTML = "<h3>Responses</h3>";
+
+    result.entities.forEach(response => {
+        const responseContainer = document.createElement("div");
+        responseContainer.className = "response-container";
+
+        // Add header with type and timestamp
+        const header = document.createElement("div");
+        header.className = "response-header";
+        header.innerHTML = `
+            <strong>${response["ap_type@OData.Community.Display.V1.FormattedValue"] || "No Type"}</strong>
+            <span class="timestamp">${new Date().toLocaleString()}</span>
+        `;
+        responseContainer.appendChild(header);
+
+        // Add content section with engineer details and description
+        const content = document.createElement("div");
+        content.className = "response-content";
+        content.innerHTML = `
+            <p><strong>Engineer Name:</strong> ${response.ap_engineername || "N/A"}</p>
+            <p><strong>Engineer Email:</strong> ${response.ap_engineeremail || "N/A"}</p>
+            <p><strong>Engineer Phone:</strong> ${response.ap_engineerphone || "N/A"}</p>
+            <p><strong>Description:</strong> ${response.ap_description || "N/A"}</p>
+        `;
+        responseContainer.appendChild(content);
+
+        responsesSection.appendChild(responseContainer);
+    });
+
+    // Append the responses section below the dynamic form container
+    webResourceContent.getElementById("dynamicFormContainer").appendChild(responsesSection);
 }
