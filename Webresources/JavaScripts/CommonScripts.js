@@ -93,3 +93,13 @@ function saveToFormField(fieldName, formData, formContext) {
         formContext.getAttribute(fieldName).fireOnChange();
     }
 }
+
+// Function to show warning message
+function showWarningMessage(formContext, message) {
+    formContext.ui.setFormNotification(message, "WARNING", "statuscodeWarning");
+}
+
+// Function to clear warning message
+function clearWarningMessage(formContext) {
+    formContext.ui.clearFormNotification("statuscodeWarning");
+}

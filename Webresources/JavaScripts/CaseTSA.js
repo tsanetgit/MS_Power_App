@@ -3,7 +3,7 @@ function onFormLoad(executionContext) {
     const formContext = executionContext.getFormContext();
     const formJsonField = formContext.getAttribute("ap_formjson").getValue();
     //waitForWebResourceElement('WebResource_casecreate', 'companyInput', () => setupCompanySearch(formContext));
-
+    statusWarning(executionContext);
     // Wait for the web resource element to load
     waitForWebResourceElement('WebResource_casecreate', 'dynamicFormContainer', () => {
         if (formJsonField) {
@@ -32,10 +32,22 @@ function onFormChange(executionContext) {
     }
 }
 
+function statusWarning(executionContext) {
+    const formContext = executionContext.getFormContext();
+    const statusCode = formContext.getAttribute("statuscode").getValue();
+
+    // Show warning if statuscode is 1
+    if (statusCode === 1) {
+        showWarningMessage(formContext, "Response needed (Accept, request information, or Reject)​");
+    }
+    else {
+        clearWarningMessage(formContext);
+    }
+}
+
 function buttonRefreshCase(formContext) {
     getCase(formContext);
 }
-
 
 function setupCompanySearch(formContext) {
     const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
