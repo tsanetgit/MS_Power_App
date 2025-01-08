@@ -39,10 +39,10 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                     string description = entity.GetAttributeValue<string>("ap_description");
                     int type = entity.GetAttributeValue<OptionSetValue>("ap_type").Value;
                     // Retrieve current user details
-                    Entity user = service.Retrieve("systemuser", context.UserId, new ColumnSet("fullname", "address1_telephone1", "internalemailaddress"));
-                    string engineerName = user.GetAttributeValue<string>("fullname");
-                    string engineerPhone = user.GetAttributeValue<string>("address1_telephone1");
-                    string engineerEmail = user.GetAttributeValue<string>("internalemailaddress");
+                    //Entity user = service.Retrieve("systemuser", context.UserId, new ColumnSet("fullname", "address1_telephone1", "internalemailaddress"));
+                    string engineerName = entity.GetAttributeValue<string>("ap_engineername");
+                    string engineerPhone = entity.GetAttributeValue<string>("ap_engineerphone");
+                    string engineerEmail = entity.GetAttributeValue<string>("ap_engineeremail");
 
                     // Initialize the common integration plugin
                     CommonIntegrationPlugin commonIntegration = new CommonIntegrationPlugin(service, tracingService);

@@ -1,29 +1,34 @@
 ﻿function CloseButton(formContext) {
     //inactive status, close response
-    ProcessAction(formContext, 4, true);
+    QuickCreateResponse(formContext, 4);
 }
 
 function AcceptButton(formContext) {
     //active status, approval response
-    ProcessAction(formContext, 1, true);
+    QuickCreateResponse(formContext, 1);
 }
 
 function RequestInfoButton(formContext) {
     //active status, request info response
-    ProcessAction(formContext, 2, true);
+    QuickCreateResponse(formContext, 2);
 }
 
 function RejectButton(formContext) {
     //inactive status, reject response
-    ProcessAction(formContext, 0, false);
+    QuickCreateResponse(formContext, 0);
 }
 
 function ResponseInfoButton(formContext) {
     //active status, response info response
-    ProcessAction(formContext, 3, true);
+    QuickCreateResponse(formContext, 3);
 }
 
-//Common logic to update the case record and create a new tsanetresponse record
+function AcceptUpdateButton(formContext) {
+    //active status, response info response
+    QuickCreateResponse(formContext, 5);
+}
+
+//Common logic to update the case record and create a new tsanetresponse record - NOT USED
 function ProcessAction(formContext, type, requireDescription) {
     var description = "";
     if (requireDescription) {
@@ -37,6 +42,15 @@ function ProcessAction(formContext, type, requireDescription) {
         }
         else {
             description = userIpnut;
+        }
+    } else {
+        // Show a confirm dialog to get the user's confirmation
+        var userConfirmed = confirm("Do you want to proceed?");
+
+        // If the user clicks cancel, userConfirmed will be false
+        if (!userConfirmed) {
+            console.log("Action cancelled by the user.");
+            return;
         }
     }
 
@@ -70,6 +84,42 @@ function ProcessAction(formContext, type, requireDescription) {
         },
         function error(error) {
             console.log("Error creating ap_tsanetresponse record: " + error.message);
+            alert(error.message);
+        }
+    );
+}
+// Function to open quick create form of the response table with prefilled fields
+function QuickCreateResponse(formContext, type) {
+    var ownerId = formContext.data.entity.attributes.get("ownerid").getValue()[0].id;
+    Xrm.WebApi.retrieveRecord("systemuser", ownerId, "?$select=fullname,address1_telephone1,internalemailaddress").then(
+        function success(result) {
+            var quickCreateData = {
+                "ap_type": type,
+                "ap_engineername": result.fullname,
+                "ap_engineerphone": result.address1_telephone1,
+                "ap_engineeremail": result.internalemailaddress
+            };
+
+            var entityFormOptions = {
+                entityName: "ap_tsanetresponse",
+                useQuickCreateForm: true
+            };
+
+            Xrm.Navigation.openForm(entityFormOptions, quickCreateData).then(
+                function success(result) {
+                    if (result.savedEntityReference) {
+                        console.log("Quick create form saved successfully");
+                        formContext.data.refresh(true);
+                    }
+                },
+                function error(error) {
+                    console.log("Error opening quick create form: " + error.message);
+                    alert(error.message);
+                }
+            );
+        },
+        function error(error) {
+            console.log("Error retrieving owner details: " + error.message);
             alert(error.message);
         }
     );

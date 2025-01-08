@@ -79,7 +79,7 @@ function setupCompanySearch(formContext) {
     // footer with contact us link
     const footer = document.createElement("div");
     footer.className = "company-search-footer";
-    footer.innerHTML = 'Not able to find a Member? <a href="mailto:membership@tsanet.org">Contact Us</a>';
+    footer.innerHTML = 'Not able to find a Member? <a href="mailto:connect_support@tsanet.org">Contact Us</a>';
     companySearchElement.appendChild(footer);
 }
 
