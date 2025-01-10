@@ -59,22 +59,25 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                     // reject
                     else if (type == 0)
                     {
-                        response = commonIntegration.PostCaseReject(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
+                        response = commonIntegration.PostCaseReject(caseId, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
                     }
                     // request information
                     else if (type == 2)
                     {
-                        response = commonIntegration.PostCaseRequestInformation(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
+                        response = commonIntegration.PostCaseRequestInformation(caseId, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
                     }
                     //information response
                     else if (type == 3)
                     {
-                        response = commonIntegration.PostCaseInformationResponse(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
+                        response = commonIntegration.PostCaseInformationResponse(caseId, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
                     }
                     //close
                     else if (type == 4)
                     {
-                        response = commonIntegration.PostCaseClose(caseId, caseNumber, accessToken).Result;
+                        response = commonIntegration.PostCaseClose(caseId, accessToken).Result;
+                    } else if (type == 5)
+                    {
+                        response = commonIntegration.UpdateCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
                     }
                     //Process response
                     if (response.IsError)

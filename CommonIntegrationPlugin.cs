@@ -617,7 +617,7 @@ public class CommonIntegrationPlugin
             return apiResponse;
         }
     }
-    public async Task<ApiResponse> PostCaseInformationResponse(int caseId, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string requestedInformation, string accessToken)
+    public async Task<ApiResponse> PostCaseInformationResponse(int caseId, string engineerName, string engineerPhone, string engineerEmail, string requestedInformation, string accessToken)
     {
         var apiResponse = new ApiResponse();
 
@@ -673,7 +673,7 @@ public class CommonIntegrationPlugin
         }
     }
 
-    public async Task<ApiResponse> PostCaseRequestInformation(int caseId, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string requestedInformation, string accessToken)
+    public async Task<ApiResponse> PostCaseRequestInformation(int caseId, string engineerName, string engineerPhone, string engineerEmail, string requestedInformation, string accessToken)
     {
         var apiResponse = new ApiResponse();
 
@@ -732,7 +732,7 @@ public class CommonIntegrationPlugin
         }
     }
 
-    public async Task<ApiResponse> PostCaseReject(int caseId, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string reason, string accessToken)
+    public async Task<ApiResponse> PostCaseReject(int caseId, string engineerName, string engineerPhone, string engineerEmail, string reason, string accessToken)
     {
         var apiResponse = new ApiResponse();
 
@@ -791,7 +791,7 @@ public class CommonIntegrationPlugin
         }
     }
 
-    public async Task<ApiResponse> PostCaseClose(int caseId, string caseNumber, string accessToken)
+    public async Task<ApiResponse> PostCaseClose(int caseId, string accessToken)
     {
         var apiResponse = new ApiResponse();
 
