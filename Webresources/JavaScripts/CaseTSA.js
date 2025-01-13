@@ -35,9 +35,10 @@ function onFormChange(executionContext) {
 function statusWarning(executionContext) {
     const formContext = executionContext.getFormContext();
     const statusCode = formContext.getAttribute("statuscode").getValue();
+    const direction = formContext.getAttribute("ap_direction").getValue();
 
     // Show warning if statuscode is 1
-    if (statusCode === 1) {
+    if (statusCode === 1 && direction === 0) {
         showWarningMessage(formContext, "Response needed (Accept, request information, or Reject)​");
     }
     else {
@@ -48,7 +49,6 @@ function statusWarning(executionContext) {
 function buttonRefreshCase(formContext) {
     getCase(formContext);
 }
-
 function setupCompanySearch(formContext) {
     const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
     const webResourceContent = webResourceControl.getObject().contentDocument;
@@ -109,47 +109,57 @@ function displayCompanyResults(formContext, companies) {
 
     if (!companies.length) {
         resultsDiv.innerHTML = "<p>No companies found.</p>";
-        return;
+    } else {
+        // Create a dropdown (select element)
+        const selectList = document.createElement("select");
+        selectList.size = companies.length + 1;  // Show all options
+
+        companies.forEach(function (company) {
+            const option = document.createElement("option");
+            const tags = company.tags.map(tag => tag.tag).join(", ");
+            const departmentName = company.departmentName ? ` - ${company.departmentName}` : "";
+            const tagsDisplay = tags ? ` [${tags}]` : "";
+            option.text = `${company.companyName}${departmentName}${tagsDisplay}`;
+            option.value = JSON.stringify({ companyName: company.companyName, companyId: company.companyId, departmentId: company.departmentId });
+            selectList.appendChild(option);
+        });
+
+        // Add an event listener to trigger both selectCompany and getFormByCompany
+        selectList.addEventListener("change", function () {
+            const selectedValue = JSON.parse(selectList.value);
+            const selectedCompanyName = selectedValue.companyName;
+            if (selectedValue.companyId) {
+                selectCompany(formContext, selectedValue.companyId, selectedCompanyName);
+                getFormByCompany(selectedValue.companyId, formContext);
+                companySearchElement.style.display = "none";  // Hide the company search section
+            }
+        });
+
+        resultsDiv.appendChild(selectList);
+        resultsDiv.style.width = companyInput.offsetWidth + "px";
+        resultsDiv.style.top = companyInput.offsetTop + companyInput.offsetHeight + "px";
+        resultsDiv.style.left = companyInput.offsetLeft + "px";
     }
 
-    // Create a dropdown (select element)
-    const selectList = document.createElement("select");
-    selectList.size = companies.length + 1;  // Show all options
-
-    companies.forEach(function (company) {
-        const option = document.createElement("option");
-        const tags = company.tags.map(tag => tag.tag).join(", ");
-        const departmentName = company.departmentName ? ` - ${company.departmentName}` : "";
-        const tagsDisplay = tags ? ` [${tags}]` : "";
-        option.text = `${company.companyName}${departmentName}${tagsDisplay}`;
-        option.value = JSON.stringify({ companyName: company.companyName, companyId: company.companyId, departmentId: company.departmentId });
-        selectList.appendChild(option);
-    });
-
-    // Add an event listener to trigger both selectCompany and getFormByCompany
-    selectList.addEventListener("change", function () {
-        const selectedValue = JSON.parse(selectList.value);
-        const selectedCompanyName = selectedValue.companyName;
-        if (selectedValue.companyId) {
-            selectCompany(formContext, selectedValue.companyId, selectedCompanyName);
-            getFormByCompany(selectedValue.companyId, formContext);
-            companySearchElement.style.display = "none";  // Hide the company search section
-        }
-    });
-
-    resultsDiv.appendChild(selectList);
-    resultsDiv.style.width = companyInput.offsetWidth + "px";
-    resultsDiv.style.top = companyInput.offsetTop + companyInput.offsetHeight + "px";
-    resultsDiv.style.left = companyInput.offsetLeft + "px";
+    // Ensure the footer is always displayed below the results or the "No companies found" message
+    const footer = webResourceContent.querySelector(".company-search-footer");
+    if (footer) {
+        resultsDiv.appendChild(footer);
+    } else {
+        // If the footer is not found, create and append it
+        const newFooter = document.createElement("div");
+        newFooter.className = "company-search-footer";
+        newFooter.innerHTML = 'Not able to find a Member? <a href="mailto:connect_support@tsanet.org">Contact Us</a>';
+        resultsDiv.appendChild(newFooter);
+    }
 }
-
-
 
 // Function to set selected company data into form fields
 function selectCompany(formContext, companyId, companyName) {
     formContext.getAttribute("ap_companycode").setValue(companyId);
     formContext.getAttribute("ap_companyname").setValue(companyName);
 }
+
 
 // Function to dynamically create the form
 function displayDynamicForm(formDetails, formContext) {
@@ -162,19 +172,28 @@ function displayDynamicForm(formDetails, formContext) {
     const form = document.createElement("form");
     form.className = "dynamic-form";
 
-    // Add fields based on formDetails
-    form.appendChild(createTextInput("Internal Case Number", formDetails.internalCaseNumber, "internalCaseNumber", false, true));
-    form.appendChild(createTextInput("Receiver Case Number", formDetails.receiverCaseNumber, "receiverCaseNumber", false, true));
-    form.appendChild(createTextInput("Problem Summary", formDetails.problemSummary, "problemSummary", false, true));
-    form.appendChild(createTextInput("Problem Description", formDetails.problemDescription, "problemDescription", false, true));
+    // Container for left and right sections
+    const sectionsContainer = document.createElement("div");
+    sectionsContainer.className = "sections-container";
 
-    form.appendChild(createPrioritySelect("Priority", formDetails.priority, "priority"));
-    form.appendChild(createHtmlField("Admin Note", formDetails.adminNote, "adminNote"));
-    form.appendChild(createHtmlField("Escalation Instructions", formDetails.escalationInstructions, "escalationInstructions"));
+    // Left section
+    const leftSection = document.createElement("div");
+    leftSection.className = "form-left-section";
 
+    leftSection.appendChild(createHtmlField("Admin Note", formDetails.adminNote, "adminNote"));
     // Add internal note field as read-only
     const internalNote = formDetails.internalNotes && formDetails.internalNotes.length > 0 ? formDetails.internalNotes[0].note : "";
-    form.appendChild(createReadOnlyTextArea("Internal Note", internalNote));
+    leftSection.appendChild(createHtmlField("Internal Note", internalNote, "internalNote"));
+
+    // second section
+    leftSection.appendChild(createTextInput("Internal Case#", formDetails.internalCaseNumber, "internalCaseNumber", false, true));
+    leftSection.appendChild(createPrioritySelect("Priority", formDetails.priority, "priority"));
+    leftSection.appendChild(createTextInput("Summary", formDetails.problemSummary, "problemSummary", false, true));
+    leftSection.appendChild(createTextAreaInput("Description", formDetails.problemDescription, "problemDescription", false, true));
+
+    // Right section
+    const rightSection = document.createElement("div");
+    rightSection.className = "form-right-section";
 
     // Custom fields
     const customerDataSections = groupBy(formDetails.customFields, "section");
@@ -187,8 +206,19 @@ function displayDynamicForm(formDetails, formContext) {
         customerDataSections[section].forEach(field => {
             sectionGroup.appendChild(createFieldFromMetadata(field));
         });
-        form.appendChild(sectionGroup);
+
+        if (section.toUpperCase() === "COMMON_CUSTOMER_SECTION") {
+            rightSection.appendChild(sectionGroup);
+        } else {
+            leftSection.appendChild(sectionGroup);
+        }
     }
+
+    rightSection.appendChild(createHtmlField("Escalation Instructions", formDetails.escalationInstructions, "escalationInstructions"));
+
+    sectionsContainer.appendChild(leftSection);
+    sectionsContainer.appendChild(rightSection);
+    form.appendChild(sectionsContainer);
 
     // Submit button
     const submitButton = document.createElement("button");
@@ -209,6 +239,8 @@ function displayDynamicForm(formDetails, formContext) {
     form.appendChild(submitButton);
     formContainer.appendChild(form);
 }
+
+
 
 // Helper function to create text inputs with two-column layout
 function createTextInput(label, value, name, isReadOnly, isRequired) {
@@ -236,6 +268,36 @@ function createTextInput(label, value, name, isReadOnly, isRequired) {
 
     inputGroup.appendChild(labelElement);
     inputGroup.appendChild(input);
+
+    return inputGroup;
+}
+
+// Helper function to create text inputs with
+function createTextAreaInput(label, value, name, isReadOnly, isRequired) {
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group";
+
+    const labelElement = document.createElement("label");
+    labelElement.className = "form-label";
+    labelElement.textContent = label;
+
+    const textArea = document.createElement("textarea");
+    textArea.value = value || "";
+    textArea.name = name;
+    textArea.className = "form-input";
+    textArea.rows = 5;
+
+    if (isReadOnly) {
+        textArea.readOnly = true;
+        textArea.classList.add("readonly-input");
+    }
+
+    if (isRequired) {
+        textArea.required = true;
+    }
+
+    inputGroup.appendChild(labelElement);
+    inputGroup.appendChild(textArea);
 
     return inputGroup;
 }
@@ -422,15 +484,17 @@ function createHtmlField(label, value, name) {
     const inputGroup = document.createElement("div");
     inputGroup.className = "input-group";
 
-    const labelElement = document.createElement("label");
-    labelElement.className = "form-label";
-    labelElement.textContent = label;
+    if (label) {
+        const labelElement = document.createElement("label");
+        labelElement.className = "form-label";
+        labelElement.textContent = label;
+        inputGroup.appendChild(labelElement);
+    }
 
     const div = document.createElement("div");
     div.className = "readonly-html";
     div.innerHTML = value;  // Render HTML
 
-    inputGroup.appendChild(labelElement);
     inputGroup.appendChild(div);
     return inputGroup;
 }
@@ -481,20 +545,44 @@ function buildReadOnlyForm(formJsonData, formContext) {
     const form = document.createElement("form");
     form.className = "dynamic-form";
 
-    // Add form fields as read-only, no company search or submit button
-    form.appendChild(createReadOnlyTextField("Submitter Case Number", formJsonData.submitterCaseNumber));
-    form.appendChild(createReadOnlyTextField("Receiver Case Number", formJsonData.receiverCaseNumber));
-    form.appendChild(createReadOnlyTextField("Summary", formJsonData.summary));
-    form.appendChild(createReadOnlyTextField("Description", formJsonData.description));
+    // Case Information Section
+    const caseInfoSection = document.createElement("div");
+    caseInfoSection.className = "form-section";
+    caseInfoSection.innerHTML = "<h3><strong>Case Information:</strong></h3>";
+    caseInfoSection.appendChild(createReadOnlyTextField("Company", formJsonData.submitCompanyName));
+    caseInfoSection.appendChild(createReadOnlyTextField("Type", formContext.getAttribute("ap_direction").getText()));
+    caseInfoSection.appendChild(createReadOnlyTextField("Priority", formJsonData.priority));
+    caseInfoSection.appendChild(createReadOnlyTextField("Case#", formJsonData.submitterCaseNumber));
+    caseInfoSection.appendChild(createReadOnlyTextField("Date", formJsonData.createdAt));
+    caseInfoSection.appendChild(createReadOnlyTextField("Submitted by", `${formJsonData.submittedBy.firstName} ${formJsonData.submittedBy.lastName}`));
+    caseInfoSection.appendChild(createReadOnlyTextField("Summary", formJsonData.summary));
+    caseInfoSection.appendChild(createReadOnlyTextArea("Description", formJsonData.description));
 
-    // Add internal note field as read-only
-    const internalNote = formJsonData.internalNotes && formJsonData.internalNotes.length > 0 ? formJsonData.internalNotes[0].note : "";
-    form.appendChild(createReadOnlyTextArea("Internal Note", internalNote));
+    form.appendChild(caseInfoSection);
 
-    form.appendChild(createReadOnlyTextField("Priority", formJsonData.priority));
+    // Response Section
+    const responseSectionMain = document.createElement("div");
+    responseSectionMain.className = "form-section";
+    responseSectionMain.innerHTML = "<h3><strong>Response:</strong></h3>";
+    responseSectionMain.appendChild(createReadOnlyTextField("Company", formJsonData.receiveCompanyName));
+    responseSectionMain.appendChild(createReadOnlyTextField("Case #", formJsonData.receiverCaseNumber));
+    form.appendChild(responseSectionMain);
 
-    form.appendChild(createReadOnlyHtmlField("Escalation Instructions", formJsonData.escalationInstructions));
-    form.appendChild(createReadOnlyHtmlField("Priority Note", formJsonData.priorityNote));
+    // Existing response section, do not modify
+    loadResponses(formContext, webResourceContent).then(() => {
+        // Move the responses section to be always below the existing fields in the response section
+        const responsesSection = webResourceContent.querySelector(".response-feed");
+        if (responsesSection) {
+            responseSectionMain.appendChild(responsesSection);
+        }
+    });
+
+    // Escalation Instructions Section
+    const escalationSection = document.createElement("div");
+    escalationSection.className = "form-section";
+    escalationSection.innerHTML = "<h3><strong>Escalation Instructions:</strong></h3>";
+    escalationSection.appendChild(createReadOnlyHtmlField("", formJsonData.escalationInstructions));
+    form.appendChild(escalationSection);
 
     // Add custom fields
     const customFields = groupBy(formJsonData.customFields, "section");
@@ -517,9 +605,6 @@ function buildReadOnlyForm(formJsonData, formContext) {
     // Show the collaboration feed section
     const collaborationFeed = webResourceContent.getElementById("collaborationFeed");
     collaborationFeed.style.display = "block";
-
-    // Load and display responses
-    loadResponses(formContext, webResourceContent);
 }
 
 // Helper function for read-only text areas
@@ -535,6 +620,7 @@ function createReadOnlyTextArea(label, value) {
     textArea.value = value || "";
     textArea.className = "form-input";
     textArea.readOnly = true;
+    textArea.rows = 5;
 
     inputGroup.appendChild(labelElement);
     inputGroup.appendChild(textArea);
@@ -566,15 +652,17 @@ function createReadOnlyHtmlField(label, value) {
     const inputGroup = document.createElement("div");
     inputGroup.className = "input-group";
 
-    const labelElement = document.createElement("label");
-    labelElement.className = "form-label";
-    labelElement.textContent = label;
+    if (label) {
+        const labelElement = document.createElement("label");
+        labelElement.className = "form-label";
+        labelElement.textContent = label;
+        inputGroup.appendChild(labelElement);
+    }
 
     const div = document.createElement("div");
     div.className = "readonly-html";
     div.innerHTML = value || "";  // Render HTML content
 
-    inputGroup.appendChild(labelElement);
     inputGroup.appendChild(div);
     return inputGroup;
 }
@@ -613,31 +701,27 @@ async function loadCollaborationFeed(formContext, webResourceContent) {
         const noteRow = document.createElement("div");
         noteRow.className = "note-row";
 
-        // Metadata Section
-        const noteMeta = document.createElement("div");
-        noteMeta.className = "note-meta";
-        noteMeta.innerHTML = `
-            <div>${new Date(note.createdon).toLocaleString()}</div>
-            <div>${note.ap_creatorname || "Unknown"}</div>
-            <div>${note.ap_creatoremail || "No Email"}</div>
-        `;
-
         // Content Section
         const noteContent = document.createElement("div");
         noteContent.className = "note-content";
         noteContent.innerHTML = `
             <div class="note-title">${note.ap_name || "No Title"}</div>
             <div class="note-description">${note.ap_description || "-"}</div>
+            <div class="note-meta-inline">
+                <span>${new Date(note.createdon).toLocaleString()}</span>
+                <span>${note.ap_creatorname || "Unknown"}</span>
+                <span>${note.ap_creatoremail || "No Email"}</span>
+            </div>
         `;
 
-        // Append metadata and content to the row
-        noteRow.appendChild(noteMeta);
+        // Append content to the row
         noteRow.appendChild(noteContent);
 
         // Add the row to the feed
         collaborationFeedNotes.appendChild(noteRow);
     });
 }
+
 
 function setupAddNoteButton(formContext, webResourceContent) {
     const addNoteButton = webResourceContent.getElementById("addNoteButton");

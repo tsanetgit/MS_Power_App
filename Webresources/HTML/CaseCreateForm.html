@@ -6,7 +6,7 @@
 
         .dynamic-container {
             display: flex;
-            gap: 20px; 
+            gap: 20px;
         }
 
         .dynamic-form {
@@ -14,6 +14,16 @@
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+        }
+
+        .sections-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .form-left-section, .form-right-section {
+            width: 48%;
         }
 
         .input-group {
@@ -74,6 +84,10 @@
             margin-bottom: 20px;
             display: none;
         }
+        .company-search input {
+                margin-top: 10px;
+                margin-bottom: 10px; /* Add space above and below the input */
+        }
 
         select {
             width: 100%;
@@ -90,7 +104,6 @@
         }
 
         .note-section {
-            flex: 1; /* Collaboration feed will take less space */
             border: 1px solid #ccc;
             border-radius: 5px;
             background-color: #f9f9f9;
@@ -99,15 +112,17 @@
             display: flex;
             flex-direction: column;
             display: none; /* Hide initially */
+            width: 50%; /* Adjust width to 50% */
         }
 
-       .note-section h3 {
-            color: #333;
-            border-bottom: 1px solid #ddd;
-            margin: 0 0 15px 0; /* Remove top margin, keep bottom margin */
-            padding-bottom: 5px;
-            text-align: left;
-       }
+
+        .note-section h3 {
+                color: #333;
+                border-bottom: 1px solid #ddd;
+                margin: 0 0 15px 0; /* Remove top margin, keep bottom margin */
+                padding-bottom: 5px;
+                text-align: left;
+        }
 
         .note-row {
             display: flex;
@@ -153,7 +168,13 @@
             font-size: 14px;
             color: #444;
         }
-
+        .note-meta-inline {
+            display: flex;
+            gap: 10px;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
         button[type="submit"], #addNoteButton {
             padding: 10px 20px;
             background-color: #004080; /* Navy blue */
@@ -167,9 +188,9 @@
             transition: background-color 0.3s ease;
         }
 
-        button[type="submit"]:hover, #addNoteButton:hover {
-            background-color: #003060;
-        }
+            button[type="submit"]:hover, #addNoteButton:hover {
+                background-color: #003060;
+            }
 
         .response-feed {
             margin: 20px 20px 20px 0;
