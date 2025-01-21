@@ -180,6 +180,8 @@ function displayDynamicForm(formDetails, formContext) {
     const leftSection = document.createElement("div");
     leftSection.className = "form-left-section";
 
+    leftSection.appendChild(createTextInput("Company", formContext.getAttribute("ap_companyname").getValue(), "partnerName", true, false));
+
     leftSection.appendChild(createHtmlField("Admin Note", formDetails.adminNote, "adminNote"));
     // Add internal note field as read-only
     const internalNote = formDetails.internalNotes && formDetails.internalNotes.length > 0 ? formDetails.internalNotes[0].note : "";
@@ -512,7 +514,7 @@ function buildFormObject(formDetails) {
     // Update main fields with current values from the form
     cleanedObject.casePriority = formContext.querySelector('[name="priority"]').value;
     cleanedObject.internalCaseNumber = formContext.querySelector('[name="internalCaseNumber"]').value;
-    cleanedObject.optionalRecieverInternalCaseNumber = formContext.querySelector('[name="receiverCaseNumber"]').value;
+    //cleanedObject.optionalRecieverInternalCaseNumber = formContext.querySelector('[name="receiverCaseNumber"]').value;
     cleanedObject.problemSummary = formContext.querySelector('[name="problemSummary"]').value;
     cleanedObject.problemDescription = formContext.querySelector('[name="problemDescription"]').value;
 

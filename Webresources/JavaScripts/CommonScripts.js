@@ -103,3 +103,13 @@ function showWarningMessage(formContext, message) {
 function clearWarningMessage(formContext) {
     formContext.ui.clearFormNotification("statuscodeWarning");
 }
+
+// Helper function to map priority from string to option set value
+function getPriorityValue(priority) {
+    switch (priority.toLowerCase()) {
+        case "low": return 3;
+        case "medium": return 2;
+        case "high": return 1;
+        default: return null;
+    }
+}

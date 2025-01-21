@@ -110,17 +110,6 @@ function sendPatchRequest(url, data) {
     });
 }
 
-// Helper function to map priority from string to option set value
-function getPriorityValue(priority) {
-    switch (priority.toLowerCase()) {
-        case "low": return 3;
-        case "medium": return 2;
-        case "high": return 1;
-        default: return null;
-    }
-}
-
-
 // Get company
 function getCompanyDetails(companyName) {
     return new Promise(function (resolve, reject) {
