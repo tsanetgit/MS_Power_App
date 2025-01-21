@@ -259,3 +259,41 @@ function postCase(submissionData, formContext) {
         }
     );
 }
+
+// Get Cases
+function getCases() {
+    Xrm.Utility.showProgressIndicator("Case refresh started");
+
+    return new Promise(function (resolve, reject) {
+        const parameters = {};
+        const request = {
+            getMetadata: function () {
+                return {
+                    boundParameter: null,
+                    parameterTypes: {
+                    },
+                    operationType: 0,
+                    operationName: "ap_GetCases"
+                };
+            }
+        };
+
+        Xrm.WebApi.online.execute(request).then(
+            function success(result) {
+                if (result.ok) {
+                    Xrm.Utility.closeProgressIndicator();
+                    Xrm.Utility.alertDialog("Cases refresh started successfully. It usually takes 30-60 seconds to refresh data entirely.");
+                } else {
+                    Xrm.Utility.closeProgressIndicator();
+                    Xrm.Utility.alertDialog("Error - can't refresh cases");
+                    reject(new Error("Error - can't refresh cases"));
+                }
+            },
+            function (error) {
+                Xrm.Utility.closeProgressIndicator();
+                Xrm.Utility.alertDialog("Error - can't refresh cases: " + error.message);
+                reject(error);
+            }
+        );
+    });
+}
