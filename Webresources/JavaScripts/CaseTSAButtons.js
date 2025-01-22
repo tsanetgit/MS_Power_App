@@ -91,13 +91,16 @@ function ProcessAction(formContext, type, requireDescription) {
 // Function to open quick create form of the response table with prefilled fields
 function QuickCreateResponse(formContext, type) {
     var ownerId = formContext.data.entity.attributes.get("ownerid").getValue()[0].id;
+    var recordId = formContext.data.entity.getId().replace(/[{}]/g, "");
+
     Xrm.WebApi.retrieveRecord("systemuser", ownerId, "?$select=fullname,address1_telephone1,internalemailaddress").then(
         function success(result) {
             var quickCreateData = {
                 "ap_type": type,
                 "ap_engineername": result.fullname,
                 "ap_engineerphone": result.address1_telephone1,
-                "ap_engineeremail": result.internalemailaddress
+                "ap_engineeremail": result.internalemailaddress,
+                "ap_tsanetcaseid": recordId
             };
 
             var entityFormOptions = {
@@ -109,7 +112,7 @@ function QuickCreateResponse(formContext, type) {
                 function success(result) {
                     if (result.savedEntityReference) {
                         console.log("Quick create form saved successfully");
-                        formContext.data.refresh(true);
+                        refreshReadOnlyForm(formContext);
                     }
                 },
                 function error(error) {

@@ -63,7 +63,7 @@ function getCase(formContext) {
                                 formContext.ui.setFormNotification("Successfully updated!", "INFO", "success");
                                 // Refresh the notes subgrid
                                 //formContext.getControl("notesubgrid").refresh();
-                                formContext.data.entity.save();
+                                refreshReadOnlyForm(formContext);
                             })
                             .catch(error => {
                                 Xrm.Utility.closeProgressIndicator();

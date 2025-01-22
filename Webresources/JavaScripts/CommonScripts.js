@@ -113,3 +113,16 @@ function getPriorityValue(priority) {
         default: return null;
     }
 }
+
+function refreshReadOnlyForm(formContext) {
+    const formJsonField = formContext.getAttribute("ap_formjson").getValue();
+
+    if (formJsonField) {
+        // If `ap_formjson` contains data, parse it and build the read-only form
+        const formJsonData = JSON.parse(formJsonField);
+        buildReadOnlyForm(formJsonData, formContext);
+    } else {
+        console.error("No form JSON data available to refresh the read-only form.");
+    }
+}
+
