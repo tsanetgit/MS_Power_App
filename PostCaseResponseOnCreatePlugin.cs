@@ -21,13 +21,7 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
 
                 // Retrieve related tsanetcase details
                 if (entity.Contains("ap_tsanetcaseid") && entity["ap_tsanetcaseid"] is EntityReference)
-                {
-                    string respId = entity.Contains("ap_tsaresponsecode") ? entity["ap_tsaresponsecode"].ToString() : string.Empty;
-
-                    if (!string.IsNullOrEmpty(respId))
-                    {
-                        return;
-                    }
+                {                    
                     EntityReference tsanetcaseRef = (EntityReference)entity["ap_tsanetcaseid"];
                     Entity tsanetcase = service.Retrieve(tsanetcaseRef.LogicalName, tsanetcaseRef.Id, new ColumnSet("ap_submittercasenumber", "ap_name"));
 
@@ -38,6 +32,17 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                     // Retrieve nextSteps from the current entity
                     string description = entity.GetAttributeValue<string>("ap_description");
                     int type = entity.GetAttributeValue<OptionSetValue>("ap_type").Value;
+
+                    // Update statecode and statuscode based on type
+                    UpdateStateAndStatus(service, tsanetcase, type);
+
+                    string respId = entity.Contains("ap_tsaresponsecode") ? entity["ap_tsaresponsecode"].ToString() : string.Empty;
+
+                    if (!string.IsNullOrEmpty(respId))
+                    {
+                        return;
+                    }
+
                     // Retrieve current user details
                     //Entity user = service.Retrieve("systemuser", context.UserId, new ColumnSet("fullname", "address1_telephone1", "internalemailaddress"));
                     string engineerName = entity.GetAttributeValue<string>("ap_engineername");
@@ -96,9 +101,6 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                             entity["ap_tsaresponsecode"] = lastCaseResp.Id.ToString();
                             service.Update(entity);
                         }
-
-                        // Update statecode and statuscode based on type
-                        UpdateStateAndStatus(service, tsanetcase, type);
                     }
                 }
             }
