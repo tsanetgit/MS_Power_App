@@ -16,9 +16,9 @@ public class ValidateCaseNoteCreationPlugin : IPlugin
             Entity entity = (Entity)context.InputParameters["Target"];
 
             // Check if the entity contains the parent case reference
-            if (!entity.Contains("ap_tsanetcaseid"))
+            if (!entity.Contains("ap_tsanetcaseid") || !entity.Contains("ap_source"))
             {
-                throw new InvalidPluginExecutionException("ap_tsanetcaseid is missing.");
+                throw new InvalidPluginExecutionException("ap_tsanetcaseid or ap_source is missing.");
             }
 
             EntityReference caseReference = (EntityReference)entity["ap_tsanetcaseid"];
@@ -31,7 +31,8 @@ public class ValidateCaseNoteCreationPlugin : IPlugin
 
             // Check if the statecode is 0 (active)
             OptionSetValue stateCode = caseEntity.GetAttributeValue<OptionSetValue>("statecode");
-            if (stateCode.Value != 0)
+            OptionSetValue source = entity.GetAttributeValue<OptionSetValue>("ap_source");
+            if (stateCode.Value == 1 && source.Value == 120950000)
             {
                 throw new InvalidPluginExecutionException("You can't create notes for inactive cases.");
             }
