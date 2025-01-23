@@ -4,13 +4,13 @@ For access to the Beta and Production environments, contact membership@tsanet.or
 ## Install Guide
 
 The install guide provides information on how to install the Power App and details about the application and integration examples:
-URL
+https://github.com/tsanetgit/MS_Power_App/blob/master/Connect%202.0%20Power%20App%20Package%20Install%20Guide%20v1.docx
 
 ## User Guide
 
 The User Guide provides details on how to use the Power App 
 URL will be provided later
 
-## Support
+## Provide Feedback
 
-If you need any more help, please refer to the documentation or open an issue in this repository.
+Log an issue to report a bug or request changes
