@@ -116,6 +116,7 @@
     <Compile Include="PostCaseResponseOnCreatePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PluginBase.cs" />
+    <Compile Include="ValidateCaseNoteCreationPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

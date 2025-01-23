@@ -512,7 +512,7 @@ function buildFormObject(formDetails) {
     const cleanedObject = JSON.parse(JSON.stringify(formDetails));  // Deep clone
 
     // Update main fields with current values from the form
-    cleanedObject.casePriority = formContext.querySelector('[name="priority"]').value;
+    cleanedObject.priority = formContext.querySelector('[name="priority"]').value;
     cleanedObject.internalCaseNumber = formContext.querySelector('[name="internalCaseNumber"]').value;
     //cleanedObject.optionalRecieverInternalCaseNumber = formContext.querySelector('[name="receiverCaseNumber"]').value;
     cleanedObject.problemSummary = formContext.querySelector('[name="problemSummary"]').value;
