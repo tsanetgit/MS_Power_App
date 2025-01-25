@@ -9,7 +9,7 @@ https://github.com/tsanetgit/MS_Power_App/blob/master/Connect%202.0%20Power%20Ap
 ## User Guide
 
 The User Guide provides details on how to use the Power App 
-URL will be provided later
+https://github.com/tsanetgit/MS_Power_App/blob/master/Microsoft%20Power%20App%20-%20User%20Guide.docx
 
 ## Provide Feedback
 
