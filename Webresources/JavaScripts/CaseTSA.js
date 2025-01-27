@@ -81,6 +81,13 @@ function setupCompanySearch(formContext) {
     footer.className = "company-search-footer";
     footer.innerHTML = 'Not able to find a Member? <a href="mailto:connect_support@tsanet.org">Contact Us</a>';
     companySearchElement.appendChild(footer);
+
+    // Make an initial API request to warm up the API
+    getCompanyDetails("Cold API Request").then(function () {
+        console.log("Initial API request to warm up the API completed.");
+    }).catch(function (error) {
+        console.error("Error during initial API request: " + error.message);
+    });
 }
 
 // Function to trigger search
