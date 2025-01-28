@@ -367,12 +367,14 @@ function createFieldFromMetadata(field) {
             inputElement.type = "number";
             inputElement.value = field.value || 0;
             inputElement.className = "form-input";
+            inputElement.name = `field_${field.fieldId}`;
             break;
         case "email":
             inputElement = document.createElement("input");
             inputElement.type = "email";
             inputElement.value = field.value || "";
             inputElement.className = "form-input";
+            inputElement.name = `field_${field.fieldId}`;
             break;
         case "phone":
             inputElement = document.createElement("input");
@@ -380,6 +382,7 @@ function createFieldFromMetadata(field) {
             inputElement.pattern = "\\d+";  // Only digits
             inputElement.value = field.value || "";
             inputElement.className = "form-input";
+            inputElement.name = `field_${field.fieldId}`;
             break;
         case "select":
             inputElement = document.createElement("select");
@@ -391,9 +394,10 @@ function createFieldFromMetadata(field) {
                 opt.textContent = option;
                 inputElement.appendChild(opt);
             });
+            inputElement.name = `field_${field.fieldId}`;
             break;
         case "tierselect":
-            inputElement = createTierSelect(field.selections, field.value);
+            inputElement = createTierSelect(field.selections, field.value, field.required, field.fieldId);
             inputElement.className = "form-input";
             break;
         default:
@@ -401,11 +405,12 @@ function createFieldFromMetadata(field) {
             inputElement.type = "text";
             inputElement.value = field.value || "";
             inputElement.className = "form-input";
+            inputElement.name = `field_${field.fieldId}`;
             break;
     }
 
     // Assign a unique name using the FieldId
-    inputElement.name = `field_${field.fieldId}`;
+    console.log(`Created field element with name: field_${field.fieldId}`);
 
     // Apply validation for "not_numeric"
     if (field.validationRules && field.validationRules.includes("not_numeric")) {
@@ -418,33 +423,95 @@ function createFieldFromMetadata(field) {
 
     fieldGroup.appendChild(labelElement);
     fieldGroup.appendChild(inputElement);
+    console.log(`Appended field element with name: field_${field.fieldId} to the DOM`);
+
     return fieldGroup;
 }
 
-// Helper function to create TIERSELECT dropdowns
-function createTierSelect(options, selectedValue) {
-    const selectElement = document.createElement("select");
 
-    function createOptions(optionList, parentElement) {
+// Helper function to create TIERSELECT dropdowns
+function createTierSelect(options, selectedValue, isRequired, fieldId) {
+    const container = document.createElement("div");
+    container.className = "tier-select-container";
+
+    function createSelectElement(optionList, level) {
+        const selectElement = document.createElement("select");
+        selectElement.className = `tier-select level-${level}`;
+        selectElement.setAttribute("data-tierselect", "true"); // Add a unique attribute
+
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "Select an option";
+        selectElement.appendChild(defaultOption);
+
         optionList.forEach(option => {
-            if (option.children && option.children.length) {
-                const optGroup = document.createElement("optgroup");
-                optGroup.label = option.value;
-                createOptions(option.children, optGroup);
-                parentElement.appendChild(optGroup);
+            const opt = document.createElement("option");
+            opt.value = option.value;
+            opt.textContent = option.value;
+            selectElement.appendChild(opt);
+        });
+
+        selectElement.addEventListener("change", function () {
+            // Remove all subsequent select elements
+            const nextLevel = level + 1;
+            const nextSelectElements = container.querySelectorAll(`.tier-select.level-${nextLevel}`);
+            nextSelectElements.forEach(el => el.remove());
+
+            // If an option is selected and it has children, create the next select element
+            const selectedOption = optionList.find(opt => opt.value === selectElement.value);
+            if (selectedOption && selectedOption.children && selectedOption.children.length) {
+                const nextSelectElement = createSelectElement(selectedOption.children, nextLevel);
+                container.appendChild(nextSelectElement);
+                console.log(`Appended child select element for level ${nextLevel}`);
             } else {
-                const opt = document.createElement("option");
-                opt.value = option.value;
-                opt.textContent = option.value;
-                parentElement.appendChild(opt);
+                // Set the name attribute for the current select element if it is the lowest level
+                selectElement.name = `field_${fieldId}`;
+            }
+        });
+
+        // Add space between selection boxes
+        selectElement.style.marginBottom = "10px";
+
+        // Set the required attribute if needed
+        if (isRequired) {
+            selectElement.required = true;
+        }
+
+        return selectElement;
+    }
+
+    // Initialize the first select element
+    const initialSelectElement = createSelectElement(options, 1);
+    container.appendChild(initialSelectElement);
+    console.log("Appended initial select element");
+
+    // Set the selected value if provided
+    if (selectedValue) {
+        let currentOptions = options;
+        let currentSelectElement = initialSelectElement;
+        const selectedValues = selectedValue.split(" > ");
+
+        selectedValues.forEach((value, index) => {
+            currentSelectElement.value = value;
+            const selectedOption = currentOptions.find(opt => opt.value === value);
+            if (selectedOption && selectedOption.children && selectedOption.children.length) {
+                const nextSelectElement = createSelectElement(selectedOption.children, index + 2);
+                container.appendChild(nextSelectElement);
+                currentSelectElement = nextSelectElement;
+                currentOptions = selectedOption.children;
+                console.log(`Set selected value for level ${index + 1}: ${value}`);
+            } else {
+                // Set the name attribute for the current select element if it is the lowest level
+                currentSelectElement.name = `field_${fieldId}`;
             }
         });
     }
 
-    createOptions(options, selectElement);
-    selectElement.value = selectedValue || "";
-    return selectElement;
+    return container;
 }
+
+
+
 
 // Helper function to group data by section
 function groupBy(arr, key) {
@@ -521,20 +588,25 @@ function buildFormObject(formDetails) {
     // Update main fields with current values from the form
     cleanedObject.priority = formContext.querySelector('[name="priority"]').value;
     cleanedObject.internalCaseNumber = formContext.querySelector('[name="internalCaseNumber"]').value;
-    //cleanedObject.optionalRecieverInternalCaseNumber = formContext.querySelector('[name="receiverCaseNumber"]').value;
     cleanedObject.problemSummary = formContext.querySelector('[name="problemSummary"]').value;
     cleanedObject.problemDescription = formContext.querySelector('[name="problemDescription"]').value;
 
     // For customer fields, update the current values from the form inputs
     cleanedObject.customFields.forEach(data => {
+        console.log(`Processing field ID: ${data.fieldId}`);
         const fieldElement = formContext.querySelector(`[name="field_${data.fieldId}"]`);
 
         if (fieldElement) {
-            if (fieldElement.tagName === "SELECT") {
+            if (fieldElement.tagName === "SELECT" && fieldElement.getAttribute("data-tierselect") === "true") {
+                // Get the value from the most child optionset
+                data.value = fieldElement.value;
+            } else if (fieldElement.tagName === "SELECT") {
                 data.value = fieldElement.value;  // For select dropdowns
             } else {
                 data.value = fieldElement.value;  // For text, number, email, etc.
             }
+        } else {
+            console.error(`Field element not found for field ID: ${data.fieldId}`);
         }
 
         // Remove metadata and selections to keep the structure clean
@@ -543,6 +615,8 @@ function buildFormObject(formDetails) {
 
     return cleanedObject;
 }
+
+
 
 function buildReadOnlyForm(formJsonData, formContext) {
     const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
