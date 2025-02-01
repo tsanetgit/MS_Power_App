@@ -437,6 +437,7 @@ function createTierSelect(options, selectedValue, isRequired, fieldId) {
     function createSelectElement(optionList, level) {
         const selectElement = document.createElement("select");
         selectElement.className = `tier-select level-${level}`;
+        selectElement.name = `field_${fieldId}-${level}`;
         selectElement.setAttribute("data-tierselect", "true"); // Add a unique attribute
 
         const defaultOption = document.createElement("option");
@@ -463,9 +464,6 @@ function createTierSelect(options, selectedValue, isRequired, fieldId) {
                 const nextSelectElement = createSelectElement(selectedOption.children, nextLevel);
                 container.appendChild(nextSelectElement);
                 console.log(`Appended child select element for level ${nextLevel}`);
-            } else {
-                // Set the name attribute for the current select element if it is the lowest level
-                selectElement.name = `field_${fieldId}`;
             }
         });
 
@@ -594,12 +592,14 @@ function buildFormObject(formDetails) {
     // For customer fields, update the current values from the form inputs
     cleanedObject.customFields.forEach(data => {
         console.log(`Processing field ID: ${data.fieldId}`);
-        const fieldElement = formContext.querySelector(`[name="field_${data.fieldId}"]`);
+        const fieldElement = formContext.querySelector(`[name*="field_${data.fieldId}"]`);
 
         if (fieldElement) {
             if (fieldElement.tagName === "SELECT" && fieldElement.getAttribute("data-tierselect") === "true") {
                 // Get the value from the most child optionset
-                data.value = fieldElement.value;
+                const tierSelectElements = formContext.querySelectorAll(`[name^="field_${data.fieldId}"]`);
+                data.value = Array.from(tierSelectElements).map(el => el.value).join(' : ');
+
             } else if (fieldElement.tagName === "SELECT") {
                 data.value = fieldElement.value;  // For select dropdowns
             } else {
