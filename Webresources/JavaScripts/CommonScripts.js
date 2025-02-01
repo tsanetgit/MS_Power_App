@@ -114,6 +114,22 @@ function getPriorityValue(priority) {
     }
 }
 
+// Helper function to get response type value
+function getResponseTypeValue(type) {
+    switch (type.toLowerCase()) {
+        case 'approval':
+            return 1;
+        case 'reject':
+            return 0;
+        case 'request_information':
+            return 2;
+        case 'information_response':
+            return 3;
+        default:
+            return null;
+    }
+}
+
 function refreshReadOnlyForm(formContext) {
     const formJsonField = formContext.getAttribute("ap_formjson").getValue();
 

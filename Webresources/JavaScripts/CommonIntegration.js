@@ -37,7 +37,7 @@ function getCase(formContext) {
 
                         // Process caseNotes array to patch each note
                         let caseNotes = formResponse.caseNotes;
-                        let updatePromises = caseNotes.map(note => {
+                        let updateNotePromises = caseNotes.map(note => {
                             // Step 1: Prepare the update data for each note
                             let updateData = {
                                 ap_name: note.summary,
@@ -56,8 +56,40 @@ function getCase(formContext) {
                             return sendPatchRequest(apiUrl, updateData);
                         });
 
-                        // Execute all PATCH requests and handle final actions
-                        Promise.all(updatePromises)
+                        // Process caseResponses array to create or patch each response
+                        let caseResponses = formResponse.caseResponses;
+                        let updateResponsePromises = caseResponses.map(response => {
+                            // Step 1: Prepare the update data for each response
+                            let responseData = {
+                                ap_type: getResponseTypeValue(response.type),
+                                ap_tsaresponsecode: response.id.toString(),
+                                ap_engineername: response.engineerName,
+                                ap_engineerphone: response.engineerPhone,
+                                ap_engineeremail: response.engineerEmail,
+                                ap_internalcasenumber: response.caseNumber,
+                                ap_description: response.nextSteps,
+                                overriddencreatedon: response.createdAt,
+                                ap_source: 120950001,
+                                "ap_tsanetcaseid@odata.bind": `/ap_tsanetcases(${formContext.data.entity.getId().replace("{", "").replace("}", "")})`
+                            };
+
+                            // Step 2: Check if the record exists and create or patch accordingly
+                            return checkRecordExists(response.id).then(recordId => {
+                                if (recordId) {
+                                    // Only patch if ap_direction is 1 and type is approval
+                                    if (formContext.getAttribute("ap_direction").getValue() === 1 && response.type.toLowerCase() === 'approval') {
+                                        return Xrm.WebApi.updateRecord("ap_tsanetresponse", recordId, responseData);
+                                    } else {
+                                        return Promise.resolve(); // Skip patching
+                                    }
+                                } else {
+                                    return Xrm.WebApi.createRecord("ap_tsanetresponse", responseData);
+                                }
+                            });
+                        });
+
+                        // Execute all PATCH/CREATE requests and handle final actions
+                        Promise.all([...updateNotePromises, ...updateResponsePromises])
                             .then(() => {
                                 Xrm.Utility.closeProgressIndicator();
                                 formContext.ui.setFormNotification("Successfully updated!", "INFO", "success");
@@ -68,7 +100,7 @@ function getCase(formContext) {
                             .catch(error => {
                                 Xrm.Utility.closeProgressIndicator();
                                 console.error(error.message);
-                                showError(formContext, "Error updating case notes: " + error.message);
+                                showError(formContext, "Error updating case notes or responses: " + error.message);
                             });
 
                     } else {
@@ -108,6 +140,23 @@ function sendPatchRequest(url, data) {
 
         req.send(JSON.stringify(data));
     });
+}
+
+// Helper function to check if a record exists
+function checkRecordExists(responseCode) {
+    const query = `?$filter=ap_tsaresponsecode eq '${responseCode}'&$select=ap_tsanetresponseid`;
+    return Xrm.WebApi.retrieveMultipleRecords("ap_tsanetresponse", query).then(
+        function success(result) {
+            if (result.entities.length > 0) {
+                return result.entities[0].ap_tsanetresponseid; // Return the record ID
+            } else {
+                return null; // Record does not exist
+            }
+        },
+        function (error) {
+            throw new Error(`Failed to check record existence. Status: ${error.status}, Error: ${error.message}`);
+        }
+    );
 }
 
 // Get company

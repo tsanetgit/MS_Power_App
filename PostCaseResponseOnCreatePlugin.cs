@@ -98,7 +98,7 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                         if (lastCaseResp != null)
                         {
                             // Update the code field with the last id
-                            entity["ap_tsaresponsecode"] = lastCaseResp.Id.ToString();
+                            entity["ap_tsaresponsecode"] = type == 5 ? Guid.NewGuid().ToString() + ":" + lastCaseResp.Id.ToString() : lastCaseResp.Id.ToString();
                             service.Update(entity);
                         }
                     }
@@ -138,6 +138,10 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
             case 4:
                 statecode = 1;
                 statuscode = 2;
+                break;
+            case 5:
+                statecode = 0;
+                statuscode = 120950003;
                 break;
         }
 
