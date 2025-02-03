@@ -167,9 +167,8 @@ function selectCompany(formContext, companyId, companyName) {
     formContext.getAttribute("ap_companyname").setValue(companyName);
 }
 
-
-// Function to dynamically create the form
-function displayDynamicForm(formDetails, formContext) {
+// Function that builds dynamic form based on company data
+async function displayDynamicForm(formDetails, formContext) {
     const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
     const webResourceContent = webResourceControl.getObject().contentDocument;
 
@@ -194,11 +193,22 @@ function displayDynamicForm(formDetails, formContext) {
     const internalNote = formDetails.internalNotes && formDetails.internalNotes.length > 0 ? formDetails.internalNotes[0].note : "";
     leftSection.appendChild(createHtmlField("Internal Note", internalNote, "internalNote"));
 
+    // Prefill fields if ap_caseid is present
+    const apCase = formContext.getAttribute("ap_caseid");
+    let incident = null;
+    if (apCase) {
+        const apCaseId = apCase.getValue();
+        if (apCaseId && apCaseId[0] && apCaseId[0].id) {
+            const caseId = apCaseId[0].id.replace(/[{}]/g, '');
+            incident = await getIncidentData(caseId);
+        }
+    }
+
     // second section
-    leftSection.appendChild(createTextInput("Internal Case#", formDetails.internalCaseNumber, "internalCaseNumber", false, true));
+    leftSection.appendChild(createTextInput("Internal Case#", incident ? incident.ticketnumber : formDetails.internalCaseNumber, "internalCaseNumber", false, true));
     leftSection.appendChild(createPrioritySelect("Priority", formDetails.priority, "priority"));
-    leftSection.appendChild(createTextInput("Summary", formDetails.problemSummary, "problemSummary", false, true));
-    leftSection.appendChild(createTextAreaInput("Description", formDetails.problemDescription, "problemDescription", false, true));
+    leftSection.appendChild(createTextInput("Summary", incident ? incident.title : formDetails.problemSummary, "problemSummary", false, true));
+    leftSection.appendChild(createTextAreaInput("Description", incident ? incident.description : formDetails.problemDescription, "problemDescription", false, true));
 
     // Right section
     const rightSection = document.createElement("div");
@@ -213,6 +223,20 @@ function displayDynamicForm(formDetails, formContext) {
 
         customerDataSections[section].sort((a, b) => a.displayOrder - b.displayOrder);
         customerDataSections[section].forEach(field => {
+            if (section.toUpperCase() === "COMMON_CUSTOMER_SECTION" && incident) {
+                if (field.label.includes("Customer Email") && incident.primarycontactid?.emailaddress1) {
+                    field.value = incident.primarycontactid.emailaddress1;
+                }
+                if (field.label.includes("Customer Phone") && incident.primarycontactid?.mobilephone) {
+                    field.value = incident.primarycontactid.mobilephone;
+                }
+                if (field.label.includes("Customer Name") && incident.primarycontactid?.fullname) {
+                    field.value = incident.primarycontactid.fullname;
+                }
+                if (field.label.includes("Customer Company") && (incident.customerid_account?.name || incident.customerid_contact?.fullname)) {
+                    field.value = incident.customerid_account?.name || incident.customerid_contact?.fullname;
+                }
+            }
             sectionGroup.appendChild(createFieldFromMetadata(field));
         });
 
@@ -249,7 +273,16 @@ function displayDynamicForm(formDetails, formContext) {
     formContainer.appendChild(form);
 }
 
-
+// Helper function to retrieve incident data
+async function getIncidentData(caseId) {
+    try {
+        const result = await Xrm.WebApi.retrieveRecord("incident", caseId, "?$select=ticketnumber,title,description&$expand=primarycontactid($select=emailaddress1,mobilephone,fullname),customerid_account($select=name),customerid_contact($select=fullname)");
+        return result;
+    } catch (error) {
+        console.error("Error retrieving incident data: ", error);
+        return null;
+    }
+}
 
 // Helper function to create text inputs with two-column layout
 function createTextInput(label, value, name, isReadOnly, isRequired) {
@@ -615,8 +648,6 @@ function buildFormObject(formDetails) {
 
     return cleanedObject;
 }
-
-
 
 function buildReadOnlyForm(formJsonData, formContext) {
     const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
