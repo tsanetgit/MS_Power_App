@@ -26,7 +26,7 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                     Entity tsanetcase = service.Retrieve(tsanetcaseRef.LogicalName, tsanetcaseRef.Id, new ColumnSet("ap_submittercasenumber", "ap_name"));
 
                     // Retrieve case approval details from the related tsanetcase entity
-                    string caseNumber = tsanetcase.GetAttributeValue<string>("ap_submittercasenumber");
+                    string caseNumber = tsanetcase.GetAttributeValue<string>("ap_internalcasenumber");
                     int caseId = int.Parse(tsanetcase["ap_name"].ToString());
 
                     // Retrieve nextSteps from the current entity
