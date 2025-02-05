@@ -34,7 +34,7 @@ function getCase(formContext) {
                         var formJson = response.GetCaseResponse;
                         var formResponse = JSON.parse(formJson);
                         console.log(formResponse);
-
+                        saveToFormField("ap_formjson", formResponse, formContext);  // Save JSON
                         // Process caseNotes array to patch each note
                         let caseNotes = formResponse.caseNotes;
                         let updateNotePromises = caseNotes.map(note => {

@@ -131,6 +131,7 @@ function getResponseTypeValue(type) {
 }
 
 function refreshReadOnlyForm(formContext) {
+    formContext.data.refresh(true);
     const formJsonField = formContext.getAttribute("ap_formjson").getValue();
 
     if (formJsonField) {
