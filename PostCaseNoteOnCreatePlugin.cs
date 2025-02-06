@@ -2,6 +2,7 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public class PostCaseNoteOnCreatePlugin : IPlugin
@@ -36,14 +37,14 @@ public class PostCaseNoteOnCreatePlugin : IPlugin
             }
 
             EntityReference caseReference = (EntityReference)entity["ap_tsanetcaseid"];
-            Entity caseEntity = service.Retrieve(caseReference.LogicalName, caseReference.Id, new ColumnSet("ap_name"));
+            Entity caseEntity = service.Retrieve(caseReference.LogicalName, caseReference.Id, new ColumnSet("ap_name", "ap_tsacasetoken"));
 
-            if (!caseEntity.Contains("ap_name"))
+            if (!caseEntity.Contains("ap_tsacasetoken"))
             {
-                throw new InvalidPluginExecutionException("ap_name is missing in the related tsanetcase record.");
+                throw new InvalidPluginExecutionException("ap_tsacasetoken is missing in the related tsanetcase record.");
             }
 
-            int caseId = int.Parse(caseEntity["ap_name"].ToString());
+            string caseToken = caseEntity["ap_tsacasetoken"].ToString();
 
             // Retrieve user details
             Entity user = service.Retrieve("systemuser", context.UserId, new ColumnSet("firstname", "lastname", "address1_telephone1", "internalemailaddress", "address1_city", "domainname"));
@@ -72,10 +73,18 @@ public class PostCaseNoteOnCreatePlugin : IPlugin
             };
 
             // Send case note details to the API
-            ApiResponse response = commonIntegration.PostCaseNote(caseId, summary, description, priority, submittedBy, accessToken).Result;
+            ApiResponse response = commonIntegration.PostCaseNote(caseToken, summary, description, priority, submittedBy, accessToken).Result;
             if (response.IsError)
             {
-                throw new InvalidPluginExecutionException(response.Content);
+                var errorResponse = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Content);
+                if (errorResponse != null && errorResponse.ContainsKey("message"))
+                {
+                    throw new InvalidPluginExecutionException(errorResponse["message"]);
+                }
+                else
+                {
+                    throw new InvalidPluginExecutionException("An unknown error occurred.");
+                }
             }
             else
             {

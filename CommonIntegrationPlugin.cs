@@ -409,7 +409,7 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Sending POST request to create case.");
 
-                var response = await client.PostAsync($"{_apiUrl}/1.0.8/collaboration-request", content);
+                var response = await client.PostAsync($"{_apiUrl}/v1/collaboration-request", content);
 
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
@@ -438,13 +438,13 @@ public class CommonIntegrationPlugin
             return apiResponse;
         }
     }
-    public async Task<ApiResponse> GetCase(string internalCaseNumber, string accessToken)
+    public async Task<ApiResponse> GetCase(string caseToken, string accessToken)
     {
         var apiResponse = new ApiResponse();
 
         try
         {
-            _tracingService.Trace($"Retrieving case update for internal case number: {internalCaseNumber}");
+            _tracingService.Trace($"Retrieving case update for internal case number: {caseToken}");
 
             using (HttpClient client = new HttpClient())
             {
@@ -454,13 +454,13 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Sending request to get case update.");
 
-                var response = await client.GetAsync($"{_apiUrl}/0.1.0/cases/{internalCaseNumber}");
+                var response = await client.GetAsync($"{_apiUrl}/v1/collaboration-requests/{caseToken}");
 
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
                 {
                     string resp = await response.Content.ReadAsStringAsync();
-                    _tracingService.Trace($"Failed to retrieve case update for internal case number '{internalCaseNumber}'. Response: " + resp);
+                    _tracingService.Trace($"Failed to retrieve case update for internal case number '{caseToken}'. Response: " + resp);
                     apiResponse.IsError = true;
                     apiResponse.Content = resp;
                     return apiResponse;
@@ -485,7 +485,7 @@ public class CommonIntegrationPlugin
                 var firstCase = caseList[0];
                 _tracingService.Trace($"First case object: " + JsonConvert.SerializeObject(firstCase));
 
-                _tracingService.Trace($"Case update for internal case number {internalCaseNumber} retrieved successfully. Result: " + JsonConvert.SerializeObject(firstCase));
+                _tracingService.Trace($"Case update for internal case number {caseToken} retrieved successfully. Result: " + JsonConvert.SerializeObject(firstCase));
                 apiResponse.IsError = false;
                 apiResponse.Content = JsonConvert.SerializeObject(firstCase);
                 return apiResponse;
@@ -499,7 +499,7 @@ public class CommonIntegrationPlugin
             return apiResponse;
         }
     }
-    public async Task<ApiResponse> PostCaseNote(int caseId, string summary, string description, string priority, SubmittedBy submittedBy, string accessToken)
+    public async Task<ApiResponse> PostCaseNote(string caseToken, string summary, string description, string priority, SubmittedBy submittedBy, string accessToken)
     {
         var apiResponse = new ApiResponse();
 
@@ -528,7 +528,7 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Sending POST request to create case note.");
 
-                var response = await client.PostAsync($"{_apiUrl}/1.0.8/cases/{caseId}/notes/create", content);
+                var response = await client.PostAsync($"{_apiUrl}/v1/collaboration-requests/{caseToken}/notes", content);
 
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
@@ -558,7 +558,7 @@ public class CommonIntegrationPlugin
             return apiResponse;
         }
     }
-    public async Task<ApiResponse> PostCaseApproval(int caseId, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string nextSteps, string accessToken)
+    public async Task<ApiResponse> PostCaseApproval(string caseToken, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string nextSteps, string accessToken)
     {
         var apiResponse = new ApiResponse();
 
@@ -588,7 +588,7 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Sending POST request to post case approval.");
 
-                var response = await client.PostAsync($"{_apiUrl}/0.1.0/cases/{caseId}/approve", content);
+                var response = await client.PostAsync($"{_apiUrl}/v1/collaboration-requests/{caseToken}/approval", content);
 
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
@@ -617,7 +617,7 @@ public class CommonIntegrationPlugin
             return apiResponse;
         }
     }
-    public async Task<ApiResponse> PostCaseInformationResponse(int caseId, string engineerName, string engineerPhone, string engineerEmail, string requestedInformation, string accessToken)
+    public async Task<ApiResponse> PostCaseInformationResponse(string caseToken, string engineerName, string engineerPhone, string engineerEmail, string requestedInformation, string accessToken)
     {
         var apiResponse = new ApiResponse();
 
@@ -643,7 +643,7 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Sending POST request to post case information response information.");
 
-                var response = await client.PostAsync($"{_apiUrl}/1.0.3/cases/{caseId}/information-response", content);
+                var response = await client.PostAsync($"{_apiUrl}/v1/collaboration-requests/{caseToken}/information-response", content);
 
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
@@ -673,7 +673,7 @@ public class CommonIntegrationPlugin
         }
     }
 
-    public async Task<ApiResponse> PostCaseRequestInformation(int caseId, string engineerName, string engineerPhone, string engineerEmail, string requestedInformation, string accessToken)
+    public async Task<ApiResponse> PostCaseRequestInformation(string caseToken, string engineerName, string engineerPhone, string engineerEmail, string requestedInformation, string accessToken)
     {
         var apiResponse = new ApiResponse();
 
@@ -702,7 +702,7 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Sending POST request to post case requested information.");
 
-                var response = await client.PostAsync($"{_apiUrl}/1.0.3/cases/{caseId}/request-information", content);
+                var response = await client.PostAsync($"{_apiUrl}/v1/collaboration-requests/{caseToken}/information-request", content);
 
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
@@ -732,7 +732,7 @@ public class CommonIntegrationPlugin
         }
     }
 
-    public async Task<ApiResponse> PostCaseReject(int caseId, string engineerName, string engineerPhone, string engineerEmail, string reason, string accessToken)
+    public async Task<ApiResponse> PostCaseReject(string caseToken, string engineerName, string engineerPhone, string engineerEmail, string reason, string accessToken)
     {
         var apiResponse = new ApiResponse();
 
@@ -761,7 +761,7 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Sending POST request to post case reject.");
 
-                var response = await client.PostAsync($"{_apiUrl}/1.0.3/cases/{caseId}/reject", content);
+                var response = await client.PostAsync($"{_apiUrl}/v1/collaboration-requests/{caseToken}/rejection", content);
 
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
@@ -791,7 +791,7 @@ public class CommonIntegrationPlugin
         }
     }
 
-    public async Task<ApiResponse> PostCaseClose(int caseId, string accessToken)
+    public async Task<ApiResponse> PostCaseClose(string caseToken, string accessToken)
     {
         var apiResponse = new ApiResponse();
 
@@ -816,7 +816,7 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Sending POST request to post case close.");
 
-                var response = await client.PostAsync($"{_apiUrl}/1.0.3/cases/{caseId}/close", content);
+                var response = await client.PostAsync($"{_apiUrl}/v1/collaboration-requests/{caseToken}/closure", content);
 
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
@@ -845,7 +845,7 @@ public class CommonIntegrationPlugin
             return apiResponse;
         }
     }
-
+    //DEPRECATED
     public async Task<ApiResponse> UpdateCaseApproval(int caseId, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string nextSteps, string accessToken)
     {
         var apiResponse = new ApiResponse();
@@ -905,6 +905,72 @@ public class CommonIntegrationPlugin
             return apiResponse;
         }
     }
+
+    public async Task<ApiResponse> PatchCaseApproval(string caseToken, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string nextSteps, string accessToken)
+    {
+        var apiResponse = new ApiResponse();
+
+        try
+        {
+            _tracingService.Trace("Sending case approval update details to API using PATCH.");
+
+            using (HttpClient client = new HttpClient())
+            {
+                var approvalDetails = new
+                {
+                    caseNumber = caseNumber,
+                    engineerName = engineerName,
+                    engineerPhone = engineerPhone,
+                    engineerEmail = engineerEmail,
+                    nextSteps = nextSteps
+                };
+
+                // Add default headers
+                AddDefaultHeaders(client);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                var json = JsonConvert.SerializeObject(approvalDetails);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                content.Headers.ContentLength = json.Length;
+
+                _tracingService.Trace("Sending PATCH request to update case approval.");
+
+                var request = new HttpRequestMessage(new HttpMethod("PATCH"), $"{_apiUrl}/v1/collaboration-requests/{caseToken}/approval")
+                {
+                    Content = content
+                };
+
+                var response = await client.SendAsync(request);
+
+                // Check if the response was successful
+                if (!response.IsSuccessStatusCode)
+                {
+                    string resp = await response.Content.ReadAsStringAsync();
+                    _tracingService.Trace("Failed to update case approval. Response: " + resp);
+                    apiResponse.IsError = true;
+                    apiResponse.Content = resp;
+                    return apiResponse;
+                }
+
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
+                _tracingService.Trace("Case approval updated successfully using PATCH.");
+                apiResponse.IsError = false;
+                apiResponse.Content = responseContent;
+                return apiResponse;
+            }
+        }
+        catch (Exception ex)
+        {
+            _tracingService.Trace($"Exception in PatchCaseApproval: {ex.Message}");
+            apiResponse.IsError = true;
+            apiResponse.Content = $"Exception: {ex.Message}";
+            return apiResponse;
+        }
+    }
+
 }
 public class TokenResponse
 {

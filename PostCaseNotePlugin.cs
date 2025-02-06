@@ -17,6 +17,7 @@ public class PostCaseNotePlugin : IPlugin
             string description = (string)context.InputParameters["Description"];
             string priority = (string)context.InputParameters["Priority"];
             int caseId = (int)context.InputParameters["CaseID"];
+            string caseToken = (string)context.InputParameters["CaseToken"];
 
             // Create SubmittedBy object
             SubmittedBy submittedBy = new SubmittedBy
@@ -30,7 +31,7 @@ public class PostCaseNotePlugin : IPlugin
             string accessToken = commonIntegration.Login().Result;
 
             // Send case note details to the API
-            ApiResponse response = commonIntegration.PostCaseNote(caseId, summary, description, priority, submittedBy, accessToken).Result;
+            ApiResponse response = commonIntegration.PostCaseNote(caseToken, summary, description, priority, submittedBy, accessToken).Result;
             context.OutputParameters["IsError"] = response.IsError;
             // Return the raw JSON response to the context output parameters
             context.OutputParameters["Response"] = response.Content;

@@ -105,7 +105,8 @@ function getCase(formContext) {
 
                     } else {
                         Xrm.Utility.closeProgressIndicator();
-                        showError(formContext, response.GetCaseResponse);
+                        var error = JSON.parse(response.GetCaseResponse);
+                        showError(formContext, error.message);
                     }
                 });
             }
@@ -238,7 +239,8 @@ function getFormByCompany(companyId, formContext) {
                     }
                     else {
                         Xrm.Utility.closeProgressIndicator();
-                        showError(formContext, response.ErrorMessage);
+                        var error = JSON.parse(response.ErrorMessage);
+                        showError(formContext, error.message);
                     }
                 });
             }
@@ -294,7 +296,8 @@ function postCase(submissionData, formContext) {
                     }
                     else {
                         Xrm.Utility.closeProgressIndicator();
-                        showError(formContext, response.PostCaseResponse);
+                        var error = JSON.parse(response.PostCaseResponse);
+                        showError(formContext, error.message);
                         disableButton(false, "WebResource_casecreate");
                     }
                 });

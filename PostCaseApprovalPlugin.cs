@@ -19,6 +19,8 @@ public class PostCaseApprovalPlugin : IPlugin
             string engineerEmail = (string)context.InputParameters["EngineerEmail"];
             string nextSteps = (string)context.InputParameters["NextSteps"];
             int caseId = (int)context.InputParameters["CaseID"];
+            string caseToken = (string)context.InputParameters["CaseToken"];
+
 
             // Initialize the common integration plugin
             CommonIntegrationPlugin commonIntegration = new CommonIntegrationPlugin(service, tracingService);
@@ -27,7 +29,7 @@ public class PostCaseApprovalPlugin : IPlugin
             string accessToken = commonIntegration.Login().Result;
 
             // Send case approval details to the API
-            ApiResponse response = commonIntegration.PostCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
+            ApiResponse response = commonIntegration.PostCaseApproval(caseToken, caseNumber, engineerName, engineerPhone, engineerEmail, nextSteps, accessToken).Result;
             context.OutputParameters["IsError"] = response.IsError;
             // Return the raw JSON response to the context output parameters
             context.OutputParameters["Response"] = response.Content;

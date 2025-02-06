@@ -2,6 +2,7 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public class PostCaseResponseOnCreatePlugin : IPlugin
@@ -23,11 +24,11 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                 if (entity.Contains("ap_tsanetcaseid") && entity["ap_tsanetcaseid"] is EntityReference)
                 {                    
                     EntityReference tsanetcaseRef = (EntityReference)entity["ap_tsanetcaseid"];
-                    Entity tsanetcase = service.Retrieve(tsanetcaseRef.LogicalName, tsanetcaseRef.Id, new ColumnSet("ap_submittercasenumber", "ap_name"));
+                    Entity tsanetcase = service.Retrieve(tsanetcaseRef.LogicalName, tsanetcaseRef.Id, new ColumnSet("ap_submittercasenumber", "ap_name", "ap_tsacasetoken"));
 
                     // Retrieve case approval details from the related tsanetcase entity
                     string caseNumber = entity.GetAttributeValue<string>("ap_internalcasenumber");
-                    int caseId = int.Parse(tsanetcase["ap_name"].ToString());
+                    string caseToken = tsanetcase["ap_tsacasetoken"].ToString();
 
                     // Retrieve nextSteps from the current entity
                     string description = entity.GetAttributeValue<string>("ap_description");
@@ -59,35 +60,43 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                     // approval
                     if (type == 1)
                     {
-                        response = commonIntegration.PostCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
+                        response = commonIntegration.PostCaseApproval(caseToken, caseNumber, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
                     }
                     // reject
                     else if (type == 0)
                     {
-                        response = commonIntegration.PostCaseReject(caseId, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
+                        response = commonIntegration.PostCaseReject(caseToken, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
                     }
                     // request information
                     else if (type == 2)
                     {
-                        response = commonIntegration.PostCaseRequestInformation(caseId, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
+                        response = commonIntegration.PostCaseRequestInformation(caseToken, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
                     }
                     //information response
                     else if (type == 3)
                     {
-                        response = commonIntegration.PostCaseInformationResponse(caseId, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
+                        response = commonIntegration.PostCaseInformationResponse(caseToken, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
                     }
                     //close
                     else if (type == 4)
                     {
-                        response = commonIntegration.PostCaseClose(caseId, accessToken).Result;
+                        response = commonIntegration.PostCaseClose(caseToken, accessToken).Result;
                     } else if (type == 5)
                     {
-                        response = commonIntegration.UpdateCaseApproval(caseId, caseNumber, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
+                        response = commonIntegration.PatchCaseApproval(caseToken, caseNumber, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
                     }
                     //Process response
                     if (response.IsError)
                     {
-                        throw new InvalidPluginExecutionException(response.Content);
+                        var errorResponse = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Content);
+                        if (errorResponse != null && errorResponse.ContainsKey("message"))
+                        {
+                            throw new InvalidPluginExecutionException(errorResponse["message"]);
+                        }
+                        else
+                        {
+                            throw new InvalidPluginExecutionException("An unknown error occurred.");
+                        }
                     }
                     else
                     {
