@@ -81,7 +81,9 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                     else if (type == 4)
                     {
                         response = commonIntegration.PostCaseClose(caseToken, accessToken).Result;
-                    } else if (type == 5)
+                    } 
+                    // update approval
+                    else if (type == 5)
                     {
                         response = commonIntegration.PatchCaseApproval(caseToken, caseNumber, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
                     }

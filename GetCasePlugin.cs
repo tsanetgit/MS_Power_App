@@ -18,7 +18,7 @@ public class GetCasePlugin : IPlugin
         try
         {
             // Extract the internal case number from the input parameters
-            if (context.InputParameters.Contains("InternalCaseNumber") && context.InputParameters["InternalCaseNumber"] is string internalCaseNumber)
+            if (context.InputParameters.Contains("CaseToken") && context.InputParameters["CaseToken"] is string caseToken)
             {
                 // Create an instance of the CommonIntegrationPlugin
                 var integrationPlugin = new CommonIntegrationPlugin(service, tracingService);
@@ -27,7 +27,7 @@ public class GetCasePlugin : IPlugin
                 var accessToken = integrationPlugin.Login().Result;
 
                 // Call the GetCaseU method
-                ApiResponse response = integrationPlugin.GetCase(internalCaseNumber, accessToken).Result;
+                ApiResponse response = integrationPlugin.GetCase(caseToken, accessToken).Result;
 
                 // Set the output parameter
                 context.OutputParameters["IsError"] = response.IsError;
@@ -36,7 +36,7 @@ public class GetCasePlugin : IPlugin
             }
             else
             {
-                throw new InvalidPluginExecutionException("InternalCaseNumber parameter is missing.");
+                throw new InvalidPluginExecutionException("Token parameter is missing.");
             }
         }
         catch (Exception ex)

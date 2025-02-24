@@ -200,7 +200,7 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Sending request to get company details.");
 
-                var response = await client.GetAsync($"{_apiUrl}/0.1.1/partners/{companyName}");
+                var response = await client.GetAsync($"{_apiUrl}/v1/partners/{companyName}");
 
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
@@ -238,7 +238,7 @@ public class CommonIntegrationPlugin
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
 
                 _tracingService.Trace("Sending request to retrieve form details.");
-                var response = await client.GetAsync($"{_apiUrl}/1.0.8/form/company/{companyId}");
+                var response = await client.GetAsync($"{_apiUrl}/v1/forms/company/{companyId}");
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -409,7 +409,7 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Sending POST request to create case.");
 
-                var response = await client.PostAsync($"{_apiUrl}/v1/collaboration-request", content);
+                var response = await client.PostAsync($"{_apiUrl}/v1/collaboration-requests", content);
 
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
@@ -472,9 +472,9 @@ public class CommonIntegrationPlugin
                 _tracingService.Trace("Raw JSON response content: " + responseContent);
 
                 _tracingService.Trace("Deserializing response content to list of Case objects.");
-                var caseList = JsonConvert.DeserializeObject<List<Case>>(responseContent);
+                var caseJson = JsonConvert.DeserializeObject<Case>(responseContent);
 
-                if (caseList == null || caseList.Count == 0)
+                if (caseJson == null)
                 {
                     _tracingService.Trace("No cases found in the response.");
                     apiResponse.IsError = true;
@@ -482,12 +482,9 @@ public class CommonIntegrationPlugin
                     return apiResponse;
                 }
 
-                var firstCase = caseList[0];
-                _tracingService.Trace($"First case object: " + JsonConvert.SerializeObject(firstCase));
-
-                _tracingService.Trace($"Case update for internal case number {caseToken} retrieved successfully. Result: " + JsonConvert.SerializeObject(firstCase));
+                _tracingService.Trace($"Case update for case token {caseToken} retrieved successfully. Result: " + JsonConvert.SerializeObject(caseJson));
                 apiResponse.IsError = false;
-                apiResponse.Content = JsonConvert.SerializeObject(firstCase);
+                apiResponse.Content = JsonConvert.SerializeObject(caseJson);
                 return apiResponse;
             }
         }

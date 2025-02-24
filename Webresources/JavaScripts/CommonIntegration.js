@@ -1,24 +1,24 @@
 ﻿// Get Case
 function getCase(formContext) {
-    const internalCaseNumber = formContext.getAttribute("ap_submittercasenumber").getValue();
+    const caseToken = formContext.getAttribute("ap_tsacasetoken").getValue();
 
-    if (!internalCaseNumber) {
-        showError(formContext, "Internal case number is required.");
+    if (!caseToken) {
+        showError(formContext, "Case Token is required.");
         return;
     }
     Xrm.Utility.showProgressIndicator("Retrieving case details...");
 
     const parameters = {
-        InternalCaseNumber: internalCaseNumber
+        CaseToken: caseToken
     };
 
     const request = {
-        InternalCaseNumber: parameters.InternalCaseNumber,
+        CaseToken: parameters.CaseToken,
         getMetadata: function () {
             return {
                 boundParameter: null,
                 parameterTypes: {
-                    "InternalCaseNumber": { typeName: "Edm.String", structuralProperty: 1 }
+                    "CaseToken": { typeName: "Edm.String", structuralProperty: 1 }
                 },
                 operationType: 0,
                 operationName: "ap_GetCase"
@@ -288,6 +288,7 @@ function postCase(submissionData, formContext) {
                         //save data
                         formContext.getAttribute("ap_name").setValue(formResponse.id.toString());
                         formContext.getAttribute("ap_submittercasenumber").setValue(formResponse.submitterCaseNumber.toString());
+                        formContext.getAttribute("ap_tsacasetoken").setValue(formResponse.token.toString());
                         saveToFormField("ap_formjson", formResponse, formContext);  // Save JSON
                         Xrm.Utility.closeProgressIndicator();
                         formContext.ui.setFormNotification("Successfully created!", "INFO", "success");
