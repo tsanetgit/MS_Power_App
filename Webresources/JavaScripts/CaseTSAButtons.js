@@ -127,3 +127,42 @@ function QuickCreateResponse(formContext, type) {
         }
     );
 }
+
+function AddNoteButton(selectedRows) {
+    openQuickCreateForSelectedRow(selectedRows);
+}
+
+function openQuickCreateForSelectedRow(selectedRows) {
+    // Check if exactly one row is selected
+    if (selectedRows.length !== 1) {
+        alert("Please select exactly one row.");
+        return;
+    }
+
+    // Get the ID of the selected row
+    var selectedRowId = selectedRows[0].replace(/[{}]/g, "");
+
+    // Define the data to prefill in the quick create form
+    var quickCreateData = {
+        "ap_tsanetcaseid": selectedRowId
+    };
+
+    // Define the entity form options
+    var entityFormOptions = {
+        entityName: "ap_tsanetnote",
+        useQuickCreateForm: true
+    };
+
+    // Open the quick create form
+    Xrm.Navigation.openForm(entityFormOptions, quickCreateData).then(
+        function success(result) {
+            if (result.savedEntityReference) {
+                console.log("Quick create form saved successfully");
+            }
+        },
+        function error(error) {
+            console.log("Error opening quick create form: " + error.message);
+            alert(error.message);
+        }
+    );
+}

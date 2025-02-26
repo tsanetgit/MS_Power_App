@@ -292,6 +292,7 @@ function createTextInput(label, value, name, isReadOnly, isRequired) {
     const labelElement = document.createElement("label");
     labelElement.className = "form-label";
     labelElement.textContent = label;
+    inputGroup.appendChild(labelElement);
 
     const input = document.createElement("input");
     input.type = "text";
@@ -308,8 +309,9 @@ function createTextInput(label, value, name, isReadOnly, isRequired) {
         input.required = true;
     }
 
-    inputGroup.appendChild(labelElement);
-    inputGroup.appendChild(input);
+    // Wrap input with wrapper and optional asterisk
+    const inputWithWrapper = wrapInputWithWrapper(input, isRequired);
+    inputGroup.appendChild(inputWithWrapper);
 
     return inputGroup;
 }
@@ -322,6 +324,7 @@ function createTextAreaInput(label, value, name, isReadOnly, isRequired) {
     const labelElement = document.createElement("label");
     labelElement.className = "form-label";
     labelElement.textContent = label;
+    inputGroup.appendChild(labelElement);
 
     const textArea = document.createElement("textarea");
     textArea.value = value || "";
@@ -338,48 +341,9 @@ function createTextAreaInput(label, value, name, isReadOnly, isRequired) {
         textArea.required = true;
     }
 
-    inputGroup.appendChild(labelElement);
-    inputGroup.appendChild(textArea);
-
-    return inputGroup;
-}
-
-// Helper function to create text area inputs
-function createTextArea(label, value, name) {
-    const inputGroup = document.createElement("div");
-    inputGroup.className = "input-group";
-
-    const labelElement = document.createElement("label");
-    labelElement.className = "form-label";
-    labelElement.textContent = label;
-
-    const textArea = document.createElement("textarea");
-    textArea.value = value || "";
-    textArea.name = name;
-    textArea.className = "form-input";
-
-    inputGroup.appendChild(labelElement);
-    inputGroup.appendChild(textArea);
-
-    return inputGroup;
-}
-
-// Helper function to create text area inputs
-function createTextArea(label, value, name) {
-    const inputGroup = document.createElement("div");
-    inputGroup.className = "input-group";
-
-    const labelElement = document.createElement("label");
-    labelElement.className = "form-label";
-    labelElement.textContent = label;
-
-    const textArea = document.createElement("textarea");
-    textArea.value = value || "";
-    textArea.name = name;
-    textArea.className = "form-input";
-
-    inputGroup.appendChild(labelElement);
-    inputGroup.appendChild(textArea);
+    // Wrap textarea with wrapper and optional asterisk
+    const textAreaWithWrapper = wrapInputWithWrapper(textArea, isRequired);
+    inputGroup.appendChild(textAreaWithWrapper);
 
     return inputGroup;
 }
@@ -392,6 +356,7 @@ function createFieldFromMetadata(field) {
     const labelElement = document.createElement("label");
     labelElement.className = "form-label";
     labelElement.textContent = field.label;
+    fieldGroup.appendChild(labelElement);
 
     let inputElement;
     switch (field.type.toLowerCase()) {
@@ -454,11 +419,38 @@ function createFieldFromMetadata(field) {
         inputElement.required = true;
     }
 
-    fieldGroup.appendChild(labelElement);
-    fieldGroup.appendChild(inputElement);
+    // Wrap input element with wrapper and optional asterisk
+    const inputWithWrapper = wrapInputWithWrapper(inputElement, field.required);
+    fieldGroup.appendChild(inputWithWrapper);
+
     console.log(`Appended field element with name: field_${field.fieldId} to the DOM`);
 
     return fieldGroup;
+}
+
+// Function to wrap input with wrapper and add asterisk or placeholder
+function wrapInputWithWrapper(inputElement, isRequired) {
+    // Create input wrapper
+    const inputWrapper = document.createElement("div");
+    inputWrapper.className = "input-wrapper";
+
+    // Create the asterisk span
+    const asterisk = document.createElement("span");
+    asterisk.className = "required-asterisk";
+
+    if (isRequired) {
+        asterisk.textContent = "*";
+    } else {
+        // Add a transparent placeholder
+        asterisk.innerHTML = "&#8203;"; // Zero-width space character
+    }
+
+    inputWrapper.appendChild(asterisk);
+
+    // Append input element to the wrapper
+    inputWrapper.appendChild(inputElement);
+
+    return inputWrapper;
 }
 
 
@@ -541,9 +533,6 @@ function createTierSelect(options, selectedValue, isRequired, fieldId) {
     return container;
 }
 
-
-
-
 // Helper function to group data by section
 function groupBy(arr, key) {
     return arr.reduce((group, item) => {
@@ -568,6 +557,7 @@ function createPrioritySelect(label, value, name) {
     const labelElement = document.createElement("label");
     labelElement.className = "form-label";
     labelElement.textContent = label;
+    inputGroup.appendChild(labelElement);
 
     const select = document.createElement("select");
     select.className = "form-input";
@@ -581,8 +571,10 @@ function createPrioritySelect(label, value, name) {
         select.appendChild(option);
     });
 
-    inputGroup.appendChild(labelElement);
-    inputGroup.appendChild(select);
+    // Wrap select with wrapper and optional asterisk
+    const selectWithWrapper = wrapInputWithWrapper(select, true);
+    inputGroup.appendChild(selectWithWrapper);
+
     return inputGroup;
 }
 
@@ -598,11 +590,13 @@ function createHtmlField(label, value, name) {
         inputGroup.appendChild(labelElement);
     }
 
-    const div = document.createElement("div");
-    div.className = "readonly-html";
-    div.innerHTML = value;  // Render HTML
+    const field = document.createElement("div");
+    field.className = "readonly-html";
+    field.innerHTML = value;  // Render HTML
 
-    inputGroup.appendChild(div);
+    const fieldWithWrapper = wrapInputWithWrapper(field, false);
+    inputGroup.appendChild(fieldWithWrapper);
+
     return inputGroup;
 }
 
@@ -819,13 +813,14 @@ async function loadCollaborationFeed(formContext, webResourceContent) {
         const noteContent = document.createElement("div");
         noteContent.className = "note-content";
         noteContent.innerHTML = `
-            <div class="note-title">${note.ap_name || "No Title"}</div>
-            <div class="note-description">${note.ap_description || "-"}</div>
-            <div class="note-meta-inline">
-                <span>${new Date(note.createdon).toLocaleString()}</span>
-                <span>${note.ap_creatorname || "Unknown"}</span>
+           <div class="note-date">Created on: ${new Date(note.createdon).toLocaleString()}</div>
+           <div class="note-meta-inline">
+               <span class="ms-Icon ms-Icon--EditNote" aria-hidden="true"></span>
+                <span>Note created by: ${note.ap_creatorname || "Unknown"}</span>
                 <span>${note.ap_creatoremail || "No Email"}</span>
             </div>
+            <div class="note-title">${note.ap_name || "No Title"}</div>
+            <div class="note-description">${note.ap_description || "-"}</div>
         `;
 
         // Append content to the row
@@ -836,38 +831,48 @@ async function loadCollaborationFeed(formContext, webResourceContent) {
     });
 }
 
-
+//Add note button click handler
 function setupAddNoteButton(formContext, webResourceContent) {
     const addNoteButton = webResourceContent.getElementById("addNoteButton");
 
-    addNoteButton.addEventListener("click", function () {
+    // Check if the event handler is already attached
+    if (addNoteButton.addNoteButtonClickHandler) {
+        // Remove existing event listener
+        addNoteButton.removeEventListener("click", addNoteButton.addNoteButtonClickHandler);
+    }
+
+    // Define the handler function within this scope
+    addNoteButton.addNoteButtonClickHandler = function addNoteButtonClickHandler() {
         const currentRecordId = formContext.data.entity.getId(); // Get the current record ID
         openQuickCreateForm(currentRecordId, formContext, webResourceContent);
-    });
+    };
 
-    function openQuickCreateForm(recordId, formContext, webResourceContent) {
-        const entityFormOptions = {
-            entityName: "ap_tsanetnote",
-            useQuickCreateForm: true
-        };
+    // Add the event listener
+    addNoteButton.addEventListener("click", addNoteButton.addNoteButtonClickHandler);
+}
 
-        const formParameters = {
-            "ap_tsanetcaseid": recordId
-        };
+function openQuickCreateForm(recordId, formContext, webResourceContent) {
+    const entityFormOptions = {
+        entityName: "ap_tsanetnote",
+        useQuickCreateForm: true
+    };
 
-        Xrm.Navigation.openForm(entityFormOptions, formParameters).then(
-            function (success) {
-                console.log("Quick create form opened successfully.");
-                // Check if the form was saved
-                if (success.savedEntityReference) {
-                    loadCollaborationFeed(formContext, webResourceContent);
-                }
-            },
-            function (error) {
-                console.error("Error opening quick create form: ", error);
+    const formParameters = {
+        "ap_tsanetcaseid": recordId
+    };
+
+    Xrm.Navigation.openForm(entityFormOptions, formParameters).then(
+        function (success) {
+            console.log("Quick create form opened successfully.");
+            // Check if the form was saved
+            if (success.savedEntityReference) {
+                loadCollaborationFeed(formContext, webResourceContent);
             }
-        );
-    }
+        },
+        function (error) {
+            console.error("Error opening quick create form: ", error);
+        }
+    );
 }
 
 // Function to load and display responses
