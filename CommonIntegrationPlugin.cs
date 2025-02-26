@@ -541,7 +541,7 @@ public class CommonIntegrationPlugin
                 Stream responseStream = await response.Content.ReadAsStreamAsync();
                 string responseContent = await DecompressResponse(response.Content, responseStream);
 
-                _tracingService.Trace("Case note created successfully.");
+                _tracingService.Trace("Case note created successfully. /n" + responseContent);
                 apiResponse.IsError = false;
                 apiResponse.Content = responseContent;
                 return apiResponse;
