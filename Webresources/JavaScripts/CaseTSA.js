@@ -10,11 +10,27 @@ function onFormLoad(executionContext) {
             // If `ap_formjson` contains data, parse it and build the read-only form            
             const formJsonData = JSON.parse(formJsonField);
             buildReadOnlyForm(formJsonData, formContext);
+            detectTabChange(executionContext);
         } else {
             // Call your existing logic to display editable form
             setupCompanySearch(formContext);
         }
     });
+}
+
+function detectTabChange(executionContext) {
+
+    setInterval(function () {
+        // Check if dynamicFormContainer is empty and refresh if needed
+        const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
+        const webResourceContent = webResourceControl.getObject().contentDocument;
+        const formContainer = webResourceContent.getElementById("dynamicFormContainer");
+
+        if (formContainer && formContainer.innerHTML.trim() === "") {
+            onFormChange(executionContext);
+        }
+
+    }, 2000);
 }
 
 // On form change
