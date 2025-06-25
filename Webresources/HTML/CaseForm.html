@@ -1,0 +1,320 @@
+﻿<head>
+    <style>
+        body {
+            font-family: "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+        }
+
+        .dynamic-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .dynamic-form {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sections-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .form-left-section, .form-right-section {
+            width: 48%;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            margin-right: 10px;
+            font-weight: normal;
+            color: #242424;
+        }
+
+        .form-input, select {
+            padding: 10px;
+            border: 0px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            background-color: #f5f5f5;
+            font-size: 14px;
+            color: #242424;
+        }
+
+        .readonly-input {
+            background-color: #f0f0f0;
+            color: #242424;
+        }
+
+        .form-section h3 {
+            margin-top: 20px;
+            grid-column: 1 / -1;
+            color: #333;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #0078D4;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            grid-column: 1 / -1;
+            margin-top: 20px;
+        }
+
+            button[type="submit"]:hover {
+                background-color: #005A9E;
+            }
+
+        button.upload-attachment {
+            padding: 10px 20px;
+            background-color: #0078D4;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            grid-column: 1 / -1;
+            margin-top: 20px;
+            display: none; /* Hide by default */
+        }
+
+            button.upload-attachment:hover {
+                background-color: #005A9E;
+            }
+
+
+        /* CustomerData fields will remain unchanged */
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        /* Company search dropdown styling */
+        .company-search {
+            margin-bottom: 20px;
+            display: none;
+        }
+
+            .company-search input {
+                margin-top: 10px;
+                margin-bottom: 10px; /* Add space above and below the input */
+            }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .company-results {
+            position: absolute;
+            z-index: 1000;
+            width: 100%;
+        }
+
+        .note-section {
+            border: 1px solid #f4f4f4;
+            border-radius: 5px;
+            background-color: #fff;
+            padding: 10px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            display: none; /* Hide initially */
+            width: 50%;
+        }
+
+
+            .note-section h3 {
+                color: #242424;
+                margin: 0;
+                padding-bottom: 5px;
+                text-align: left;
+            }
+
+        .note-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; /* Align content to the top */
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+            .note-row:last-child {
+                border-bottom: none;
+            }
+
+        .note-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            flex-shrink: 0;
+            width: 120px;
+            border-right: 1px solid #f4f4f4;
+            padding-right: 10px;
+            justify-content: flex-start; /* Align content to the top */
+        }
+
+        .note-content {
+            flex-grow: 1;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            border: 1px solid #f4f4f4;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        .note-title {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .note-description {
+            font-size: 14px;
+            color: #444;
+        }
+
+        .note-date {
+            font-size: 14px;
+            color: #444;
+        }
+
+        .note-meta-inline {
+            font-weight: bold;
+            display: flex;
+            gap: 10px;
+            font-size: 14px;
+            color: #444;
+            margin-bottom: 5px;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #004080; /* Navy blue */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            grid-column: 1 / -1;
+            margin-top: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+            button[type="submit"]:hover {
+                background-color: #003060;
+            }
+
+        .response-feed {
+            margin: 20px 20px 20px 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .response-container {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+        }
+
+            .response-header .timestamp {
+                color: #888;
+                font-size: 0.9em;
+            }
+
+        .response-content p {
+            margin: 5px 0;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .required-asterisk {
+            display: inline-block;
+            width: 10px;
+            color: red;
+            margin-right: 5px;
+            text-align: center;
+        }
+
+        #addNoteButton {
+            background: none;
+            border: none;
+            color: #242424;
+            font-size: 30px;
+            cursor: pointer;
+            margin-left: auto; /* Align to the right */
+            padding-bottom: 5px;
+        }
+
+            #addNoteButton:hover {
+                background: #f5f5f5;
+            }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f4f4f4;
+        }
+        .invalid {
+            border: 2px solid red;
+        }
+    </style>
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css">
+</head>
+
+<body>
+    <!-- Company search and results -->
+    <div class="company-search" id="company-search">
+        <label for="companyInput">Search Company:</label>
+        <input type="text" id="companyInput" class="form-input" placeholder="Enter Company Name" />
+        <!--<button id="searchCompanyButton">Search</button>-->
+        <div id="companyResults" class="company-results"></div>
+    </div>
+
+    <!-- Dynamic container for the form and collaboration feed -->
+    <div class="dynamic-container">
+        <!-- Main Form -->
+        <div id="dynamicFormContainer" class="dynamic-form"></div>
+
+        <!-- Collaboration Feed Section -->
+        <div class="note-section" id="collaborationFeed">
+            <button class="upload-attachment" type="button" id="uploadAttachmentButton">Upload attachment</button>
+            <div class="note-header">
+                <h3>Collaboration Feed</h3>
+                <button id="addNoteButton" type="button">+</button>
+            </div>
+            <!-- Notes will be dynamically added here -->
+            <div id="collaborationFeedNotes"></div>
+        </div>
+    </div>
+</body>
