@@ -94,6 +94,7 @@
   <ItemGroup>
     <Content Include="HTML\CaseForm.html" />
     <Content Include="JavaScripts\CaseResponse.js" />
+    <Content Include="JavaScripts\CaseResponseDynCS.js" />
     <Content Include="JavaScripts\CaseTSA.js" />
     <Content Include="JavaScripts\CaseTSAButtons.js" />
     <Content Include="JavaScripts\CommonIntegration.js" />

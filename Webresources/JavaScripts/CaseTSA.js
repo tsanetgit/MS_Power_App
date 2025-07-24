@@ -241,7 +241,18 @@ async function displayDynamicForm(formDetails, formContext) {
     for (const section in customerDataSections) {
         const sectionGroup = document.createElement("div");
         sectionGroup.className = "form-section";
-        sectionGroup.innerHTML = `<h3>${section}</h3>`;
+
+        // Map section names to user-friendly display names
+        let displaySectionName = section;
+        if (section.toUpperCase() === "CONTACT_SECTION") {
+            displaySectionName = "Contact";
+        } else if (section.toUpperCase() === "COMMON_CUSTOMER_SECTION") {
+            displaySectionName = "Customer Details";
+        } else if (section.toUpperCase() === "PROBLEM_SECTION") {
+            displaySectionName = "Problem Details";
+        }
+
+        sectionGroup.innerHTML = `<h3>${displaySectionName}</h3>`;
 
         customerDataSections[section].sort((a, b) => a.displayOrder - b.displayOrder);
         customerDataSections[section].forEach(field => {
@@ -813,9 +824,20 @@ function buildReadOnlyForm(formJsonData, formContext) {
     // Add custom fields
     const customFields = groupBy(formJsonData.customFields, "section");
     for (const section in customFields) {
+
+        // Map section names to user-friendly display names
+        let displaySectionName = section;
+        if (section.toUpperCase() === "CONTACT_SECTION") {
+            displaySectionName = "Contact";
+        } else if (section.toUpperCase() === "COMMON_CUSTOMER_SECTION") {
+            displaySectionName = "Customer Details";
+        } else if (section.toUpperCase() === "PROBLEM_SECTION") {
+            displaySectionName = "Problem Details";
+        }
+
         const sectionGroup = document.createElement("div");
         sectionGroup.className = "form-section";
-        sectionGroup.innerHTML = `<h3>${section}</h3>`;
+        sectionGroup.innerHTML = `<h3>${displaySectionName}</h3>`;
 
         customFields[section].forEach(field => {
             sectionGroup.appendChild(createReadOnlyTextField(field.fieldName, field.value));

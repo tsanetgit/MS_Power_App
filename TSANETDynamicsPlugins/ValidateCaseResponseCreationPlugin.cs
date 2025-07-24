@@ -24,18 +24,18 @@ namespace TSANetDynamicsPlugins
                 }
 
                 // Get TSA Net case first
-                EntityReference caseReference = (EntityReference)entity["ap_tsanetcaseid"];
-                Entity caseEntity = service.Retrieve(caseReference.LogicalName, caseReference.Id, new ColumnSet("ap_caseid"));
                 OptionSetValue source = entity.GetAttributeValue<OptionSetValue>("ap_source");
-                OptionSetValue type = entity.GetAttributeValue<OptionSetValue>("ap_type");
+                OptionSetValue type = entity.GetAttributeValue<OptionSetValue>("ap_type");                
+                bool caseCreate = entity.GetAttributeValue<bool>("ap_createcase");
+                EntityReference caseRef = entity.GetAttributeValue<EntityReference>("ap_incidentid");
 
                 // Check if source is dynamics
-                if (source.Value == 120950000)
+                if (source.Value == 120950000 && type.Value == 1)
                 {
                     // Validate if the case ID is set
-                    if (!caseEntity.Contains("ap_caseid") && type.Value == 1)
+                    if (caseRef == null && caseCreate == false)
                     {
-                        throw new InvalidPluginExecutionException("You must assign the case first");
+                        throw new InvalidPluginExecutionException("You must assign or create the case");
                     }
                 }
             }
