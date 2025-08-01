@@ -66,7 +66,7 @@ namespace TSANetDynamicsPlugins
                     }
                 }
 
-                // Step 4: Update parent case if ap_incidentid is not empty
+                // Update parent tsacase if ap_incidentid is not empty
                 if (caseResponse.Contains("ap_incidentid") && caseResponse["ap_incidentid"] != null &&
                     caseResponse.Contains("ap_tsanetcaseid") && caseResponse["ap_tsanetcaseid"] != null)
                 {

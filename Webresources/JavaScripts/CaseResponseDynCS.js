@@ -6,105 +6,221 @@ function onLoadDynCS(executionContext) {
     formContext.getAttribute("ap_createcase").addOnChange(toggleCreateCaseSection);
 
     var apType = formContext.getAttribute("ap_type").getValue();
-    
+
     // Only proceed for types 1 and 5
     if (apType === 1 || apType === 5) {
         // Show incident field
         formContext.getControl("ap_incidentid").setVisible(true);
-        
+
         // Get the related case ID record
         var tsacaseId = formContext.getAttribute("ap_tsanetcaseid").getValue();
         if (tsacaseId) {
             // Get the record ID from the lookup
             var tsacaseEntityId = tsacaseId[0].id;
-            
-            // Retrieve the form JSON from the related record
-            Xrm.WebApi.retrieveRecord("ap_tsanetcase", tsacaseEntityId, "?$select=ap_formjson,_ap_caseid_value").then(
-                function success(result) {
-                    if (result._ap_caseid_value) {
-                        // Use the existing ap_caseid instead of searching
-                        var lookupValue = [{
-                            id: result._ap_caseid_value,
-                            name: result["_ap_caseid_value@OData.Community.Display.V1.FormattedValue"],
-                            entityType: "incident"
-                        }];
-                        formContext.getAttribute("ap_incidentid").setValue(lookupValue);
-                        handleCreateCaseVisibility(executionContext);
-                    } 
-                    else if (result.ap_formjson) {
-                        var formJson = JSON.parse(result.ap_formjson);
-                        var customerCaseNumber = null;
-                        
-                        // Extract customer case number from the JSON
-                        if (formJson && formJson.customFields) {
-                            for (var i = 0; i < formJson.customFields.length; i++) {
-                                var field = formJson.customFields[i];
-                                if (field.fieldName && field.fieldName.indexOf("Customer Case #") !== -1) {
-                                    customerCaseNumber = field.value;
-                                    break;
-                                }
-                            }
-                        }
-                        
-                        if (customerCaseNumber) {
-                            formContext.getAttribute("ap_customercasenumber").setValue(customerCaseNumber);
 
-                            // Search for incident with matching title or ticket number
-                            var fetchXml = `
-                                <fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
-                                  <entity name="incident">
-                                    <attribute name="incidentid" />
-                                    <attribute name="title" />
-                                    <attribute name="ticketnumber" />
-                                    <filter type="or">
-                                      <condition attribute="title" operator="eq" value="${customerCaseNumber}" />
-                                      <condition attribute="ticketnumber" operator="eq" value="${customerCaseNumber}" />
-                                    </filter>
-                                  </entity>
-                                </fetch>`;
-                                
-                            var encodedFetchXml = encodeURIComponent(fetchXml);
-                            
-                            Xrm.WebApi.retrieveMultipleRecords("incident", `?fetchXml=${encodedFetchXml}`).then(
-                                function success(result) {
-                                    if (result.entities && result.entities.length > 0) {
-                                        // Set the incident lookup
-                                        var incident = result.entities[0];
-                                        var lookupValue = [{
-                                            id: incident.incidentid,
-                                            name: incident.title || incident.ticketnumber,
-                                            entityType: "incident"
-                                        }];
-                                        
-                                        formContext.getAttribute("ap_incidentid").setValue(lookupValue);
-                                        handleCreateCaseVisibility(executionContext);
-                                    } else {
-                                        // No incident found
-                                        handleCreateCaseVisibility(executionContext);
-                                    }
-                                },
-                                function error(error) {
-                                    handleCreateCaseVisibility(executionContext);
-                                }
-                            );
-                        } else {
-                            // No customer case number found
+            // First retrieve mapping configurations
+            retrieveCaseMappingConfigurations().then(function (mappingConfigs) {
+                // Now retrieve the form JSON from the related record
+                Xrm.WebApi.retrieveRecord("ap_tsanetcase", tsacaseEntityId, "?$select=ap_formjson,_ap_caseid_value").then(
+                    function success(result) {
+                        if (result._ap_caseid_value) {
+                            // Use the existing ap_caseid instead of searching
+                            var lookupValue = [{
+                                id: result._ap_caseid_value,
+                                name: result["_ap_caseid_value@OData.Community.Display.V1.FormattedValue"],
+                                entityType: "incident"
+                            }];
+                            formContext.getAttribute("ap_incidentid").setValue(lookupValue);
                             handleCreateCaseVisibility(executionContext);
                         }
-                    } else {
-                        // No form JSON found
+                        else if (result.ap_formjson) {
+                            var formJson = JSON.parse(result.ap_formjson);
+
+                            // Process all mappings from configuration
+                            processMappingsFromJson(formContext, formJson, mappingConfigs).then(function () {
+                                handleCreateCaseVisibility(executionContext);
+                            }).catch(function (error) {
+                                console.error("Error processing mappings: " + error);
+                                handleCreateCaseVisibility(executionContext);
+                            });
+                        } else {
+                            // No form JSON found
+                            handleCreateCaseVisibility(executionContext);
+                        }
+                    },
+                    function error(error) {
+                        console.error("Error retrieving TSA case: " + error);
                         handleCreateCaseVisibility(executionContext);
                     }
-                },
-                function error(error) {
-                    handleCreateCaseVisibility(executionContext);
-                }
-            );
+                );
+            }).catch(function (error) {
+                console.error("Error retrieving case mapping configurations: " + error);
+                handleCreateCaseVisibility(executionContext);
+            });
         } else {
             // No case ID provided
             handleCreateCaseVisibility(executionContext);
         }
     }
+}
+
+function retrieveCaseMappingConfigurations() {
+    return new Promise(function (resolve, reject) {
+        var fetchXml = `
+            <fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
+              <entity name="ap_casemapping">
+                <attribute name="ap_casemappingid" />
+                <attribute name="ap_name" />
+                <attribute name="ap_sourcejsonpath" />
+                <attribute name="ap_targetattribute" />
+                <attribute name="ap_attributetype" />
+                <attribute name="ap_lookupentityname" />
+                <attribute name="ap_lookupsearchattribute" />
+                <order attribute="ap_name" descending="false" />
+              </entity>
+            </fetch>`;
+
+        var encodedFetchXml = encodeURIComponent(fetchXml);
+
+        Xrm.WebApi.retrieveMultipleRecords("ap_casemapping", `?fetchXml=${encodedFetchXml}`).then(
+            function success(result) {
+                if (result.entities && result.entities.length > 0) {
+                    resolve(result.entities);
+                } else {
+                    resolve([]);
+                }
+            },
+            function error(error) {
+                reject(error);
+            }
+        );
+    });
+}
+
+function processMappingsFromJson(formContext, formJson, mappingConfigs) {
+    return new Promise(function (resolve, reject) {
+        // Create an array to track all promises
+        var mappingPromises = [];
+
+        mappingConfigs.forEach(function (mapping) {
+            var sourceValue = extractValueFromJson(formJson, mapping.ap_sourcejsonpath);
+
+            if (sourceValue !== null) {
+                var mappingPromise = processMapping(formContext, mapping, sourceValue);
+                mappingPromises.push(mappingPromise);
+            }
+        });
+
+        // Wait for all mappings to complete
+        Promise.all(mappingPromises).then(function () {
+            resolve();
+        }).catch(function (error) {
+            reject(error);
+        });
+    });
+}
+
+function extractValueFromJson(formJson, sourcePath) {
+    // Handle paths like "customFields.Customer Case #"
+    var pathParts = sourcePath.split('.');
+
+    if (pathParts.length > 0) {
+        var currentObj = formJson;
+
+        // Navigate to the specified object section (like customFields)
+        if (pathParts[0] && currentObj[pathParts[0]]) {
+            currentObj = currentObj[pathParts[0]];
+
+            // If we're looking for a specific named field (like "Customer Case #")
+            if (pathParts.length > 1 && Array.isArray(currentObj)) {
+                var fieldName = pathParts[1];
+                for (var i = 0; i < currentObj.length; i++) {
+                    var field = currentObj[i];
+                    if (field.fieldName && field.fieldName.indexOf(fieldName) !== -1) {
+                        return field.value;
+                    }
+                }
+            }
+        }
+    }
+
+    return null;
+}
+
+function processMapping(formContext, mapping, sourceValue) {
+    return new Promise(function (resolve, reject) {
+        try {
+            // Check if sourceValue is empty (null, undefined, empty string, or just whitespace)
+            if (sourceValue === null || sourceValue === undefined ||
+                (typeof sourceValue === "string" && sourceValue.trim() === "")) {
+                // Skip processing if empty
+                resolve();
+                return;
+            }
+
+            var attributeType = mapping.ap_attributetype;
+            var targetAttribute = mapping.ap_targetattribute;
+
+            switch (attributeType.toLowerCase()) {
+                case "text":
+                case "number":
+                case "boolean":
+                case "datetime":
+                    // Direct assignment for simple types
+                    formContext.getAttribute(targetAttribute).setValue(sourceValue);
+                    resolve();
+                    break;
+
+                case "lookup":
+                    // Handle lookup fields by searching for the entity
+                    var entityName = mapping.ap_lookupentityname;
+                    var searchAttribute = mapping.ap_lookupsearchattribute || "name";
+
+                    // Create a FetchXML to search for the entity
+                    var fetchXml = `
+                        <fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
+                          <entity name="${entityName}">
+                            <attribute name="${entityName}id" />
+                            <attribute name="${searchAttribute}" />
+                            <filter>
+                              <condition attribute="${searchAttribute}" operator="eq" value="${sourceValue}" />
+                            </filter>
+                          </entity>
+                        </fetch>`;
+
+                    var encodedFetchXml = encodeURIComponent(fetchXml);
+
+                    Xrm.WebApi.retrieveMultipleRecords(entityName, `?fetchXml=${encodedFetchXml}`).then(
+                        function success(result) {
+                            if (result.entities && result.entities.length > 0) {
+                                var entity = result.entities[0];
+                                var lookupValue = [{
+                                    id: entity[`${entityName}id`],
+                                    name: entity[searchAttribute],
+                                    entityType: entityName
+                                }];
+
+                                formContext.getAttribute(targetAttribute).setValue(lookupValue);
+                            }
+                            resolve();
+                        },
+                        function error(error) {
+                            console.error(`Error searching for ${entityName}: ${error.message}`);
+                            resolve(); // Resolve anyway to continue with other mappings
+                        }
+                    );
+                    break;
+
+                default:
+                    console.warn(`Unsupported attribute type: ${attributeType}`);
+                    resolve();
+                    break;
+            }
+        } catch (e) {
+            console.error(`Error processing mapping for ${mapping.ap_targetattribute}: ${e.message}`);
+            resolve(); // Resolve anyway to continue with other mappings
+        }
+    });
 }
 
 function handleCreateCaseVisibility(executionContext) {
