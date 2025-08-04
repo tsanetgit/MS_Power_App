@@ -77,6 +77,9 @@ function retrieveCaseMappingConfigurations() {
                 <attribute name="ap_lookupentityname" />
                 <attribute name="ap_lookupsearchattribute" />
                 <order attribute="ap_name" descending="false" />
+                <filter>
+                   <condition attribute="ap_mappingtype" operator="eq" value="120950000" />
+                </filter>
               </entity>
             </fetch>`;
 
@@ -161,17 +164,16 @@ function processMapping(formContext, mapping, sourceValue) {
             var attributeType = mapping.ap_attributetype;
             var targetAttribute = mapping.ap_targetattribute;
 
-            switch (attributeType.toLowerCase()) {
-                case "text":
-                case "number":
-                case "boolean":
-                case "datetime":
+            switch (attributeType) {
+                case 3:
+                case 4:
+                case 1:
                     // Direct assignment for simple types
                     formContext.getAttribute(targetAttribute).setValue(sourceValue);
                     resolve();
                     break;
 
-                case "lookup":
+                case 2:
                     // Handle lookup fields by searching for the entity
                     var entityName = mapping.ap_lookupentityname;
                     var searchAttribute = mapping.ap_lookupsearchattribute || "name";

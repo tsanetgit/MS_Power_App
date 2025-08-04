@@ -149,7 +149,7 @@ public class CommonIntegrationPlugin
 
                 _tracingService.Trace("Sending login request to API. " + _apiUrl);
 
-                var response = await client.PostAsync($"{_apiUrl}/0.1.0/login", content);
+                var response = await client.PostAsync($"{_apiUrl}/v1/login", content);
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
                 {
