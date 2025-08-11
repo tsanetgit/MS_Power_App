@@ -4,6 +4,10 @@ For access to the Beta and Production environments, contact membership@tsanet.or
 ## Install Guide
 
 The install guide provides information on how to install the Power App and details about the application and integration examples:
+New guide for the Dynamics on the App Store: 
+https://github.com/tsanetgit/MS_Power_App/blob/main/Connect_2.0_Dynamics_Package_Install_Guide.docx
+
+Previous guide for the Power App manual installation using packages:
 https://github.com/tsanetgit/MS_Power_App/blob/master/Connect%202.0%20Power%20App%20Package%20Install%20Guide%20v1.docx
 
 ## User Guide
