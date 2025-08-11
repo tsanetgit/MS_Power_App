@@ -1,4 +1,5 @@
-﻿function onLoad(executionContext) {
+﻿"use strict";
+function onLoad(executionContext) {
     var formContext = executionContext.getFormContext();
     
     // Register event handlers

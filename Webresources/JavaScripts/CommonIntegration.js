@@ -548,7 +548,6 @@ function getAttachmentConfig(formContext) {
         },
         function (error) {
             //Xrm.Utility.closeProgressIndicator();
-            console.error(error.message);
             showError(formContext, error.message);
             return Promise.reject(new Error(error.message));
         }

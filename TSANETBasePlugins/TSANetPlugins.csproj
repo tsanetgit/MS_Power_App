@@ -125,6 +125,7 @@
     <Compile Include="GetCompanyPlugin.cs" />
     <Compile Include="GetFormByCompanyPlugin.cs" />
     <Compile Include="GetFormByDepartmentPlugin.cs" />
+    <Compile Include="GetMePlugin.cs" />
     <Compile Include="PostCaseApprovalPlugin.cs" />
     <Compile Include="PostCaseApprovalUpdatePlugin.cs" />
     <Compile Include="PostCaseNoteOnCreatePlugin.cs" />

@@ -361,6 +361,53 @@ public class CommonIntegrationPlugin
         }
     }
 
+    // Get user information from the /me endpoint
+    public async Task<ApiResponse> GetMe(string accessToken)
+    {
+        var apiResponse = new ApiResponse();
+
+        try
+        {
+            _tracingService.Trace("Retrieving user information from /me endpoint");
+
+            using (HttpClient client = new HttpClient())
+            {
+                // Add default headers
+                AddDefaultHeaders(client);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                _tracingService.Trace("Sending request to get user information.");
+
+                var response = await client.GetAsync($"{_apiUrl}/v1/me");
+
+                // Check if the response was successful
+                if (!response.IsSuccessStatusCode)
+                {
+                    string resp = await response.Content.ReadAsStringAsync();
+                    _tracingService.Trace($"Failed to retrieve user information. Response: " + resp);
+                    apiResponse.IsError = true;
+                    apiResponse.Content = resp;
+                    return apiResponse;
+                }
+
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
+                _tracingService.Trace("User information retrieved successfully.");
+                apiResponse.IsError = false;
+                apiResponse.Content = responseContent;
+                return apiResponse;
+            }
+        }
+        catch (Exception ex)
+        {
+            _tracingService.Trace($"Exception in GetMe: {ex.Message}");
+            apiResponse.IsError = true;
+            apiResponse.Content = $"Exception: {ex.Message}";
+            return apiResponse;
+        }
+    }
+
     //DEPRECATED
     //public async Task<FieldMetadata> GetFieldMetadata(int customerDataId, int documentId, string accessToken)
     //{

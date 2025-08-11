@@ -40,7 +40,6 @@ function onLoadDynCS(executionContext) {
                             processMappingsFromJson(formContext, formJson, mappingConfigs).then(function () {
                                 handleCreateCaseVisibility(executionContext);
                             }).catch(function (error) {
-                                console.error("Error processing mappings: " + error);
                                 handleCreateCaseVisibility(executionContext);
                             });
                         } else {
@@ -49,12 +48,10 @@ function onLoadDynCS(executionContext) {
                         }
                     },
                     function error(error) {
-                        console.error("Error retrieving TSA case: " + error);
                         handleCreateCaseVisibility(executionContext);
                     }
                 );
             }).catch(function (error) {
-                console.error("Error retrieving case mapping configurations: " + error);
                 handleCreateCaseVisibility(executionContext);
             });
         } else {
@@ -207,19 +204,16 @@ function processMapping(formContext, mapping, sourceValue) {
                             resolve();
                         },
                         function error(error) {
-                            console.error(`Error searching for ${entityName}: ${error.message}`);
                             resolve(); // Resolve anyway to continue with other mappings
                         }
                     );
                     break;
 
                 default:
-                    console.warn(`Unsupported attribute type: ${attributeType}`);
                     resolve();
                     break;
             }
         } catch (e) {
-            console.error(`Error processing mapping for ${mapping.ap_targetattribute}: ${e.message}`);
             resolve(); // Resolve anyway to continue with other mappings
         }
     });
