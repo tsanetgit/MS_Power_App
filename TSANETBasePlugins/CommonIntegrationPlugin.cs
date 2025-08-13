@@ -1284,6 +1284,9 @@ class Case
     [JsonProperty("submittedBy")]
     public SubmittedBy SubmittedBy { get; set; }
 
+    [JsonProperty("submitterContactDetails")]
+    public SubmitterContactDetails SubmitterContactDetails { get; set; }
+
     [JsonProperty("caseNotes")]
     public List<CaseNote> CaseNotes { get; set; }
 
@@ -1304,6 +1307,18 @@ public class CustomerData
 
     [JsonProperty("value")]
     public string Value { get; set; }
+}
+
+public class SubmitterContactDetails
+{
+    [JsonProperty("name")]
+    public string Name { get; set; }
+
+    [JsonProperty("email")]
+    public string Email { get; set; }
+
+    [JsonProperty("phone")]
+    public string Phone { get; set; }
 }
 
 public class SubmittedBy

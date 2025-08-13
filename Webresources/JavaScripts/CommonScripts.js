@@ -282,10 +282,34 @@
         formContext.data.entity.save();
     };
 
-    // Add to the window object for backward compatibility
+    // Function to get the current user information from Dataverse
+    TSA.getCurrentUserDetails = function () {
+        return new Promise((resolve, reject) => {
+            Xrm.WebApi.retrieveRecord("systemuser",
+                Xrm.Utility.getGlobalContext().userSettings.userId,
+                "?$select=fullname,internalemailaddress,mobilephone")
+                .then(
+                    function success(result) {
+                        resolve({
+                            name: result.fullname || "",
+                            email: result.internalemailaddress || "",
+                            phone: result.mobilephone || ""
+                        });
+                    },
+                    function (error) {
+                        console.error("Error retrieving current user details: " + error.message);
+                        // Return empty data in case of error to not block form submission
+                        resolve({
+                            name: "",
+                            email: "",
+                            phone: ""
+                        });
+                    }
+                );
+        });
+    };
+
     // For backward compatibility, create references to the global namespace
-    // This allows existing code to continue working without modification
-    window.waitForElementsToExist = function () { return TSA.waitForElementsToExist.apply(this, arguments); };
     window.waitForWebResourceElement = function () { return TSA.waitForWebResourceElement.apply(this, arguments); };
     window.disableButton = function () { return TSA.disableButton.apply(this, arguments); };
     window.showError = function () { return TSA.showError.apply(this, arguments); };
@@ -305,4 +329,5 @@
     window.initializeUploadNotificationMonitoring = function () { return TSA.initializeUploadNotificationMonitoring.apply(this, arguments); };
     window.statusWarningLogic = function () { return TSA.statusWarningLogic.apply(this, arguments); };
     window.updateTsaCaseStatus = function () { return TSA.updateTsaCaseStatus.apply(this, arguments); };
+    window.getCurrentUserDetails = function () { return TSA.getCurrentUserDetails.apply(this, arguments); };
 })();

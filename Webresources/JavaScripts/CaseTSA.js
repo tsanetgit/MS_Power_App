@@ -678,7 +678,7 @@ function validateForm(form, formContext) {
 }
 
 // Helper function to build the form object, saving current form values
-function buildFormObject(formDetails) {
+async function buildFormObject(formDetails) {
     const formContext = parent.Xrm.Page.getControl("WebResource_casecreate").getObject().contentDocument;
     const cleanedObject = JSON.parse(JSON.stringify(formDetails));  // Deep clone
 
@@ -687,6 +687,16 @@ function buildFormObject(formDetails) {
     cleanedObject.internalCaseNumber = formContext.querySelector('[name="internalCaseNumber"]').value;
     cleanedObject.problemSummary = formContext.querySelector('[name="problemSummary"]').value;
     cleanedObject.problemDescription = formContext.querySelector('[name="problemDescription"]').value;
+
+    // Get current user details from Dataverse
+    const userDetails = await TSA.getCurrentUserDetails();
+
+    // Add submitterContactDetails object with user information
+    cleanedObject.submitterContactDetails = {
+        name: userDetails.name,
+        email: userDetails.email,
+        phone: userDetails.phone
+    };
 
     // For customer fields, update the current values from the form inputs
     cleanedObject.customFields.forEach(data => {
@@ -794,8 +804,18 @@ function buildReadOnlyForm(formJsonData, formContext) {
     caseInfoSection.appendChild(createReadOnlyTextField("Submitted by", `${formJsonData.submittedBy.firstName} ${formJsonData.submittedBy.lastName}`));
     caseInfoSection.appendChild(createReadOnlyTextField("Summary", formJsonData.summary));
     caseInfoSection.appendChild(createReadOnlyTextArea("Description", formJsonData.description));
-
     form.appendChild(caseInfoSection);
+
+    // Submitter Section
+    if (formJsonData.submitterContactDetails != null) {
+        const submitterSectionMain = document.createElement("div");
+        submitterSectionMain.className = "form-section";
+        submitterSectionMain.innerHTML = "<h3><strong>Submitter Contact Details:</strong></h3>";
+        submitterSectionMain.appendChild(createReadOnlyTextField("Name", formJsonData.submitterContactDetails.name));
+        submitterSectionMain.appendChild(createReadOnlyTextField("E-mail", formJsonData.submitterContactDetails.email));
+        submitterSectionMain.appendChild(createReadOnlyTextField("Phone", formJsonData.submitterContactDetails.phone));
+        form.appendChild(submitterSectionMain);
+    }
 
     // Response Section
     const responseSectionMain = document.createElement("div");

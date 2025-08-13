@@ -1,4 +1,4 @@
-﻿// Define a constant for standard alert dialog options
+﻿// Constant for standard alert dialog options
 const STANDARD_ALERT_OPTIONS = { height: 120, width: 260 };
 
 // Get Case
