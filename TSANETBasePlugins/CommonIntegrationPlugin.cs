@@ -1062,6 +1062,68 @@ public class CommonIntegrationPlugin
         }
     }
 
+    public async Task<ApiResponse> PatchCollaborationRequest(string token, string internalCaseNumber, SubmitterContactDetails submitterContactDetails, string accessToken)
+    {
+        var apiResponse = new ApiResponse();
+
+        try
+        {
+            _tracingService.Trace($"Updating collaboration request for token: {token}");
+
+            using (HttpClient client = new HttpClient())
+            {
+                var requestDetails = new
+                {
+                    internalCaseNumber = internalCaseNumber,
+                    submitterContactDetails = submitterContactDetails
+                };
+
+                // Add default headers
+                AddDefaultHeaders(client);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+                var json = JsonConvert.SerializeObject(requestDetails);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                content.Headers.ContentLength = json.Length;
+
+                _tracingService.Trace("Sending PATCH request to update collaboration request.");
+
+                var request = new HttpRequestMessage(new HttpMethod("PATCH"), $"{_apiUrl}/v1/collaboration-requests/{token}")
+                {
+                    Content = content
+                };
+
+                var response = await client.SendAsync(request);
+
+                // Check if the response was successful
+                if (!response.IsSuccessStatusCode)
+                {
+                    string resp = await response.Content.ReadAsStringAsync();
+                    _tracingService.Trace($"Failed to update collaboration request for token '{token}'. Response: " + resp);
+                    apiResponse.IsError = true;
+                    apiResponse.Content = resp;
+                    return apiResponse;
+                }
+
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
+                _tracingService.Trace($"Collaboration request for token {token} updated successfully.");
+                apiResponse.IsError = false;
+                apiResponse.Content = responseContent;
+                return apiResponse;
+            }
+        }
+        catch (Exception ex)
+        {
+            _tracingService.Trace($"Exception in PatchCollaborationRequest: {ex.Message}");
+            apiResponse.IsError = true;
+            apiResponse.Content = $"Exception: {ex.Message}";
+            return apiResponse;
+        }
+    }
+
     // DEPRECATED
     public async Task<ApiResponse> GetAttachmentConfig(string token, string accessToken)
     {
@@ -1108,9 +1170,9 @@ public class CommonIntegrationPlugin
             return apiResponse;
         }
     }
-
-
 }
+
+
 public class TokenResponse
 {
     [JsonProperty("accessToken")]

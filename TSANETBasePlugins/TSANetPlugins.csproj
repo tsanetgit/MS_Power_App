@@ -18,6 +18,7 @@
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -30,7 +31,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -126,6 +126,7 @@
     <Compile Include="GetFormByCompanyPlugin.cs" />
     <Compile Include="GetFormByDepartmentPlugin.cs" />
     <Compile Include="GetMePlugin.cs" />
+    <Compile Include="PostCasePatchCollaborationRequestPlugin.cs" />
     <Compile Include="PostCaseApprovalPlugin.cs" />
     <Compile Include="PostCaseApprovalUpdatePlugin.cs" />
     <Compile Include="PostCaseNoteOnCreatePlugin.cs" />
