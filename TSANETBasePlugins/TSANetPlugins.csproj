@@ -133,6 +133,7 @@
     <Compile Include="PostCasePlugin.cs" />
     <Compile Include="PostCaseNotePlugin.cs" />
     <Compile Include="PostCaseResponseOnCreatePlugin.cs" />
+    <Compile Include="PostPatchCollaborationRequestPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PluginBase.cs" />
     <Compile Include="ValidateCaseNoteCreationPlugin.cs" />
