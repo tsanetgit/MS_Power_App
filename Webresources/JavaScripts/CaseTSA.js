@@ -299,9 +299,12 @@ async function displayDynamicForm(formDetails, formContext) {
     submitButton.addEventListener("click", function (event) {
         event.preventDefault();
         if (validateForm(form, formContext)) {
-            const submissionData = buildFormObject(formDetails);
-            saveToFormField("ap_sentjson", submissionData, formContext);  // Save JSON
-            postCase(submissionData, formContext);  // Send the object via existing unbound action
+            buildFormObject(formDetails).then(submissionData => {
+                saveToFormField("ap_sentjson", submissionData, formContext);  // Save JSON
+                postCase(submissionData, formContext);  // Send the object via existing unbound action
+            }).catch(error => {
+                showError(formContext, "Error building form data: " + error.message);
+            });
         }
     });
 
