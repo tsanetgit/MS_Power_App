@@ -12,7 +12,7 @@ function onFormLoad(executionContext) {
             // If `ap_formjson` contains data, parse it and build the read-only form            
             const formJsonData = JSON.parse(formJsonField);
             buildReadOnlyForm(formJsonData, formContext);
-            detectTabChange(executionContext);
+            //detectTabChange(executionContext);
             initializeUploadNotificationMonitoring(formContext);
         } else {
             // Call your existing logic to display editable form
@@ -35,15 +35,20 @@ function statusWarning(executionContext) {
 }
 
 function detectTabChange(executionContext) {
+    let formContext = executionContext.getFormContext(); 
 
     setInterval(function () {
         // Check if dynamicFormContainer is empty and refresh if needed
-        const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
+        const webResourceControl = formContext.getControl("WebResource_casecreate");
         const webResourceContent = webResourceControl.getObject().contentDocument;
         const formContainer = webResourceContent.getElementById("dynamicFormContainer");
 
         if (formContainer && formContainer.innerHTML.trim() === "") {
-            onFormChange(executionContext);
+            formContext.data.refresh(true)
+                .then(function () {
+                    console.log("Form refreshed successfully.");
+                    onFormChange(formContext);
+                })
         }
 
     }, 2000);
@@ -51,7 +56,7 @@ function detectTabChange(executionContext) {
 
 // On form change
 function onFormChange(executionContext) {
-    const formContext = executionContext.getFormContext();
+    const formContext = executionContext.getFormContext(); 
     const formJsonField = formContext.getAttribute("ap_formjson").getValue();
 
     if (formJsonField) {
@@ -68,7 +73,7 @@ function buttonRefreshCase(formContext) {
     getCase(formContext);
 }
 function setupCompanySearch(formContext) {
-    const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
+    const webResourceControl = formContext.getControl("WebResource_casecreate");
     const webResourceContent = webResourceControl.getObject().contentDocument;
 
     // Show the company search element
@@ -122,7 +127,7 @@ function searchCompany(formContext, companyName) {
 
 // Function to display and select a company
 function displayCompanyResults(formContext, companies) {
-    const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
+    const webResourceControl = formContext.getControl("WebResource_casecreate");
     const webResourceContent = webResourceControl.getObject().contentDocument;
 
     const companySearchElement = webResourceContent.getElementById("company-search");
@@ -191,7 +196,7 @@ function selectCompany(formContext, companyId, companyName) {
 
 // Function that builds dynamic form based on company data
 async function displayDynamicForm(formDetails, formContext) {
-    const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
+    const webResourceControl = formContext.getControl("WebResource_casecreate");
     const webResourceContent = webResourceControl.getObject().contentDocument;
 
     const formContainer = webResourceContent.getElementById("dynamicFormContainer");
@@ -299,7 +304,7 @@ async function displayDynamicForm(formDetails, formContext) {
     submitButton.addEventListener("click", function (event) {
         event.preventDefault();
         if (validateForm(form, formContext)) {
-            buildFormObject(formDetails).then(submissionData => {
+            buildFormObject(formDetails, formContext).then(submissionData => {
                 saveToFormField("ap_sentjson", submissionData, formContext);  // Save JSON
                 postCase(submissionData, formContext);  // Send the object via existing unbound action
             }).catch(error => {
@@ -681,15 +686,15 @@ function validateForm(form, formContext) {
 }
 
 // Helper function to build the form object, saving current form values
-async function buildFormObject(formDetails) {
-    const formContext = parent.Xrm.Page.getControl("WebResource_casecreate").getObject().contentDocument;
+async function buildFormObject(formDetails, formContext) {
+    const webresourceContent = formContext.getControl("WebResource_casecreate").getObject().contentDocument;
     const cleanedObject = JSON.parse(JSON.stringify(formDetails));  // Deep clone
 
     // Update main fields with current values from the form
-    cleanedObject.priority = formContext.querySelector('[name="priority"]').value;
-    cleanedObject.internalCaseNumber = formContext.querySelector('[name="internalCaseNumber"]').value;
-    cleanedObject.problemSummary = formContext.querySelector('[name="problemSummary"]').value;
-    cleanedObject.problemDescription = formContext.querySelector('[name="problemDescription"]').value;
+    cleanedObject.priority = webresourceContent.querySelector('[name="priority"]').value;
+    cleanedObject.internalCaseNumber = webresourceContent.querySelector('[name="internalCaseNumber"]').value;
+    cleanedObject.problemSummary = webresourceContent.querySelector('[name="problemSummary"]').value;
+    cleanedObject.problemDescription = webresourceContent.querySelector('[name="problemDescription"]').value;
 
     // Get current user details from Dataverse
     const userDetails = await TSA.getCurrentUserDetails();
@@ -703,12 +708,12 @@ async function buildFormObject(formDetails) {
 
     // For customer fields, update the current values from the form inputs
     cleanedObject.customFields.forEach(data => {
-        const fieldElement = formContext.querySelector(`[name*="field_${data.fieldId}"]`);
+        const fieldElement = webresourceContent.querySelector(`[name*="field_${data.fieldId}"]`);
 
         if (fieldElement) {
             if (fieldElement.tagName === "SELECT" && fieldElement.getAttribute("data-tierselect") === "true") {
                 // Get the value from the most child optionset
-                const tierSelectElements = formContext.querySelectorAll(`[name^="field_${data.fieldId}"]`);
+                const tierSelectElements = webresourceContent.querySelectorAll(`[name^="field_${data.fieldId}"]`);
                 data.value = Array.from(tierSelectElements).map(el => el.value).join(' : ');
 
             } else if (fieldElement.tagName === "SELECT") {
@@ -729,7 +734,7 @@ async function buildFormObject(formDetails) {
 
 // Function to register the upload button
 function registerUploadButton(formContext) {
-    const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
+    const webResourceControl = formContext.getControl("WebResource_casecreate");
     const webResourceContent = webResourceControl.getObject().contentDocument;
 
     const uploadButton = webResourceContent.getElementById("uploadAttachmentButton");
@@ -786,7 +791,7 @@ function registerUploadButton(formContext) {
 
 //Main form function
 function buildReadOnlyForm(formJsonData, formContext) {
-    const webResourceControl = parent.Xrm.Page.getControl("WebResource_casecreate");
+    const webResourceControl = formContext.getControl("WebResource_casecreate");
     const webResourceContent = webResourceControl.getObject().contentDocument;
 
     const formContainer = webResourceContent.getElementById("dynamicFormContainer");
