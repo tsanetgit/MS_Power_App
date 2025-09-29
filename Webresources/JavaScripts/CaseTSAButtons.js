@@ -59,7 +59,6 @@ function QuickCreateResponse(formContext, type) {
                 function success(result) {
                     if (result.savedEntityReference) {
                         getCase(formContext);
-                        //refreshReadOnlyForm(formContext);
                     }
                 },
                 function error(error) {

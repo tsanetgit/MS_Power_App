@@ -127,6 +127,11 @@ public class PostCasePatchCollaborationRequestPlugin : IPlugin
             }
             else
             {
+                Entity updateTsaCase = new Entity(tsacase.LogicalName);
+                updateTsaCase.Id = tsacase.Id;
+                updateTsaCase["ap_formjson"] = response.Content;
+                service.Update(updateTsaCase);
+
                 tracingService.Trace("PatchCollaborationRequestPlugin: Successfully updated collaboration request");
             }
         }
