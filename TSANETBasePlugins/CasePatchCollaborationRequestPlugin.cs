@@ -1,11 +1,10 @@
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-//DEPRECATED: Use PostCasePatchCollaborationRequestPlugin instead
-public class PostCasePatchCollaborationRequestPlugin : IPlugin
+public class CasePatchCollaborationRequestPlugin : IPlugin
 {
     public void Execute(IServiceProvider serviceProvider)
     {
@@ -20,35 +19,57 @@ public class PostCasePatchCollaborationRequestPlugin : IPlugin
         {
             Entity entity = (Entity)context.InputParameters["Target"];
 
-            // Retrieve the complete entity to get all required fields
-            Entity tsacase = service.Retrieve(entity.LogicalName, entity.Id, new ColumnSet(
-                "ap_direction", "ownerid", "ap_tsacasetoken", "ap_caseid"));
+            // Get the pre-image if available
+            Entity preImage = null;
+            if (context.PreEntityImages.Contains("PreImage"))
+            {
+                preImage = context.PreEntityImages["PreImage"];
+            }
 
-            // Check if ap_direction is out
-            if (!tsacase.Contains("ap_direction") ||
-                !(tsacase["ap_direction"] is OptionSetValue) ||
-                ((OptionSetValue)tsacase["ap_direction"]).Value != 1)
+            // Define a method to get attribute from either target or pre-image
+            T GetAttributeValue<T>(string attributeName) where T : class
+            {
+                if (entity.Contains(attributeName) && entity[attributeName] is T)
+                {
+                    return (T)entity[attributeName];
+                }
+                else if (preImage != null && preImage.Contains(attributeName) && preImage[attributeName] is T)
+                {
+                    return (T)preImage[attributeName];
+                }
+                return null;
+            }
+
+            /// Check if ap_direction is out (value = 1)
+            OptionSetValue directionValue = GetAttributeValue<OptionSetValue>("ap_direction");
+            if (directionValue == null || directionValue.Value != 1)
             {
                 tracingService.Trace("PatchCollaborationRequestPlugin: ap_direction is not 1, exiting");
                 return;
             }
 
-            // Check if we have the required fields
-            if (!tsacase.Contains("ownerid") || !tsacase.Contains("ap_tsacasetoken") || !tsacase.Contains("ap_caseid"))
+            // Check for required fields
+            EntityReference ownerRef = GetAttributeValue<EntityReference>("ownerid");
+            string caseToken = null;
+            if (entity.Contains("ap_tsacasetoken"))
+                caseToken = entity["ap_tsacasetoken"].ToString();
+            else if (preImage != null && preImage.Contains("ap_tsacasetoken"))
+                caseToken = preImage["ap_tsacasetoken"].ToString();
+
+            EntityReference caseIdRef = GetAttributeValue<EntityReference>("ap_caseid");
+
+            if (ownerRef == null || string.IsNullOrEmpty(caseToken) || caseIdRef == null)
             {
                 tracingService.Trace("PatchCollaborationRequestPlugin: Missing required fields (ownerid or ap_tsacasetoken or ap_caseid)");
                 return;
             }
 
-            // Get the case token
-            string caseToken = tsacase["ap_tsacasetoken"].ToString();
-
             // Get internal case number from the related incident if exists
             string internalCaseNumber = "";
-            if (tsacase.Contains("ap_caseid") && tsacase["ap_caseid"] is EntityReference incidentReference)
+            if (caseIdRef != null)
             {
                 // Retrieve the incident to get the ticket number
-                Entity incident = service.Retrieve("incident", incidentReference.Id, new ColumnSet("ticketnumber"));
+                Entity incident = service.Retrieve("incident", caseIdRef.Id, new ColumnSet("ticketnumber"));
                 if (incident.Contains("ticketnumber"))
                 {
                     internalCaseNumber = incident["ticketnumber"].ToString();
@@ -63,11 +84,9 @@ public class PostCasePatchCollaborationRequestPlugin : IPlugin
             else
             {
                 tracingService.Trace("No related incident found");
-                return; // Exit if no incident is related
             }
 
             // Get owner details
-            EntityReference ownerRef = (EntityReference)tsacase["ownerid"];
             Entity ownerEntity;
 
             // Owner could be a user or team
@@ -128,10 +147,11 @@ public class PostCasePatchCollaborationRequestPlugin : IPlugin
             }
             else
             {
-                Entity updateTsaCase = new Entity(tsacase.LogicalName);
-                updateTsaCase.Id = tsacase.Id;
-                updateTsaCase["ap_formjson"] = response.Content;
-                service.Update(updateTsaCase);
+                entity["ap_formjson"] = response.Content;
+                tracingService.Trace("PatchCollaborationRequestPlugin: Successfully updated case form");
+
+                CommonCasePlugin commonCasePlugin = new CommonCasePlugin();
+                commonCasePlugin.ProcessCaseResponse(service, tracingService, response.Content, entity.Id);
 
                 tracingService.Trace("PatchCollaborationRequestPlugin: Successfully updated collaboration request");
             }

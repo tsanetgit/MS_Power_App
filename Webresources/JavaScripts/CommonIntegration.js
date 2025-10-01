@@ -5,6 +5,7 @@ const STANDARD_ALERT_OPTIONS = { height: 120, width: 260 };
 function getCase(formContext) {
     "use strict";
     const caseToken = formContext.getAttribute("ap_tsacasetoken").getValue();
+    const entityId = formContext.data.entity.getId();
 
     if (!caseToken) {
         showError(formContext, "Case Token is required.");
@@ -17,15 +18,26 @@ function getCase(formContext) {
     };
 
     const request = {
+        entity: {
+            id: entityId.replace(/[{}]/g, ""),
+            entityType: "ap_tsanetcase"
+        },
         CaseToken: parameters.CaseToken,
         getMetadata: function () {
             return {
-                boundParameter: null,
+                boundParameter: "entity",
                 parameterTypes: {
-                    "CaseToken": { typeName: "Edm.String", structuralProperty: 1 }
+                    "entity": {
+                        "typeName": "mscrm.ap_tsanetcase",
+                        "structuralProperty": 5
+                    },
+                    "CaseToken": {
+                        "typeName": "Edm.String",
+                        "structuralProperty": 1
+                    }
                 },
                 operationType: 0,
-                operationName: "ap_GetCase"
+                operationName: "ap_RefreshCase"
             };
         }
     };
@@ -35,82 +47,15 @@ function getCase(formContext) {
             if (result.ok) {
                 result.json().then(function (response) {
                     if (!response.IsError) {
-                        var formJson = response.GetCaseResponse;
+                        var formJson = response.CaseResponse;
                         var formResponse = JSON.parse(formJson);
                         saveToFormField("ap_formjson", formResponse, formContext);  // Save JSON
-                        updateTsaCaseStatus(formContext, formResponse.status);
-                        // Process caseNotes array to patch each note
-                        let caseNotes = formResponse.caseNotes;
-                        let updateNotePromises = caseNotes.map(note => {
-                            // Step 1: Prepare the update data for each note
-                            let updateData = {
-                                ap_name: note.summary,
-                                ap_priority: getPriorityValue(note.priority),
-                                ap_description: note.description,
-                                ap_creatoremail: note.creatorEmail,
-                                ap_creatorname: note.creatorName,
-                                ap_source: 120950001,
-                                createdon: note.createdAt,
-                                "ap_tsanetcaseid@odata.bind": `/ap_tsanetcases(${formContext.data.entity.getId().replace("{", "").replace("}", "")})`
-                            };
-
-                            // Step 2: Construct the URL with alternate key
-                            let apiUrl = Xrm.Utility.getGlobalContext().getClientUrl() +
-                                `/api/data/v9.2/ap_tsanetnotes(ap_tsanotecode='${note.id}')`;
-
-                            // Step 3: Create the PATCH request using Web API
-                            return sendPatchRequest(apiUrl, updateData);
-                        });
-
-                        // Process caseResponses array to create or patch each response
-                        let caseResponses = formResponse.caseResponses;
-                        let updateResponsePromises = caseResponses.map(response => {
-                            // Step 1: Prepare the update data for each response
-                            let responseData = {
-                                ap_type: getResponseTypeValue(response.type),
-                                ap_tsaresponsecode: response.id.toString(),
-                                ap_engineername: response.engineerName,
-                                ap_engineerphone: response.engineerPhone,
-                                ap_engineeremail: response.engineerEmail,
-                                ap_internalcasenumber: response.caseNumber,
-                                ap_description: response.nextSteps,
-                                overriddencreatedon: response.createdAt,
-                                ap_source: 120950001,
-                                "ap_tsanetcaseid@odata.bind": `/ap_tsanetcases(${formContext.data.entity.getId().replace("{", "").replace("}", "")})`
-                            };
-
-                            // Step 2: Check if the record exists and create or patch accordingly
-                            return checkRecordExists(response.id).then(recordId => {
-                                if (recordId) {
-                                    // Only patch if ap_direction is 1 and type is approval
-                                    if (formContext.getAttribute("ap_direction").getValue() === 1 && response.type.toLowerCase() === 'approval') {
-                                        return Xrm.WebApi.updateRecord("ap_tsanetresponse", recordId, responseData);
-                                    } else {
-                                        return Promise.resolve(); // Skip patching
-                                    }
-                                } else {
-                                    return Xrm.WebApi.createRecord("ap_tsanetresponse", responseData);
-                                }
-                            });
-                        });
-
-                        // Execute all PATCH/CREATE requests and handle final actions
-                        Promise.all([...updateNotePromises, ...updateResponsePromises])
-                            .then(() => {
-                                Xrm.Utility.closeProgressIndicator();
-                                showSuccess(formContext, "Successfully updated!");
-                                // Refresh the notes subgrid
-                                //formContext.getControl("notesubgrid").refresh();
-                                refreshReadOnlyForm(formContext);
-                            })
-                            .catch(error => {
-                                Xrm.Utility.closeProgressIndicator();
-                                showError(formContext, "Error updating case notes or responses: " + error.message);
-                            });
+                        updateTsaCaseStatus(formContext, formResponse.status);    
+                        Xrm.Utility.closeProgressIndicator();
 
                     } else {
                         Xrm.Utility.closeProgressIndicator();
-                        var error = JSON.parse(response.GetCaseResponse);
+                        var error = JSON.parse(response.CaseResponse);
                         showError(formContext, error.message);
                     }
                 });

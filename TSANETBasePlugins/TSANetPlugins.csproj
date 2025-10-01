@@ -119,6 +119,7 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CasePatchCollaborationRequestPlugin.cs" />
     <Compile Include="CommonIntegrationPlugin.cs" />
     <Compile Include="GetAttachmentConfigPlugin.cs" />
     <Compile Include="GetCasePlugin.cs" />
@@ -136,6 +137,8 @@
     <Compile Include="PostPatchCollaborationRequestPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PluginBase.cs" />
+    <Compile Include="CommonCasePlugin.cs" />
+    <Compile Include="RefreshCasePlugin.cs" />
     <Compile Include="ValidateCaseNoteCreationPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
