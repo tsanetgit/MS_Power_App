@@ -14,6 +14,7 @@ public class PostCasePlugin : IPlugin
         {
             // Retrieve case details from input parameters
             string caseDetails = (string)context.InputParameters["CaseDetails"];
+            string caseID = (string)context.InputParameters["CaseID"];
 
             if (string.IsNullOrEmpty(caseDetails))
             {
@@ -29,6 +30,27 @@ public class PostCasePlugin : IPlugin
             // Send case details to the API
             ApiResponse response = commonIntegration.PostCase(caseDetails, accessToken).Result;
             context.OutputParameters["IsError"] = response.IsError;
+
+            tracingService.Trace("CaseID is: " + caseID);
+
+            if (!response.IsError && !string.IsNullOrEmpty(caseID))
+            {
+                tracingService.Trace("Case data retrieved successfully, processing response");
+
+                try
+                {
+                    // Use the UpdateCasePlugin to process the response
+                    var commonCasePlugin = new CommonCasePlugin();
+                    commonCasePlugin.ProcessCaseResponse(service, tracingService, response.Content, new Guid(caseID));
+
+                    tracingService.Trace("Case data processed successfully");
+                }
+                catch (Exception ex)
+                {
+                    tracingService.Trace($"Error processing case data: {ex.Message}");
+
+                }
+            }
             // Return the raw JSON response to the context output parameters
             context.OutputParameters["PostCaseResponse"] = response.Content;
 

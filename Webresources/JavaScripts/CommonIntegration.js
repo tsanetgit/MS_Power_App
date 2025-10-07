@@ -69,6 +69,7 @@ function getCase(formContext) {
 }
 
 // Helper function to send PATCH request
+// DEPRECATED
 function sendPatchRequest(url, data) {
     "use strict";
     return new Promise((resolve, reject) => {
@@ -254,58 +255,70 @@ function getFormByDepartment(departmentId, formContext) {
 function postCase(submissionData, formContext) {
     "use strict";
     disableButton(true, "WebResource_casecreate");
-    // Convert the submissionData object to a JSON string
-    const submissionDataString = JSON.stringify(submissionData);
-    Xrm.Utility.showProgressIndicator("Sending case...");
-    const parameters = {
-        CaseDetails: submissionDataString
-    };
-
-    // Custom action call
-    const request = {
-        CaseDetails: parameters.CaseDetails, 
-        getMetadata: function () {
-            return {
-                boundParameter: null, // No entity bound
-                parameterTypes: {
-                    "CaseDetails": { typeName: "Edm.String", structuralProperty: 1 } 
-                },
-                operationType: 0, 
-                operationName: "ap_PostCase"
-            };
-        }
-    };
-
-    Xrm.WebApi.online.execute(request).then(
+    // Save the record
+    formContext.data.save().then(
         function success(result) {
-            if (result.ok) {
-                result.json().then(function (response) {
-                    if (!response.IsError) {
-                        var formJson = response.PostCaseResponse;
-                        var formResponse = JSON.parse(formJson);
-                        //save data
-                        formContext.getAttribute("ap_name").setValue(formResponse.id.toString());
-                        formContext.getAttribute("ap_submittercasenumber").setValue(formResponse.submitterCaseNumber.toString());
-                        formContext.getAttribute("ap_tsacasetoken").setValue(formResponse.token.toString());
-                        saveToFormField("ap_formjson", formResponse, formContext);  // Save JSON
-                        Xrm.Utility.closeProgressIndicator();
-                        showSuccess(formContext, "Successfully created!");
-                        // Save the record
-                        formContext.data.entity.save();
+            Xrm.Utility.showProgressIndicator("Sending case...");
+
+            // Convert the submissionData object to a JSON string
+            const submissionDataString = JSON.stringify(submissionData);
+            const caseId = formContext.data.entity.getId().replace("{", "").replace("}", "");
+
+            const parameters = {
+                CaseDetails: submissionDataString,
+                CaseID: caseId
+            };
+
+            // Custom action call
+            const request = {
+                CaseDetails: parameters.CaseDetails,
+                CaseID: parameters.CaseID,
+                getMetadata: function () {
+                    return {
+                        boundParameter: null, // No entity bound
+                        parameterTypes: {
+                            "CaseDetails": { typeName: "Edm.String", structuralProperty: 1 },
+                            "CaseID": { typeName: "Edm.String", structuralProperty: 1 }
+                        },
+                        operationType: 0,
+                        operationName: "ap_PostCase"
+                    };
+                }
+            };
+
+            Xrm.WebApi.online.execute(request).then(
+                function success(result) {
+                    if (result.ok) {
+                        result.json().then(function (response) {
+                            if (!response.IsError) {
+                                var formJson = response.PostCaseResponse;
+                                var formResponse = JSON.parse(formJson);
+                                //fill data to form
+                                formContext.getAttribute("ap_name").setValue(formResponse.id.toString());
+                                formContext.getAttribute("ap_submittercasenumber").setValue(formResponse.submitterCaseNumber.toString());
+                                formContext.getAttribute("ap_tsacasetoken").setValue(formResponse.token.toString());
+                                saveToFormField("ap_formjson", formResponse, formContext);  // Save JSON
+                                Xrm.Utility.closeProgressIndicator();
+                                showSuccess(formContext, "Successfully created!");
+                            }
+                            else {
+                                Xrm.Utility.closeProgressIndicator();
+                                var error = JSON.parse(response.PostCaseResponse);
+                                showError(formContext, error.message);
+                                disableButton(false, "WebResource_casecreate");
+                            }
+                        });
                     }
-                    else {
-                        Xrm.Utility.closeProgressIndicator();
-                        var error = JSON.parse(response.PostCaseResponse);
-                        showError(formContext, error.message);
-                        disableButton(false, "WebResource_casecreate");
-                    }
-                });
-            }
+                },
+                function (error) {
+                    Xrm.Utility.closeProgressIndicator();
+                    showError(formContext, error.message);
+                    disableButton(false, "WebResource_casecreate");
+                }
+            );
         },
-        function (error) {
-            Xrm.Utility.closeProgressIndicator();
-            showError(formContext, error.message);
-            disableButton(false, "WebResource_casecreate");
+        function(error) {
+             showError(formContext, `Error saving updated case: ${error.message}`);
         }
     );
 }

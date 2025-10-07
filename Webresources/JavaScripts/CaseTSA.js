@@ -14,7 +14,7 @@ function onFormLoad(executionContext) {
             buildReadOnlyForm(formJsonData, formContext);
             //detectTabChange(executionContext);
             initializeUploadNotificationMonitoring(formContext);
-        } else {
+        } else if (formContext.ui.getFormType() === 1)  {
             // Call your existing logic to display editable form
             setupCompanySearch(formContext);
         }
@@ -63,7 +63,7 @@ function onFormChange(executionContext) {
         // If `ap_formjson` contains data, parse it and build the read-only form
         const formJsonData = JSON.parse(formJsonField);
         buildReadOnlyForm(formJsonData, formContext);
-    } else {
+    } else if (formContext.ui.getFormType() === 1) {
         // Call your existing logic to display editable form
         setupCompanySearch(formContext);
     }
