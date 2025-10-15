@@ -1418,6 +1418,9 @@ class CaseNote
     [JsonProperty("caseId")]
     public int CaseId { get; set; }
 
+    [JsonProperty("companyName")]
+    public string CompanyName { get; set; }
+
     [JsonProperty("creatorUsername")]
     public string CreatorUsername { get; set; }
 

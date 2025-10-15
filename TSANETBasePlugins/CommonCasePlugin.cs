@@ -76,6 +76,7 @@ public class CommonCasePlugin
                 noteEntity["ap_name"] = note.Summary;
                 noteEntity["ap_priority"] = GetPriorityValue(note.Priority);
                 noteEntity["ap_description"] = note.Description;
+                noteEntity["ap_companyname"] = note.CompanyName;
                 noteEntity["ap_creatoremail"] = note.CreatorEmail;
                 noteEntity["ap_creatorname"] = note.CreatorName;
                 noteEntity["ap_source"] = new OptionSetValue(120950001); // External source
@@ -93,6 +94,15 @@ public class CommonCasePlugin
             else
             {
                 noteEntity = existingNotes.Entities[0];
+                // Set note properties
+                noteEntity["ap_name"] = note.Summary;
+                noteEntity["ap_priority"] = GetPriorityValue(note.Priority);
+                noteEntity["ap_description"] = note.Description;
+                noteEntity["ap_companyname"] = note.CompanyName;
+                noteEntity["ap_creatoremail"] = note.CreatorEmail;
+                noteEntity["ap_creatorname"] = note.CreatorName;
+                service.Update(noteEntity); 
+
                 tracingService.Trace($"Existing note with ID: {note.Id}");
             }
         }
