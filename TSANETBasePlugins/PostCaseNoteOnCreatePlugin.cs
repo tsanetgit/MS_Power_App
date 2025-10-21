@@ -88,20 +88,18 @@ public class PostCaseNoteOnCreatePlugin : IPlugin
             }
             else
             {
-                //var caseNote = JsonConvert.DeserializeObject<CaseNote>(response.Content);
+                var caseNote = JsonConvert.DeserializeObject<CaseNote>(response.Content);
 
-                //if (caseNote != null)
-                //{
-                //    Entity noteUpdate = new Entity(entity.LogicalName, entity.Id);
-                //    // Update the ap_tsanotecode field with the caseNoteId
-                //    noteUpdate["ap_tsanotecode"] = caseNote.Id.ToString();
-                //    noteUpdate["ap_creatorname"] = userFirstName + " " + userLastName;
-                //    noteUpdate["ap_creatoremail"] = userEmail;
-                //    service.Update(noteUpdate);
-                //}
-                var commonCasePlugin = new CommonCasePlugin();
-                commonCasePlugin.ProcessCaseResponse(service, tracingService, response.Content, caseEntity.Id);
-
+                if (caseNote != null)
+                {
+                    Entity noteUpdate = new Entity(entity.LogicalName, entity.Id);
+                    // Update the ap_tsanotecode field with the caseNoteId
+                    noteUpdate["ap_tsanotecode"] = caseNote.Id.ToString();
+                    noteUpdate["ap_creatorname"] = caseNote.CreatorName;
+                    noteUpdate["ap_creatoremail"] = caseNote.CreatorEmail;
+                    noteUpdate["ap_companyname"] = caseNote.CompanyName;
+                    service.Update(noteUpdate);
+                }
             }
         }
     }

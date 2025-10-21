@@ -113,6 +113,10 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                             tsanetcase["ap_submittercasenumber"] = caseNumber;
                             service.Update(tsanetcase);
                         }
+
+                        // Use the UpdateCasePlugin to process the response
+                        var commonCasePlugin = new CommonCasePlugin();
+                        commonCasePlugin.ProcessCaseResponse(service, tracingService, response.Content, tsanetcaseRef.Id);
                     }
                 }
             }

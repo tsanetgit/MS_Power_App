@@ -262,17 +262,18 @@ async function displayDynamicForm(formDetails, formContext) {
         customerDataSections[section].sort((a, b) => a.displayOrder - b.displayOrder);
         customerDataSections[section].forEach(field => {
             if (section.toUpperCase() === "COMMON_CUSTOMER_SECTION" && incident) {
-                if (field.label.includes("Customer Email") && incident.primarycontactid?.emailaddress1) {
-                    field.value = incident.primarycontactid.emailaddress1;
+                if (field.label.includes("Customer Email") && (incident.primarycontactid?.emailaddress1 || incident.customerid_contact?.emailaddress1)) {
+                    field.value = incident.primarycontactid?.emailaddress1 || incident.customerid_contact?.emailaddress1;
                 }
-                if (field.label.includes("Customer Phone") && incident.primarycontactid?.mobilephone) {
-                    field.value = incident.primarycontactid.mobilephone;
+                if (field.label.includes("Customer Phone") && (incident.primarycontactid?.mobilephone || incident.customerid_contact?.mobilephone)) {
+                    field.value = incident.primarycontactid?.mobilephone || incident.customerid_contact?.mobilephone;
                 }
-                if (field.label.includes("Customer Name") && incident.primarycontactid?.fullname) {
-                    field.value = incident.primarycontactid.fullname;
+                if (field.label.includes("Customer Name") && (incident.primarycontactid?.fullname || incident.customerid_contact?.fullname)) {
+                    field.value = incident.primarycontactid?.fullname || incident.customerid_contact?.fullname;
                 }
-                if (field.label.includes("Customer Company") && (incident.customerid_account?.name || incident.customerid_contact?.fullname)) {
-                    field.value = incident.customerid_account?.name || incident.customerid_contact?.fullname;
+
+                if (field.label.includes("Customer Company") && (incident.customerid_account?.name || incident.customerid_contact?._parentcustomerid_value)) {
+                    field.value = incident.customerid_account?.name || incident.customerid_contact?.['_parentcustomerid_value@OData.Community.Display.V1.FormattedValue'];
                 }
             }
             
@@ -320,7 +321,7 @@ async function displayDynamicForm(formDetails, formContext) {
 // Helper function to retrieve incident data
 async function getIncidentData(caseId) {
     try {
-        const result = await Xrm.WebApi.retrieveRecord("incident", caseId, "?$select=ticketnumber,title,description&$expand=primarycontactid($select=emailaddress1,mobilephone,fullname),customerid_account($select=name),customerid_contact($select=fullname)");
+        const result = await Xrm.WebApi.retrieveRecord("incident", caseId, "?$select=ticketnumber,title,description&$expand=primarycontactid($select=emailaddress1,mobilephone,fullname),customerid_account($select=name),customerid_contact($select=fullname,_parentcustomerid_value,emailaddress1,mobilephone)");
         return result;
     } catch (error) {
         showError(formContext, "Error retrieving incident data: " + error.message);
@@ -961,7 +962,7 @@ async function loadCollaborationFeed(formContext, webResourceContent) {
                 <attribute name="ap_name" />
                 <attribute name="ap_description" />
                 <attribute name="ap_tsanotecode" />
-                <order attribute="ap_tsanotecode" descending="true" />
+                <order attribute="createdon" descending="true" />
                 <filter>
                     <condition attribute="ap_tsanetcaseid" operator="eq" value="${caseId.replace(/[{}]/g, '')}" />
                 </filter>

@@ -22,12 +22,12 @@ public class CommonCasePlugin
                 throw new InvalidPluginExecutionException("Failed to deserialize case response JSON.");
             }
 
-            // Update the tsanetcase record with the JSON content - commented out, because of UX limitations
+            // Update the tsanetcase record with the JSON content - removed due UX limitation
             //Entity tsanetcase = new Entity("ap_tsanetcase");
             //tsanetcase.Id = tsanetcaseId;
             //tsanetcase["ap_formjson"] = caseResponseJson;
             //service.Update(tsanetcase);
-            //tracingService.Trace("Updated tsanetcase record with form JSON");
+            //tracingService.Trace(caseResponseJson);
 
             // Process case notes
             ProcessCaseNotes(service, tracingService, caseResponse.CaseNotes, tsanetcaseId);
