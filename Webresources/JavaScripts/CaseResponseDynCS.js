@@ -2,6 +2,8 @@
 function onLoadDynCS(executionContext) {
     var formContext = executionContext.getFormContext();
 
+    formContext.getControl("ap_internalcasenumber").setDisabled(true);
+
     formContext.getAttribute("ap_incidentid").addOnChange(handleCreateCaseVisibility);
     formContext.getAttribute("ap_createcase").addOnChange(toggleCreateCaseSection);
 
@@ -226,9 +228,11 @@ function handleCreateCaseVisibility(executionContext) {
     if (!incidentValue || !incidentValue.length) {
         // Show create case field
         formContext.getControl("ap_createcase").setVisible(true);
+        formContext.getAttribute("ap_internalcasenumber").setValue(null);
     } else {
         // Hide create case field if incident is populated
         formContext.getControl("ap_createcase").setVisible(false);
+        setInternalCaseNumberFromIncident(formContext, incidentValue[0].id);
     }
 }
 
@@ -246,4 +250,21 @@ function toggleCreateCaseSection(executionContext) {
         createCaseSection.setVisible(false);
         formContext.getAttribute("ap_customerid").setRequiredLevel("none");
     }
+}
+
+function setInternalCaseNumberFromIncident(formContext, incidentId) {
+    // Clean the GUID (remove curly braces if present)
+    var cleanIncidentId = incidentId.replace(/[{}]/g, '');
+
+    // Retrieve the incident to get the ticketnumber
+    Xrm.WebApi.retrieveRecord("incident", cleanIncidentId, "?$select=ticketnumber").then(
+        function success(result) {
+            if (result.ticketnumber) {
+                formContext.getAttribute("ap_internalcasenumber").setValue(result.ticketnumber);
+            }
+        },
+        function error(error) {
+            console.log("Error retrieving incident ticketnumber: " + error.message);
+        }
+    );
 }

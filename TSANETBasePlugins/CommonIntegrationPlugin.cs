@@ -677,7 +677,7 @@ public class CommonIntegrationPlugin
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 content.Headers.ContentLength = json.Length;
 
-                _tracingService.Trace("Sending POST request to post case approval.");
+                _tracingService.Trace("Sending POST request to post case approval. " + json);
 
                 var response = await client.PostAsync($"{_apiUrl}/v1/collaboration-requests/{caseToken}/approval", content);
 

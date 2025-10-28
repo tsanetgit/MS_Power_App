@@ -59,15 +59,16 @@ namespace TSANetDynamicsPlugins
                         Guid incidentId = service.Create(incident);
                         tracingService.Trace($"CaseResponseCreatePlugin: Created incident with ID: {incidentId}");
 
-                        // Update field ap_incidentid with created incident
-                        Entity updateCaseResponse = new Entity(caseResponse.LogicalName);
-                        updateCaseResponse.Id = caseResponse.Id;
-                        updateCaseResponse["ap_incidentid"] = new EntityReference("incident", incidentId);
-                        service.Update(updateCaseResponse);
-                        tracingService.Trace("CaseResponseCreatePlugin: Updated case response with incident reference");
+                        // Retrieve the created incident to get the ticket number
+                        Entity createdIncident = service.Retrieve("incident", incidentId, new ColumnSet("ticketnumber"));
+                        string ticketNumber = createdIncident.GetAttributeValue<string>("ticketnumber");
+                        tracingService.Trace($"CaseResponseCreatePlugin: Retrieved ticket number: {ticketNumber}");
 
-                        // Update the caseResponse entity with the incident ID for use in the next step
+                        // Set ap_incidentid and ap_internalcasenumber on the Target entity (PreOperation)
                         caseResponse["ap_incidentid"] = new EntityReference("incident", incidentId);
+                        caseResponse["ap_internalcasenumber"] = ticketNumber;
+                        tracingService.Trace("CaseResponseCreatePlugin: Set incident reference and ticket number on case response");
+
                     }
                     else
                     {
