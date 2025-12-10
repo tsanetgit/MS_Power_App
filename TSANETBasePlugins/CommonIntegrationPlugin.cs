@@ -23,9 +23,12 @@ public class CommonIntegrationPlugin
     {
         _service = service;
         _tracingService = tracingService;
-        _apiUrl = GetEnvVariable(_service, "ap_API_URL");
-        _clientId = GetEnvVariable(_service, "ap_API_CLIENT_ID");
-        _clientSecret = GetEnvVariable(_service, "ap_API_CLIENT_SECRET");
+
+        var commonCasePlugin = new CommonCasePlugin();
+        Entity settings = commonCasePlugin.GetIntegrationSettings(_service, _tracingService);
+        _apiUrl = settings.GetAttributeValue<string>("ap_uri");
+        _clientId = settings.GetAttributeValue<string>("ap_clientid");
+        _clientSecret = settings.GetAttributeValue<string>("ap_secret");
     }
 
     // Helper method to add default headers to the HttpClient
@@ -69,6 +72,7 @@ public class CommonIntegrationPlugin
         return responseContent;
     }
 
+    // LEGACY - Method to get environment variable value by name
     public static string GetEnvVariable(IOrganizationService service, string name)
     {
         var envVariables = new Dictionary<string, string>();

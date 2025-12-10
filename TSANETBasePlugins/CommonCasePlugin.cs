@@ -233,4 +233,27 @@ public class CommonCasePlugin
                 return new OptionSetValue(1);
         }
     }
+
+    //Get settings from ap_setting table
+    public Entity GetIntegrationSettings(IOrganizationService service, ITracingService tracingService)
+    {
+
+        tracingService.Trace("Retrieving settings from ap_setting table");
+
+        var query = new QueryExpression("ap_tsanetsetting");
+        query.ColumnSet = new ColumnSet(true);
+        query.Criteria.AddCondition("ap_name", ConditionOperator.Equal, "settings");
+        query.TopCount = 1;
+
+        var results = service.RetrieveMultiple(query);
+
+        if (results.Entities.Count > 0)
+        {
+            tracingService.Trace("Settings retrieved successfully");
+            return results.Entities[0];
+        }
+
+        tracingService.Trace("No settings found with ap_name 'settings'");
+        return null;
+    }
 }
