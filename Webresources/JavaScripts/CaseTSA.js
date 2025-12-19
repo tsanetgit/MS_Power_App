@@ -216,26 +216,53 @@ async function displayDynamicForm(formDetails, formContext) {
     leftSection.appendChild(createTextInput("Company", formContext.getAttribute("ap_companyname").getValue(), "partnerName", true, false, false, 100));
 
     leftSection.appendChild(createHtmlField("Admin Note", formDetails.adminNote, "adminNote"));
-    // Add internal note field as read-only
+    // Internal note field as read-only
     const internalNote = formDetails.internalNotes && formDetails.internalNotes.length > 0 ? formDetails.internalNotes[0].note : "";
     leftSection.appendChild(createHtmlField("Internal Note", internalNote, "internalNote"));
 
-    // Prefill fields if ap_caseid is present
+    // Retrieve mapping configurations and incident data if ap_caseid is present
     const apCase = formContext.getAttribute("ap_caseid");
     let incident = null;
+    let mappingConfigs = [];
+    let incidentMappedData = {};
+
     if (apCase) {
         const apCaseId = apCase.getValue();
         if (apCaseId && apCaseId[0] && apCaseId[0].id) {
             const caseId = apCaseId[0].id.replace(/[{}]/g, '');
-            incident = await getIncidentData(caseId);
+
+            // Retrieve mapping configurations
+            try {
+                mappingConfigs = await retrieveFormMappingConfigurations();
+            } catch (error) {
+                showError(formContext, "Error retrieving mapping configurations: " + error.message);
+            }
+
+            // Build the select query with expands based on mappings
+            const selectQuery = buildIncidentSelectQuery(mappingConfigs);
+
+            try {
+                incident = await Xrm.WebApi.retrieveRecord("incident", caseId, selectQuery);
+
+                // Process mappings to get the mapped data
+                incidentMappedData = processMappingsForForm(incident, mappingConfigs);
+            } catch (error) {
+                showError(formContext, "Error retrieving incident data: " + error.message);
+            }
         }
     }
 
-    // second section
-    leftSection.appendChild(createTextInput("Internal Case#", incident ? incident.ticketnumber : formDetails.internalCaseNumber, "internalCaseNumber", false, true, true, 100));
+    // second section - use mapped data or formDetails as fallback
+    leftSection.appendChild(createTextInput("Internal Case#",
+        incidentMappedData["internalCaseNumber"] || formDetails.internalCaseNumber,
+        "internalCaseNumber", false, true, true, 100));
     leftSection.appendChild(createPrioritySelect("Priority", formDetails.priority, "priority"));
-    leftSection.appendChild(createTextInput("Summary", incident ? incident.title : formDetails.problemSummary, "problemSummary", false, true, false, 300));
-    leftSection.appendChild(createTextAreaInput("Description", incident ? incident.description : formDetails.problemDescription, "problemDescription", false, true));
+    leftSection.appendChild(createTextInput("Summary",
+        incidentMappedData["problemSummary"] || formDetails.problemSummary,
+        "problemSummary", false, true, false, 300));
+    leftSection.appendChild(createTextAreaInput("Description",
+        incidentMappedData["problemDescription"] || formDetails.problemDescription,
+        "problemDescription", false, true));
 
     // Right section
     const rightSection = document.createElement("div");
@@ -261,22 +288,12 @@ async function displayDynamicForm(formDetails, formContext) {
 
         customerDataSections[section].sort((a, b) => a.displayOrder - b.displayOrder);
         customerDataSections[section].forEach(field => {
-            if (section.toUpperCase() === "COMMON_CUSTOMER_SECTION" && incident) {
-                if (field.label.includes("Customer Email") && (incident.primarycontactid?.emailaddress1 || incident.customerid_contact?.emailaddress1)) {
-                    field.value = incident.primarycontactid?.emailaddress1 || incident.customerid_contact?.emailaddress1;
-                }
-                if (field.label.includes("Customer Phone") && (incident.primarycontactid?.mobilephone || incident.customerid_contact?.mobilephone)) {
-                    field.value = incident.primarycontactid?.mobilephone || incident.customerid_contact?.mobilephone;
-                }
-                if (field.label.includes("Customer Name") && (incident.primarycontactid?.fullname || incident.customerid_contact?.fullname)) {
-                    field.value = incident.primarycontactid?.fullname || incident.customerid_contact?.fullname;
-                }
-
-                if (field.label.includes("Customer Company") && (incident.customerid_account?.name || incident.customerid_contact?._parentcustomerid_value)) {
-                    field.value = incident.customerid_account?.name || incident.customerid_contact?.['_parentcustomerid_value@OData.Community.Display.V1.FormattedValue'];
-                }
+            // Check if there's a mapped value for this field
+            const mappedValue = incidentMappedData[field.label] || incidentMappedData[`field_${field.fieldId}`];
+            if (mappedValue !== undefined && mappedValue !== null && mappedValue !== "") {
+                field.value = mappedValue;
             }
-            
+
             // Create the field and check if a valid element was returned
             const fieldElement = createFieldFromMetadata(field);
             if (fieldElement) {
@@ -318,7 +335,7 @@ async function displayDynamicForm(formDetails, formContext) {
     formContainer.appendChild(form);
 }
 
-// Helper function to retrieve incident data
+// Helper function to retrieve incident data - DEPRECATED
 async function getIncidentData(caseId) {
     try {
         const result = await Xrm.WebApi.retrieveRecord("incident", caseId, "?$select=ticketnumber,title,description&$expand=primarycontactid($select=emailaddress1,mobilephone,fullname),customerid_account($select=name),customerid_contact($select=fullname,_parentcustomerid_value,emailaddress1,mobilephone)");
@@ -327,6 +344,120 @@ async function getIncidentData(caseId) {
         showError(formContext, "Error retrieving incident data: " + error.message);
         return null;
     }
+}
+
+// Function to retrieve form mapping configurations (mappingtype = 120950002)
+function retrieveFormMappingConfigurations() {
+    return new Promise(function (resolve, reject) {
+        var fetchXml = `
+            <fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
+              <entity name="ap_casemapping">
+                <attribute name="ap_casemappingid" />
+                <attribute name="ap_name" />
+                <attribute name="ap_sourcejsonpath" />
+                <attribute name="ap_targetattribute" />
+                <attribute name="ap_attributetype" />
+                <order attribute="ap_name" descending="false" />
+                <filter>
+                   <condition attribute="ap_mappingtype" operator="eq" value="120950002" />
+                </filter>
+              </entity>
+            </fetch>`;
+
+        var encodedFetchXml = encodeURIComponent(fetchXml);
+
+        Xrm.WebApi.retrieveMultipleRecords("ap_casemapping", `?fetchXml=${encodedFetchXml}`).then(
+            function success(result) {
+                if (result.entities && result.entities.length > 0) {
+                    resolve(result.entities);
+                } else {
+                    resolve([]);
+                }
+            },
+            function error(error) {
+                reject(error);
+            }
+        );
+    });
+}
+
+// Function to build incident select query with expands based on mappings
+function buildIncidentSelectQuery(mappingConfigs) {
+    const selectFields = new Set(["ticketnumber", "title", "description"]);
+    const expandFields = {};
+
+    mappingConfigs.forEach(function (mapping) {
+        const sourcePath = mapping.ap_sourcejsonpath;
+        if (sourcePath && sourcePath.includes('.')) {
+            // Has a dot notation, need to expand
+            const parts = sourcePath.split('.');
+            const expandEntity = parts[0];
+            const expandField = parts[1];
+
+            if (!expandFields[expandEntity]) {
+                expandFields[expandEntity] = new Set();
+            }
+            expandFields[expandEntity].add(expandField);
+        } else if (sourcePath) {
+            // Direct field on incident
+            selectFields.add(sourcePath);
+        }
+    });
+
+    // Build the query string
+    let query = "?$select=" + Array.from(selectFields).join(",");
+
+    // Add expands
+    const expandParts = [];
+    for (const [entity, fields] of Object.entries(expandFields)) {
+        const fieldsList = Array.from(fields).join(",");
+        expandParts.push(`${entity}($select=${fieldsList})`);
+    }
+
+    if (expandParts.length > 0) {
+        query += "&$expand=" + expandParts.join(",");
+    }
+
+    return query;
+}
+
+// Function to process mappings and extract values from incident
+function processMappingsForForm(incident, mappingConfigs) {
+    const mappedData = {};
+
+    mappingConfigs.forEach(function (mapping) {
+        const sourcePath = mapping.ap_sourcejsonpath;
+        const targetAttribute = mapping.ap_targetattribute;
+
+        if (!sourcePath || !targetAttribute) {
+            return;
+        }
+
+        let value = null;
+
+        if (sourcePath.includes('.')) {
+            // Handle dot notation (e.g., "primarycontactid.emailaddress1")
+            const parts = sourcePath.split('.');
+            const expandEntity = parts[0];
+            const expandField = parts[1];
+
+            if (incident[expandEntity] && incident[expandEntity][expandField]) {
+                value = incident[expandEntity][expandField];
+            }
+        } else {
+            // Direct field on incident
+            if (incident[sourcePath]) {
+                value = incident[sourcePath];
+            }
+        }
+
+        // Only set the value if it's not null/undefined/empty
+        if (value !== null && value !== undefined && value !== "") {
+            mappedData[targetAttribute] = value;
+        }
+    });
+
+    return mappedData;
 }
 
 // Helper function to create text inputs with two-column layout
