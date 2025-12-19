@@ -244,7 +244,7 @@ async function displayDynamicForm(formDetails, formContext) {
             try {
                 incident = await Xrm.WebApi.retrieveRecord("incident", caseId, selectQuery);
 
-                // Process mappings to get the mapped data
+                // Process mappings to get the mapped data from case
                 incidentMappedData = processMappingsForForm(incident, mappingConfigs);
             } catch (error) {
                 showError(formContext, "Error retrieving incident data: " + error.message);
