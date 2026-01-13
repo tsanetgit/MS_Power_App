@@ -1,5 +1,9 @@
 ﻿"use strict";
-// Start polling to ensure the input element is available
+
+// Global flag to prevent save loop
+var isSaving = false;
+
+// On form load function that initializes the form
 function onFormLoad(executionContext) {
     const formContext = executionContext.getFormContext();
     const formJsonField = formContext.getAttribute("ap_formjson").getValue();
@@ -27,6 +31,9 @@ function registerEventHandlers(executionContext) {
     formContext.getAttribute("statuscode").addOnChange(function () {
         statusWarning(executionContext);
     });
+
+    // Register the onSave event handler
+    formContext.data.entity.addOnSave(onSave);
 }
 
 function statusWarning(executionContext) {
@@ -202,6 +209,9 @@ async function displayDynamicForm(formDetails, formContext) {
     const formContainer = webResourceContent.getElementById("dynamicFormContainer");
     formContainer.innerHTML = "";  // Clear existing form
 
+    // Store formDetails as a data attribute for later retrieval
+    formContainer.dataset.formDetails = JSON.stringify(formDetails);
+
     const form = document.createElement("form");
     form.className = "dynamic-form";
 
@@ -321,14 +331,7 @@ async function displayDynamicForm(formDetails, formContext) {
 
     submitButton.addEventListener("click", function (event) {
         event.preventDefault();
-        if (validateForm(form, formContext)) {
-            buildFormObject(formDetails, formContext).then(submissionData => {
-                saveToFormField("ap_sentjson", submissionData, formContext);  // Save JSON
-                postCase(submissionData, formContext);  // Send the object via existing unbound action
-            }).catch(error => {
-                showError(formContext, "Error building form data: " + error.message);
-            });
-        }
+        formContext.data.save();
     });
 
     form.appendChild(submitButton);
@@ -1238,4 +1241,59 @@ async function loadResponses(formContext, webResourceContent) {
 
     // Append the responses section below the dynamic form container
     webResourceContent.getElementById("dynamicFormContainer").appendChild(responsesSection);
+}
+
+// OnSave event - main handler submit the case form
+function onSave(executionContext) {
+    const formContext = executionContext.getFormContext();
+    const eventArgs = executionContext.getEventArgs();
+
+    // Only run this logic if the form hasn't been submitted yet
+    if (formContext.ui.getFormType() === 1 && !isSaving) {
+        // Prevent the save until validation and data processing complete
+        eventArgs.preventDefault();
+
+        const webResourceControl = formContext.getControl("WebResource_casecreate");
+        if (!webResourceControl) return;
+
+        const webResourceContent = webResourceControl.getObject().contentDocument;
+        const formContainer = webResourceContent.getElementById("dynamicFormContainer");
+        const form = formContainer.querySelector(".dynamic-form");
+
+        if (!form) return;
+
+        if (validateForm(form, formContext)) {
+            // Set the flag to prevent re-entry
+            isSaving = true;
+
+            // Retrieve formDetails from the web resource's data attribute
+            const formDetails = getFormDetailsFromWebResource(webResourceContent);
+
+            if (!formDetails) {
+                showError(formContext, "Form details not available");
+                // Reset flag
+                isSaving = false;
+                return;
+            }
+
+            buildFormObject(formDetails, formContext).then(submissionData => {
+                saveToFormField("ap_sentjson", submissionData, formContext);
+                postCase(submissionData, formContext);
+            }).catch(error => {
+                showError(formContext, "Error building form data: " + error.message);
+                // Reset flag
+                isSaving = false;
+            });
+        }
+    }
+}
+
+// Helper function to retrieve formDetails from the web resource
+function getFormDetailsFromWebResource(webResourceContent) {
+    // Check if formDetails is stored as a data attribute on the form container
+    const formContainer = webResourceContent.getElementById("dynamicFormContainer");
+    if (formContainer && formContainer.dataset.formDetails) {
+        return JSON.parse(formContainer.dataset.formDetails);
+    }
+    return null;
 }

@@ -298,6 +298,7 @@ function postCase(submissionData, formContext) {
                                 formContext.getAttribute("ap_submittercasenumber").setValue(formResponse.submitterCaseNumber.toString());
                                 formContext.getAttribute("ap_tsacasetoken").setValue(formResponse.token.toString());
                                 saveToFormField("ap_formjson", formResponse, formContext);  // Save JSON
+                                formContext.data.save();
                                 Xrm.Utility.closeProgressIndicator();
                                 showSuccess(formContext, "Successfully created!");
                             }
