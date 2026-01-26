@@ -15,7 +15,7 @@ function onFormLoad(executionContext) {
         if (formJsonField) {
             // If `ap_formjson` contains data, parse it and build the read-only form            
             const formJsonData = JSON.parse(formJsonField);
-            buildReadOnlyForm(formJsonData, formContext);
+            //buildReadOnlyForm(formJsonData, formContext);
             //detectTabChange(executionContext);
             initializeUploadNotificationMonitoring(formContext);
         } else if (formContext.ui.getFormType() === 1)  {
@@ -1198,7 +1198,7 @@ async function loadResponses(formContext, webResourceContent) {
                 <attribute name="ap_tsaresponsecode" />
                 <order attribute="ap_tsaresponsecode" descending="true" />
                 <filter>
-                    <condition attribute="ap_tsanetcaseid" operator="eq" value="${caseId.replace(/[{}]/g, '')}" />
+                        <condition attribute="ap_tsanetcaseid" operator="eq" value="${caseId.replace(/[{}]/g, '')}" />
                 </filter>
             </entity>
         </fetch>

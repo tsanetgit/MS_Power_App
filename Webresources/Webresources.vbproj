@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="HTML\CaseForm.html" />
+    <Content Include="JavaScripts\CaseCreateReadOnlyRenderer.js" />
     <Content Include="JavaScripts\CaseMappingDynCS.js" />
     <Content Include="JavaScripts\CaseResponse.js" />
     <Content Include="JavaScripts\CaseResponseDynCS.js" />

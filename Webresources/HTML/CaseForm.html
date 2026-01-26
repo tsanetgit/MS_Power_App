@@ -317,4 +317,43 @@
             <div id="collaborationFeedNotes"></div>
         </div>
     </div>
+    <!-- Load the read-only renderer -->
+    <script src="ap_CaseCreateReadOnlyRenderer.js"></script>
+
+    <script>(function() {
+         "use strict";
+
+         console.log("[CaseForm] Webresource loading");
+
+         // Initialize renderer when DOM is ready
+         if (document.readyState === "loading") {
+             document.addEventListener("DOMContentLoaded", initRenderer);
+         } else {
+             initRenderer();
+         }
+
+         function initRenderer() {
+             try {
+                 console.log("[CaseForm] Initializing CaseCreateReadOnlyRenderer");
+
+                 // Use default config - no need to pass anything
+                 const renderer = new CaseCreateReadOnlyRenderer();
+                 renderer.init();
+
+                 // Store globally for debugging/manual refresh
+                 window.caseRenderer = renderer;
+
+                 console.log("[CaseForm] Renderer initialized successfully");
+             } catch (error) {
+                 console.error("[CaseForm] Failed to initialize renderer:", error);
+
+                 // Show error in UI
+                 const container = document.getElementById("dynamicFormContainer");
+                 if (container) {
+                     container.innerHTML = '<div class="info-message" style="color: red;">Failed to initialize form renderer. Check console for details.</div>';
+                 }
+             }
+         }
+        })();
+    </script>
 </body>
