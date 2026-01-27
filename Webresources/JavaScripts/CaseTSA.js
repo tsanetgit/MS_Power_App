@@ -13,10 +13,6 @@ function onFormLoad(executionContext) {
     // Wait for the web resource element to load
     waitForWebResourceElement(formContext, 'WebResource_casecreate', 'dynamicFormContainer', () => {
         if (formJsonField) {
-            // If `ap_formjson` contains data, parse it and build the read-only form            
-            const formJsonData = JSON.parse(formJsonField);
-            //buildReadOnlyForm(formJsonData, formContext);
-            //detectTabChange(executionContext);
             initializeUploadNotificationMonitoring(formContext);
         } else if (formContext.ui.getFormType() === 1)  {
             // Call your existing logic to display editable form
@@ -31,7 +27,11 @@ function registerEventHandlers(executionContext) {
     formContext.getAttribute("statuscode").addOnChange(function () {
         statusWarning(executionContext);
     });
-
+    // Register onChange event for ap_formjson field
+    const formJsonAttribute = formContext.getAttribute("ap_formjson");
+    if (formJsonAttribute) {
+        formJsonAttribute.addOnChange(onFormJsonChange);
+    }
     // Register the onSave event handler
     formContext.data.entity.addOnSave(onSave);
 }
@@ -41,38 +41,18 @@ function statusWarning(executionContext) {
     TSA.statusWarningLogic(formContext);
 }
 
-function detectTabChange(executionContext) {
-    let formContext = executionContext.getFormContext(); 
+/**
+ * OnChange handler for ap_formjson field
+ * Triggers webresource refresh when JSON is updated
+ */
+function onFormJsonChange(executionContext) {
+    const formContext = executionContext.getFormContext();
+    const webResourceControl = formContext.getControl("WebResource_casecreate");
 
-    setInterval(function () {
-        // Check if dynamicFormContainer is empty and refresh if needed
-        const webResourceControl = formContext.getControl("WebResource_casecreate");
-        const webResourceContent = webResourceControl.getObject().contentDocument;
-        const formContainer = webResourceContent.getElementById("dynamicFormContainer");
+    const webResourceWindow = webResourceControl.getObject().contentWindow;
 
-        if (formContainer && formContainer.innerHTML.trim() === "") {
-            formContext.data.refresh(true)
-                .then(function () {
-                    console.log("Form refreshed successfully.");
-                    onFormChange(formContext);
-                })
-        }
-
-    }, 2000);
-}
-
-// On form change
-function onFormChange(executionContext) {
-    const formContext = executionContext.getFormContext(); 
-    const formJsonField = formContext.getAttribute("ap_formjson").getValue();
-
-    if (formJsonField) {
-        // If `ap_formjson` contains data, parse it and build the read-only form
-        const formJsonData = JSON.parse(formJsonField);
-        buildReadOnlyForm(formJsonData, formContext);
-    } else if (formContext.ui.getFormType() === 1) {
-        // Call your existing logic to display editable form
-        setupCompanySearch(formContext);
+    if (webResourceWindow && webResourceWindow.refreshReadOnlyForm) {
+        webResourceWindow.refreshReadOnlyForm();
     }
 }
 
@@ -336,17 +316,6 @@ async function displayDynamicForm(formDetails, formContext) {
 
     form.appendChild(submitButton);
     formContainer.appendChild(form);
-}
-
-// Helper function to retrieve incident data - DEPRECATED
-async function getIncidentData(caseId) {
-    try {
-        const result = await Xrm.WebApi.retrieveRecord("incident", caseId, "?$select=ticketnumber,title,description&$expand=primarycontactid($select=emailaddress1,mobilephone,fullname),customerid_account($select=name),customerid_contact($select=fullname,_parentcustomerid_value,emailaddress1,mobilephone)");
-        return result;
-    } catch (error) {
-        showError(formContext, "Error retrieving incident data: " + error.message);
-        return null;
-    }
 }
 
 // Function to retrieve form mapping configurations (mappingtype = 120950002)
@@ -865,382 +834,6 @@ async function buildFormObject(formDetails, formContext) {
     });
 
     return cleanedObject;
-}
-
-// Function to register the upload button
-function registerUploadButton(formContext) {
-    const webResourceControl = formContext.getControl("WebResource_casecreate");
-    const webResourceContent = webResourceControl.getObject().contentDocument;
-
-    const uploadButton = webResourceContent.getElementById("uploadAttachmentButton");
-
-    if (uploadButton) {
-        // Initially hide the button until we check configuration
-        uploadButton.style.display = "none";
-
-        // Get attachment configuration to determine if we should show the button
-        getAttachmentConfig(formContext).then(function (config) {
-            // Show the button only if both submitter and receiver exist in the config
-            if (config &&
-                config.submitter &&
-                config.receiver &&
-                config.submitter.parameters &&
-                config.receiver.parameters && (
-                Object.keys(config.submitter.parameters).length > 0 ||
-                Object.keys(config.receiver.parameters).length > 0)) {
-                uploadButton.style.display = "block";
-
-                // Add click event listener
-                uploadButton.addEventListener("click", function () {
-                    const fileInput = document.createElement("input");
-                    fileInput.type = "file";
-                    fileInput.style.display = "none";
-
-                    fileInput.addEventListener("change", function () {
-                        const file = fileInput.files[0];
-                        if (file) {
-                            createNoteWithFile(formContext, file)
-                                .then(() => {
-                                    //formContext.ui.setFormNotification("Success - the file is now being uploaded", "INFO", "success");
-                                })
-                                .catch((error) => {
-                                    showError(formContext, "Error uploading file:" + error.message);
-                                });
-                        }
-                    });
-
-                    // Trigger the file input click
-                    document.body.appendChild(fileInput);
-                    fileInput.click();
-                    document.body.removeChild(fileInput);
-                });
-            }
-        }).catch(function (error) {
-            showError(formContext, "Error checking attachment configuration: " + error.message);
-        });
-    } else {
-        showError(formContext, "Upload button not found in the web resource.");
-    }
-}
-
-
-//Main form function
-function buildReadOnlyForm(formJsonData, formContext) {
-    const webResourceControl = formContext.getControl("WebResource_casecreate");
-    const webResourceContent = webResourceControl.getObject().contentDocument;
-
-    const formContainer = webResourceContent.getElementById("dynamicFormContainer");
-    formContainer.innerHTML = "";  // Clear existing form
-
-    const form = document.createElement("form");
-    form.className = "dynamic-form";
-
-    // Case Information Section
-    const caseInfoSection = document.createElement("div");
-    caseInfoSection.className = "form-section";
-    caseInfoSection.innerHTML = "<h3><strong>Case Information:</strong></h3>";
-    caseInfoSection.appendChild(createReadOnlyTextField("Company", formJsonData.submitCompanyName));
-    caseInfoSection.appendChild(createReadOnlyTextField("Type", formContext.getAttribute("ap_direction").getText()));
-    caseInfoSection.appendChild(createReadOnlyTextField("Priority", formJsonData.priority));
-    caseInfoSection.appendChild(createReadOnlyTextField("Case#", formJsonData.submitterCaseNumber));
-    caseInfoSection.appendChild(createReadOnlyTextField("Date", formJsonData.createdAt));
-    caseInfoSection.appendChild(createReadOnlyTextField("Submitted by", `${formJsonData.submittedBy.firstName} ${formJsonData.submittedBy.lastName}`));
-    caseInfoSection.appendChild(createReadOnlyTextField("Summary", formJsonData.summary));
-    caseInfoSection.appendChild(createReadOnlyTextArea("Description", formJsonData.description));
-    form.appendChild(caseInfoSection);
-
-    // Submitter Section
-    if (formJsonData.submitterContactDetails != null) {
-        const submitterSectionMain = document.createElement("div");
-        submitterSectionMain.className = "form-section";
-        submitterSectionMain.innerHTML = "<h3><strong>Submitter Contact Details:</strong></h3>";
-        submitterSectionMain.appendChild(createReadOnlyTextField("Name", formJsonData.submitterContactDetails.name));
-        submitterSectionMain.appendChild(createReadOnlyTextField("E-mail", formJsonData.submitterContactDetails.email));
-        submitterSectionMain.appendChild(createReadOnlyTextField("Phone", formJsonData.submitterContactDetails.phone));
-        form.appendChild(submitterSectionMain);
-    }
-
-    // Response Section
-    const responseSectionMain = document.createElement("div");
-    responseSectionMain.className = "form-section";
-    responseSectionMain.innerHTML = "<h3><strong>Response:</strong></h3>";
-    responseSectionMain.appendChild(createReadOnlyTextField("Company", formJsonData.receiveCompanyName));
-    responseSectionMain.appendChild(createReadOnlyTextField("Case #", formJsonData.receiverCaseNumber));
-    form.appendChild(responseSectionMain);
-
-    // Existing response section, do not modify
-    loadResponses(formContext, webResourceContent).then(() => {
-        // Move the responses section to be always below the existing fields in the response section
-        const responsesSection = webResourceContent.querySelector(".response-feed");
-        if (responsesSection) {
-            responseSectionMain.appendChild(responsesSection);
-        }
-    });
-
-    // Escalation Instructions Section
-    const escalationSection = document.createElement("div");
-    escalationSection.className = "form-section";
-    escalationSection.innerHTML = "<h3><strong>Escalation Instructions:</strong></h3>";
-    escalationSection.appendChild(createReadOnlyHtmlField("", formJsonData.escalationInstructions));
-    form.appendChild(escalationSection);
-
-    // Add custom fields
-    const customFields = groupBy(formJsonData.customFields, "section");
-    for (const section in customFields) {
-
-        // Map section names to user-friendly display names
-        let displaySectionName = section;
-        if (section.toUpperCase() === "CONTACT_SECTION") {
-            displaySectionName = "Contact";
-        } else if (section.toUpperCase() === "COMMON_CUSTOMER_SECTION") {
-            displaySectionName = "Customer Details";
-        } else if (section.toUpperCase() === "PROBLEM_SECTION") {
-            displaySectionName = "Problem Details";
-        }
-
-        const sectionGroup = document.createElement("div");
-        sectionGroup.className = "form-section";
-        sectionGroup.innerHTML = `<h3>${displaySectionName}</h3>`;
-
-        customFields[section].forEach(field => {
-            sectionGroup.appendChild(createReadOnlyTextField(field.fieldName, field.value));
-        });
-        form.appendChild(sectionGroup);
-    }
-
-    formContainer.appendChild(form);
-
-    loadCollaborationFeed(formContext, webResourceContent);
-    setupAddNoteButton(formContext, webResourceContent);
-
-    // Show the collaboration feed section
-    const collaborationFeed = webResourceContent.getElementById("collaborationFeed");
-    collaborationFeed.style.display = "block";
-
-    // Register the upload button
-    registerUploadButton(formContext);
-}
-
-// Helper function for read-only text areas
-function createReadOnlyTextArea(label, value) {
-    const inputGroup = document.createElement("div");
-    inputGroup.className = "input-group";
-
-    const labelElement = document.createElement("label");
-    labelElement.className = "form-label";
-    labelElement.textContent = label;
-
-    const textArea = document.createElement("textarea");
-    textArea.value = value || "";
-    textArea.className = "form-input";
-    textArea.readOnly = true;
-    textArea.rows = 5;
-
-    inputGroup.appendChild(labelElement);
-    inputGroup.appendChild(textArea);
-    return inputGroup;
-}
-
-// Helper function for read-only text fields
-function createReadOnlyTextField(label, value) {
-    const inputGroup = document.createElement("div");
-    inputGroup.className = "input-group";
-
-    const labelElement = document.createElement("label");
-    labelElement.className = "form-label";
-    labelElement.textContent = label;
-
-    const input = document.createElement("input");
-    input.type = "text";
-    input.value = value || "";
-    input.className = "form-input";
-    input.readOnly = true;
-
-    inputGroup.appendChild(labelElement);
-    inputGroup.appendChild(input);
-    return inputGroup;
-}
-
-// Helper function for read-only HTML fields
-function createReadOnlyHtmlField(label, value) {
-    const inputGroup = document.createElement("div");
-    inputGroup.className = "input-group";
-
-    if (label) {
-        const labelElement = document.createElement("label");
-        labelElement.className = "form-label";
-        labelElement.textContent = label;
-        inputGroup.appendChild(labelElement);
-    }
-
-    const div = document.createElement("div");
-    div.className = "readonly-html";
-    div.innerHTML = value || "";  // Render HTML content
-
-    inputGroup.appendChild(div);
-    return inputGroup;
-}
-
-async function loadCollaborationFeed(formContext, webResourceContent) {
-    // Get the current record's case ID
-    const caseId = formContext.data.entity.getId();
-    if (!caseId) return;
-
-    // Fetch data from the ap_tsanetnote table
-    const fetchXml = `
-        <fetch>
-            <entity name="ap_tsanetnote">
-                <attribute name="createdon" />
-                <attribute name="ap_creatoremail" />
-                <attribute name="ap_creatorname" />
-                <attribute name="ap_name" />
-                <attribute name="ap_description" />
-                <attribute name="ap_tsanotecode" />
-                <order attribute="createdon" descending="true" />
-                <filter>
-                    <condition attribute="ap_tsanetcaseid" operator="eq" value="${caseId.replace(/[{}]/g, '')}" />
-                </filter>
-            </entity>
-        </fetch>
-    `;
-
-    const result = await Xrm.WebApi.retrieveMultipleRecords("ap_tsanetnote", "?fetchXml=" + encodeURIComponent(fetchXml));
-    if (!result.entities || result.entities.length === 0) return;
-
-    // Populate the Collaboration Feed Section
-    const collaborationFeedNotes = webResourceContent.getElementById("collaborationFeedNotes");
-    collaborationFeedNotes.innerHTML = ""; // Clear existing content
-
-    result.entities.forEach(note => {
-        const noteRow = document.createElement("div");
-        noteRow.className = "note-row";
-
-        // Content Section
-        const noteContent = document.createElement("div");
-        noteContent.className = "note-content";
-        noteContent.innerHTML = `
-           <div class="note-date">Created on: ${new Date(note.createdon).toLocaleString()}</div>
-           <div class="note-meta-inline">
-               <span class="ms-Icon ms-Icon--EditNote" aria-hidden="true"></span>
-                <span>Note created by: ${note.ap_creatorname || "Unknown"}</span>
-                <span>${note.ap_creatoremail || "No Email"}</span>
-            </div>
-            <div class="note-title">${note.ap_name || "No Title"}</div>
-            <div class="note-description">${note.ap_description || "-"}</div>
-        `;
-
-        // Append content to the row
-        noteRow.appendChild(noteContent);
-
-        // Add the row to the feed
-        collaborationFeedNotes.appendChild(noteRow);
-    });
-}
-
-//Add note button click handler
-function setupAddNoteButton(formContext, webResourceContent) {
-    const addNoteButton = webResourceContent.getElementById("addNoteButton");
-
-    // Check if the event handler is already attached
-    if (addNoteButton.addNoteButtonClickHandler) {
-        // Remove existing event listener
-        addNoteButton.removeEventListener("click", addNoteButton.addNoteButtonClickHandler);
-    }
-
-    // Define the handler function within this scope
-    addNoteButton.addNoteButtonClickHandler = function addNoteButtonClickHandler() {
-        const currentRecordId = formContext.data.entity.getId(); // Get the current record ID
-        openQuickCreateForm(currentRecordId, formContext, webResourceContent);
-    };
-
-    // Add the event listener
-    addNoteButton.addEventListener("click", addNoteButton.addNoteButtonClickHandler);
-}
-
-function openQuickCreateForm(recordId, formContext, webResourceContent) {
-    const entityFormOptions = {
-        entityName: "ap_tsanetnote",
-        useQuickCreateForm: true
-    };
-
-    const formParameters = {
-        "ap_tsanetcaseid": recordId
-    };
-
-    Xrm.Navigation.openForm(entityFormOptions, formParameters).then(
-        function (success) {
-            // Check if the form was saved
-            if (success.savedEntityReference) {
-                loadCollaborationFeed(formContext, webResourceContent);
-            }
-        },
-        function (error) {
-            showError(formContext, "Error opening quick create form: " + error);
-        }
-    );
-}
-
-// Function to load and display responses
-async function loadResponses(formContext, webResourceContent) {
-    // Get the current record's case ID
-    const caseId = formContext.data.entity.getId();
-    if (!caseId) return;
-
-    // Fetch data from the ap_tsanetresponse table
-    const fetchXml = `
-        <fetch>
-            <entity name="ap_tsanetresponse">
-                <attribute name="ap_type" />
-                <attribute name="ap_engineername" />
-                <attribute name="ap_engineerphone" />
-                <attribute name="ap_engineeremail" />
-                <attribute name="ap_description" />
-                <attribute name="ap_tsaresponsecode" />
-                <order attribute="ap_tsaresponsecode" descending="true" />
-                <filter>
-                        <condition attribute="ap_tsanetcaseid" operator="eq" value="${caseId.replace(/[{}]/g, '')}" />
-                </filter>
-            </entity>
-        </fetch>
-    `;
-
-    const result = await Xrm.WebApi.retrieveMultipleRecords("ap_tsanetresponse", "?fetchXml=" + encodeURIComponent(fetchXml));
-    if (!result.entities || result.entities.length === 0) return;
-
-    // Create a new section for responses
-    const responsesSection = document.createElement("div");
-    responsesSection.className = "response-feed";
-    responsesSection.innerHTML = "<h3>Responses</h3>";
-
-    result.entities.forEach(response => {
-        const responseContainer = document.createElement("div");
-        responseContainer.className = "response-container";
-
-        // Add header with type and timestamp
-        const header = document.createElement("div");
-        header.className = "response-header";
-        header.innerHTML = `
-            <strong>${response["ap_type@OData.Community.Display.V1.FormattedValue"] || "No Type"}</strong>
-            <span class="timestamp">${new Date().toLocaleString()}</span>
-        `;
-        responseContainer.appendChild(header);
-
-        // Add content section with engineer details and description
-        const content = document.createElement("div");
-        content.className = "response-content";
-        content.innerHTML = `
-            <p><strong>Engineer Name:</strong> ${response.ap_engineername || "N/A"}</p>
-            <p><strong>Engineer Email:</strong> ${response.ap_engineeremail || "N/A"}</p>
-            <p><strong>Engineer Phone:</strong> ${response.ap_engineerphone || "N/A"}</p>
-            <p><strong>Description:</strong> ${response.ap_description || "N/A"}</p>
-        `;
-        responseContainer.appendChild(content);
-
-        responsesSection.appendChild(responseContainer);
-    });
-
-    // Append the responses section below the dynamic form container
-    webResourceContent.getElementById("dynamicFormContainer").appendChild(responsesSection);
 }
 
 // OnSave event - main handler submit the case form

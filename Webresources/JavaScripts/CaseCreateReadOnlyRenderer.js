@@ -27,11 +27,8 @@ class CaseCreateReadOnlyRenderer {
      * Initialize the renderer: wire events and trigger initial refresh
      */
     init() {
-        console.log(`${this.logPrefix} init() called`);
-
         // Prevent duplicate initialization
         if (this.initialized) {
-            console.log(`${this.logPrefix} Already initialized, skipping`);
             return;
         }
 
@@ -40,14 +37,12 @@ class CaseCreateReadOnlyRenderer {
         const id = params.get("id") || params.get("data");
 
         if (!id) {
-            console.log(`${this.logPrefix} No record ID found - skipping renderer (create form scenario)`);
             return;
         }
 
         // Wire up visibility change handler (only once)
         this.visibilityChangeHandler = () => {
             if (document.visibilityState === "visible") {
-                console.log(`${this.logPrefix} Document became visible, triggering refresh`);
                 this.refresh();
             }
         };
@@ -55,7 +50,6 @@ class CaseCreateReadOnlyRenderer {
 
         // Expose global refresh method for parent window
         window.refreshReadOnlyForm = () => {
-            console.log(`${this.logPrefix} Manual refresh triggered via window.refreshReadOnlyForm()`);
             this.refresh();
         };
 
@@ -74,7 +68,6 @@ class CaseCreateReadOnlyRenderer {
         try {
             // Get record context from query string
             this.currentRecordContext = this.getRecordContextFromQueryString();
-            console.log(`${this.logPrefix} Record context:`, this.currentRecordContext);
 
             if (!this.currentRecordContext.id || !this.currentRecordContext.entityLogicalName) {
                 this.showMessage("Missing record context parameters. Ensure the webresource is configured to pass record object type code and unique identifier.");
@@ -88,17 +81,14 @@ class CaseCreateReadOnlyRenderer {
             );
 
             if (!jsonData) {
-                this.showMessage("No form JSON available for this record.");
+                //this.showMessage("No form JSON available for this record.");
                 return;
             }
-
-            console.log(`${this.logPrefix} JSON retrieved, length: ${JSON.stringify(jsonData).length}`);
 
             // Render the read-only form
             await this.renderReadOnlyForm(jsonData);
 
         } catch (error) {
-            console.error(`${this.logPrefix} Error during refresh:`, error);
             this.showMessage(`Error loading form: ${error.message || error}`);
         }
     }
@@ -132,7 +122,7 @@ class CaseCreateReadOnlyRenderer {
     async retrieveJson(entityName, id) {
         try {
             if (!parent.Xrm || !parent.Xrm.WebApi) {
-                throw new Error("parent.Xrm.WebApi is not available");
+                this.showMessage("parent.Xrm.WebApi is not available");
             }
 
             const selectQuery = `?$select=${this.config.jsonFieldName}`;
@@ -141,7 +131,7 @@ class CaseCreateReadOnlyRenderer {
             const jsonField = record[this.config.jsonFieldName];
 
             if (!jsonField) {
-                console.log(`${this.logPrefix} ${this.config.jsonFieldName} is empty or null`);
+                this.showMessage(`${this.config.jsonFieldName} is empty or null`);
                 return null;
             }
 
@@ -151,9 +141,9 @@ class CaseCreateReadOnlyRenderer {
 
         } catch (error) {
             if (error.name === "SyntaxError") {
-                throw new Error(`Invalid JSON in ${this.config.jsonFieldName}: ${error.message}`);
+                this.showMessage(`Invalid JSON in ${this.config.jsonFieldName}: ${error.message}`);
+                return null;
             }
-            throw error;
         }
     }
 
@@ -162,11 +152,9 @@ class CaseCreateReadOnlyRenderer {
      * @param {object} formJsonData - Parsed JSON data
      */
     async renderReadOnlyForm(formJsonData) {
-        console.log(`${this.logPrefix} renderReadOnlyForm() called`);
-
         const container = document.getElementById(this.config.containerId);
         if (!container) {
-            throw new Error(`Container element #${this.config.containerId} not found`);
+            this.showMessage(`Container element #${this.config.containerId} not found`);
         }
 
         container.innerHTML = ""; // Clear existing content
@@ -220,7 +208,7 @@ class CaseCreateReadOnlyRenderer {
         try {
             await this.loadResponses(responseSectionMain);
         } catch (error) {
-            console.error(`${this.logPrefix} Error loading responses:`, error);
+            this.showMessage(`${this.logPrefix} Error loading responses: ${error.message}`);
         }
 
         // Escalation Instructions Section
@@ -265,7 +253,7 @@ class CaseCreateReadOnlyRenderer {
             this.setupAddNoteButton();
             this.registerUploadButton();
         } catch (error) {
-            console.error(`${this.logPrefix} Error loading collaboration features:`, error);
+            this.showMessage(`${this.logPrefix} Error loading collaboration features: ${error.message}`);
         }
 
         // Show the collaboration feed section
@@ -273,8 +261,6 @@ class CaseCreateReadOnlyRenderer {
         if (collaborationFeed) {
             collaborationFeed.style.display = "block";
         }
-
-        console.log(`${this.logPrefix} Read-only form rendered successfully`);
     }
 
     /**
@@ -286,7 +272,6 @@ class CaseCreateReadOnlyRenderer {
         if (container) {
             container.innerHTML = `<div class="info-message">${message}</div>`;
         }
-        console.log(`${this.logPrefix} ${message}`);
     }
 
     // ========== HELPER FUNCTIONS (migrated from CaseTSA.js) ==========
@@ -374,7 +359,7 @@ class CaseCreateReadOnlyRenderer {
      */
     async loadResponses(responseSectionMain) {
         if (!this.currentRecordContext || !this.currentRecordContext.id) {
-            console.log(`${this.logPrefix} No record context for loading responses`);
+            this.showMessage(`${this.logPrefix} No record context for loading responses`);
             return;
         }
 
@@ -401,7 +386,6 @@ class CaseCreateReadOnlyRenderer {
             const result = await parent.Xrm.WebApi.retrieveMultipleRecords("ap_tsanetresponse", `?fetchXml=${encodeURIComponent(fetchXml)}`);
             
             if (!result.entities || result.entities.length === 0) {
-                console.log(`${this.logPrefix} No responses found`);
                 return;
             }
 
@@ -436,10 +420,9 @@ class CaseCreateReadOnlyRenderer {
             });
 
             responseSectionMain.appendChild(responsesSection);
-            console.log(`${this.logPrefix} Loaded ${result.entities.length} response(s)`);
 
         } catch (error) {
-            console.error(`${this.logPrefix} Error loading responses:`, error);
+            this.showMessage(`${this.logPrefix} Error loading responses: ${error.message}`);
         }
     }
 
@@ -448,7 +431,7 @@ class CaseCreateReadOnlyRenderer {
      */
     async loadCollaborationFeed() {
         if (!this.currentRecordContext || !this.currentRecordContext.id) {
-            console.log(`${this.logPrefix} No record context for loading collaboration feed`);
+            this.showMessage(`${this.logPrefix} No record context for loading collaboration feed`);
             return;
         }
 
@@ -476,14 +459,13 @@ class CaseCreateReadOnlyRenderer {
             
             const collaborationFeedNotes = document.getElementById(this.config.collaborationNotesId);
             if (!collaborationFeedNotes) {
-                console.log(`${this.logPrefix} Collaboration notes container not found`);
+                this.showMessage(`${this.logPrefix} Collaboration notes container not found`);
                 return;
             }
 
             collaborationFeedNotes.innerHTML = "";
 
             if (!result.entities || result.entities.length === 0) {
-                console.log(`${this.logPrefix} No collaboration notes found`);
                 return;
             }
 
@@ -508,10 +490,9 @@ class CaseCreateReadOnlyRenderer {
                 collaborationFeedNotes.appendChild(noteRow);
             });
 
-            console.log(`${this.logPrefix} Loaded ${result.entities.length} collaboration note(s)`);
 
         } catch (error) {
-            console.error(`${this.logPrefix} Error loading collaboration feed:`, error);
+            this.showMessage(`${this.logPrefix} Error loading collaboration feed: ${error.message}`);
         }
     }
 
@@ -521,7 +502,7 @@ class CaseCreateReadOnlyRenderer {
     setupAddNoteButton() {
         const addNoteButton = document.getElementById(this.config.addNoteButtonId);
         if (!addNoteButton) {
-            console.log(`${this.logPrefix} Add note button not found`);
+            this.showMessage(`${this.logPrefix} Add note button not found`);
             return;
         }
 
@@ -535,7 +516,6 @@ class CaseCreateReadOnlyRenderer {
         };
 
         addNoteButton.addEventListener("click", addNoteButton.addNoteButtonClickHandler);
-        console.log(`${this.logPrefix} Add note button configured`);
     }
 
     /**
@@ -543,7 +523,7 @@ class CaseCreateReadOnlyRenderer {
      */
     openQuickCreateForm() {
         if (!this.currentRecordContext || !this.currentRecordContext.id) {
-            console.error(`${this.logPrefix} No record context for creating note`);
+            this.showMessage(`${this.logPrefix} No record context for creating note`);
             return;
         }
 
@@ -561,12 +541,11 @@ class CaseCreateReadOnlyRenderer {
         parent.Xrm.Navigation.openForm(entityFormOptions, formParameters).then(
             (success) => {
                 if (success.savedEntityReference) {
-                    console.log(`${this.logPrefix} Note created, reloading collaboration feed`);
                     this.loadCollaborationFeed();
                 }
             },
             (error) => {
-                console.error(`${this.logPrefix} Error opening quick create form:`, error);
+                this.showMessage(`${this.logPrefix} Error opening quick create form: ${error.message}`);
             }
         );
     }
@@ -576,23 +555,58 @@ class CaseCreateReadOnlyRenderer {
      */
     registerUploadButton() {
         const uploadButton = document.getElementById(this.config.uploadButtonId);
-        if (!uploadButton) {
-            console.log(`${this.logPrefix} Upload button not found`);
+        if (uploadButton) {
+            // Initially hide the button until we check configuration
+            uploadButton.style.display = "none";
+
             return;
+            // Get attachment configuration to determine if we should show the button
+            getAttachmentConfig(formContext).then(function (config) {
+                // Show the button only if both submitter and receiver exist in the config
+                if (config &&
+                    config.submitter &&
+                    config.receiver &&
+                    config.submitter.parameters &&
+                    config.receiver.parameters && (
+                        Object.keys(config.submitter.parameters).length > 0 ||
+                        Object.keys(config.receiver.parameters).length > 0)) {
+                    uploadButton.style.display = "block";
+
+                    // Add click event listener
+                    uploadButton.addEventListener("click", function () {
+                        const fileInput = document.createElement("input");
+                        fileInput.type = "file";
+                        fileInput.style.display = "none";
+
+                        fileInput.addEventListener("change", function () {
+                            const file = fileInput.files[0];
+                            if (file) {
+                                createNoteWithFile(formContext, file)
+                                    .then(() => {
+                                        //formContext.ui.setFormNotification("Success - the file is now being uploaded", "INFO", "success");
+                                    })
+                                    .catch((error) => {
+                                        this.showMessage(`${this.logPrefix} Error uploading file: ${error.message}`);
+                                    });
+                            }
+                        });
+
+                        // Trigger the file input click
+                        document.body.appendChild(fileInput);
+                        fileInput.click();
+                        document.body.removeChild(fileInput);
+                    });
+                }
+            }).catch((error) => {
+                this.showMessage(`${this.logPrefix} Error checking attachment configuration: ${error.message}`);
+            });
+        } else {
+            this.showMessage(`${this.logPrefix} Upload button not found in the web resource.`);
         }
-
-        // Initially hide until we check configuration
-        uploadButton.style.display = "none";
-
-        // Note: The original implementation depends on getAttachmentConfig and createNoteWithFile
-        // which likely require formContext. For now, we'll leave this as a placeholder.
-        // Future work: migrate attachment logic to be webresource-compatible.
-
-        console.log(`${this.logPrefix} Upload button found but not fully configured (needs migration)`);
     }
 
     /**
-     * Cleanup (if needed)
+     * Cleanup
      */
     destroy() {
         if (this.visibilityChangeHandler) {
@@ -603,5 +617,5 @@ class CaseCreateReadOnlyRenderer {
     }
 }
 
-// Expose globally for instantiation from HTML
+// Expose globally
 window.CaseCreateReadOnlyRenderer = CaseCreateReadOnlyRenderer;
