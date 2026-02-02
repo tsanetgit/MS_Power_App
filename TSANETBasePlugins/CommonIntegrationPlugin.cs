@@ -1001,7 +1001,7 @@ public class CommonIntegrationPlugin
         }
     }
 
-    public async Task<ApiResponse> PatchCaseApproval(string caseToken, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string nextSteps, string accessToken)
+    public async Task<ApiResponse> PatchCaseApproval(string caseToken, string caseNumber, string engineerName, string engineerPhone, string engineerEmail, string accessToken)
     {
         var apiResponse = new ApiResponse();
 
@@ -1016,8 +1016,7 @@ public class CommonIntegrationPlugin
                     caseNumber = caseNumber,
                     engineerName = engineerName,
                     engineerPhone = engineerPhone,
-                    engineerEmail = engineerEmail,
-                    nextSteps = nextSteps
+                    engineerEmail = engineerEmail
                 };
 
                 // Add default headers

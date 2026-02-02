@@ -82,7 +82,7 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
                     // update approval
                     else if (type == 5)
                     {
-                        response = commonIntegration.PatchCaseApproval(caseToken, caseNumber, engineerName, engineerPhone, engineerEmail, description, accessToken).Result;
+                        response = commonIntegration.PatchCaseApproval(caseToken, caseNumber, engineerName, engineerPhone, engineerEmail, accessToken).Result;
                     }
                     //Process response
                     if (response.IsError)
