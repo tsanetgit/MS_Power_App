@@ -503,7 +503,7 @@ public class CommonIntegrationPlugin
                 var json = JsonConvert.SerializeObject(caseDetails);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                content.Headers.ContentLength = json.Length;
+                //content.Headers.ContentLength = json.Length;
 
                 _tracingService.Trace("Sending POST request to create case.");
 
@@ -619,7 +619,7 @@ public class CommonIntegrationPlugin
                 var json = JsonConvert.SerializeObject(noteDetails);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                content.Headers.ContentLength = json.Length;
+                //content.Headers.ContentLength = json.Length;
 
                 _tracingService.Trace("Sending POST request to create case note.");
 
@@ -679,7 +679,7 @@ public class CommonIntegrationPlugin
                 var json = JsonConvert.SerializeObject(details);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                content.Headers.ContentLength = json.Length;
+                //content.Headers.ContentLength = json.Length;
 
                 _tracingService.Trace("Sending POST request to post case approval. " + json);
 
@@ -734,7 +734,7 @@ public class CommonIntegrationPlugin
                 var json = JsonConvert.SerializeObject(details);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                content.Headers.ContentLength = json.Length;
+                //content.Headers.ContentLength = json.Length;
 
                 _tracingService.Trace("Sending POST request to post case information response information.");
 
@@ -793,7 +793,7 @@ public class CommonIntegrationPlugin
                 var json = JsonConvert.SerializeObject(details);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                content.Headers.ContentLength = json.Length;
+                //content.Headers.ContentLength = json.Length;
 
                 _tracingService.Trace("Sending POST request to post case requested information.");
 
@@ -852,7 +852,7 @@ public class CommonIntegrationPlugin
                 var json = JsonConvert.SerializeObject(details);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                content.Headers.ContentLength = json.Length;
+                //content.Headers.ContentLength = json.Length;
 
                 _tracingService.Trace("Sending POST request to post case reject.");
 
@@ -907,7 +907,7 @@ public class CommonIntegrationPlugin
                 var json = JsonConvert.SerializeObject(details);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                content.Headers.ContentLength = json.Length;
+                //content.Headers.ContentLength = json.Length;
 
                 _tracingService.Trace("Sending POST request to post case close.");
 
@@ -967,7 +967,7 @@ public class CommonIntegrationPlugin
                 var json = JsonConvert.SerializeObject(approvalDetails);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                content.Headers.ContentLength = json.Length;
+                //content.Headers.ContentLength = json.Length;
 
                 _tracingService.Trace("Sending POST request to update case approval.");
 
@@ -1026,7 +1026,7 @@ public class CommonIntegrationPlugin
                 var json = JsonConvert.SerializeObject(approvalDetails);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                content.Headers.ContentLength = json.Length;
+                //content.Headers.ContentLength = json.Length;
 
                 _tracingService.Trace("Sending PATCH request to update case approval.");
 
@@ -1088,7 +1088,7 @@ public class CommonIntegrationPlugin
                 var json = JsonConvert.SerializeObject(requestDetails);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                content.Headers.ContentLength = json.Length;
+                //content.Headers.ContentLength = json.Length;
 
                 _tracingService.Trace("Sending PATCH request to update collaboration request.");
 

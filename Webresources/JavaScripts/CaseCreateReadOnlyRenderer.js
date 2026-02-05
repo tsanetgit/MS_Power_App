@@ -63,7 +63,6 @@ class CaseCreateReadOnlyRenderer {
      * Main refresh method: retrieves record context, fetches JSON, and renders form
      */
     async refresh() {
-        console.log(`${this.logPrefix} refresh() called`);
 
         try {
             // Get record context from query string
@@ -79,11 +78,6 @@ class CaseCreateReadOnlyRenderer {
                 this.currentRecordContext.entityLogicalName,
                 this.currentRecordContext.id
             );
-
-            if (!jsonData) {
-                //this.showMessage("No form JSON available for this record.");
-                return;
-            }
 
             // Render the read-only form
             await this.renderReadOnlyForm(jsonData);
@@ -117,12 +111,15 @@ class CaseCreateReadOnlyRenderer {
      * Retrieve JSON field from Dataverse
      * @param {string} entityName - Entity logical name
      * @param {string} id - Record GUID (without braces)
+     * @param {number} retryCount - Current retry attempt (default: 0)
+     * @param {number} maxRetries - Maximum number of retries (default: 3)
      * @returns {Promise<object|null>} Parsed JSON object or null
      */
-    async retrieveJson(entityName, id) {
+    async retrieveJson(entityName, id, retryCount = 0, maxRetries = 3) {
         try {
             if (!parent.Xrm || !parent.Xrm.WebApi) {
                 this.showMessage("parent.Xrm.WebApi is not available");
+                return null;
             }
 
             const selectQuery = `?$select=${this.config.jsonFieldName}`;
@@ -131,7 +128,14 @@ class CaseCreateReadOnlyRenderer {
             const jsonField = record[this.config.jsonFieldName];
 
             if (!jsonField) {
-                this.showMessage(`${this.config.jsonFieldName} is empty or null`);
+                if (retryCount < maxRetries) {
+                    const delayMs = Math.pow(2, retryCount) * 500; 
+
+                    await new Promise(resolve => setTimeout(resolve, delayMs));
+                    return this.retrieveJson(entityName, id, retryCount + 1, maxRetries);
+                }
+
+                this.showMessage(`${this.config.jsonFieldName} is empty or null after ${maxRetries} retries`);
                 return null;
             }
 
@@ -144,6 +148,16 @@ class CaseCreateReadOnlyRenderer {
                 this.showMessage(`Invalid JSON in ${this.config.jsonFieldName}: ${error.message}`);
                 return null;
             }
+
+            // Retry on network or retrieval errors
+            if (retryCount < maxRetries) {
+                const delayMs = Math.pow(2, retryCount) * 500;
+
+                await new Promise(resolve => setTimeout(resolve, delayMs));
+                return this.retrieveJson(entityName, id, retryCount + 1, maxRetries);
+            }
+
+            throw error;
         }
     }
 
@@ -613,7 +627,6 @@ class CaseCreateReadOnlyRenderer {
             document.removeEventListener("visibilitychange", this.visibilityChangeHandler);
         }
         this.initialized = false;
-        console.log(`${this.logPrefix} Renderer destroyed`);
     }
 }
 
