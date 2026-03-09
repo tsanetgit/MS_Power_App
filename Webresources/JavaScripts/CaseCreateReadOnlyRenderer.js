@@ -69,7 +69,7 @@ class CaseCreateReadOnlyRenderer {
             this.currentRecordContext = this.getRecordContextFromQueryString();
 
             if (!this.currentRecordContext.id || !this.currentRecordContext.entityLogicalName) {
-                this.showMessage("Missing record context parameters. Ensure the webresource is configured to pass record object type code and unique identifier.");
+                this.showErrorMessage("Missing record context parameters. Ensure the webresource is configured to pass record object type code and unique identifier.");
                 return;
             }
 
@@ -83,7 +83,7 @@ class CaseCreateReadOnlyRenderer {
             await this.renderReadOnlyForm(jsonData);
 
         } catch (error) {
-            this.showMessage(`Error loading form: ${error.message || error}`);
+            this.showErrorMessage(`Error loading form: ${error.message || error}`);
         }
     }
 
@@ -118,7 +118,7 @@ class CaseCreateReadOnlyRenderer {
     async retrieveJson(entityName, id, retryCount = 0, maxRetries = 3) {
         try {
             if (!parent.Xrm || !parent.Xrm.WebApi) {
-                this.showMessage("parent.Xrm.WebApi is not available");
+                this.showErrorMessage("parent.Xrm.WebApi is not available");
                 return null;
             }
 
@@ -135,7 +135,7 @@ class CaseCreateReadOnlyRenderer {
                     return this.retrieveJson(entityName, id, retryCount + 1, maxRetries);
                 }
 
-                this.showMessage(`${this.config.jsonFieldName} is empty or null after ${maxRetries} retries`);
+                this.showErrorMessage(`${this.config.jsonFieldName} is empty or null after ${maxRetries} retries`);
                 return null;
             }
 
@@ -145,7 +145,7 @@ class CaseCreateReadOnlyRenderer {
 
         } catch (error) {
             if (error.name === "SyntaxError") {
-                this.showMessage(`Invalid JSON in ${this.config.jsonFieldName}: ${error.message}`);
+                this.showErrorMessage(`Invalid JSON in ${this.config.jsonFieldName}: ${error.message}`);
                 return null;
             }
 
@@ -168,7 +168,7 @@ class CaseCreateReadOnlyRenderer {
     async renderReadOnlyForm(formJsonData) {
         const container = document.getElementById(this.config.containerId);
         if (!container) {
-            this.showMessage(`Container element #${this.config.containerId} not found`);
+            this.showErrorMessage(`Container element #${this.config.containerId} not found`);
         }
 
         container.innerHTML = ""; // Clear existing content
@@ -179,7 +179,7 @@ class CaseCreateReadOnlyRenderer {
         // Case Information Section
         const caseInfoSection = document.createElement("div");
         caseInfoSection.className = "form-section";
-        caseInfoSection.innerHTML = "<h3><strong>Case Information:</strong></h3>";
+        caseInfoSection.innerHTML = "<h3>Case Information:</h3>";
         caseInfoSection.appendChild(this.createReadOnlyTextField("Company", formJsonData.submitCompanyName));
         
         // Get direction text from formJsonData if available
@@ -203,7 +203,7 @@ class CaseCreateReadOnlyRenderer {
         if (formJsonData.submitterContactDetails) {
             const submitterSectionMain = document.createElement("div");
             submitterSectionMain.className = "form-section";
-            submitterSectionMain.innerHTML = "<h3><strong>Submitter Contact Details:</strong></h3>";
+            submitterSectionMain.innerHTML = "<h3>Submitter Contact Details:</h3>";
             submitterSectionMain.appendChild(this.createReadOnlyTextField("Name", formJsonData.submitterContactDetails.name));
             submitterSectionMain.appendChild(this.createReadOnlyTextField("E-mail", formJsonData.submitterContactDetails.email));
             submitterSectionMain.appendChild(this.createReadOnlyTextField("Phone", formJsonData.submitterContactDetails.phone));
@@ -213,7 +213,7 @@ class CaseCreateReadOnlyRenderer {
         // Response Section
         const responseSectionMain = document.createElement("div");
         responseSectionMain.className = "form-section";
-        responseSectionMain.innerHTML = "<h3><strong>Response:</strong></h3>";
+        responseSectionMain.innerHTML = "<h3>Response:</h3>";
         responseSectionMain.appendChild(this.createReadOnlyTextField("Company", formJsonData.receiveCompanyName));
         responseSectionMain.appendChild(this.createReadOnlyTextField("Case #", formJsonData.receiverCaseNumber));
         form.appendChild(responseSectionMain);
@@ -222,14 +222,14 @@ class CaseCreateReadOnlyRenderer {
         try {
             await this.loadResponses(responseSectionMain);
         } catch (error) {
-            this.showMessage(`${this.logPrefix} Error loading responses: ${error.message}`);
+            this.showErrorMessage(`${this.logPrefix} Error loading responses: ${error.message}`);
         }
 
         // Escalation Instructions Section
         if (formJsonData.escalationInstructions) {
             const escalationSection = document.createElement("div");
             escalationSection.className = "form-section";
-            escalationSection.innerHTML = "<h3><strong>Escalation Instructions:</strong></h3>";
+            escalationSection.innerHTML = "<h3>Escalation Instructions:</h3>";
             escalationSection.appendChild(this.createReadOnlyHtmlField("", formJsonData.escalationInstructions));
             form.appendChild(escalationSection);
         }
@@ -267,24 +267,13 @@ class CaseCreateReadOnlyRenderer {
             this.setupAddNoteButton();
             this.registerUploadButton();
         } catch (error) {
-            this.showMessage(`${this.logPrefix} Error loading collaboration features: ${error.message}`);
+            this.showErrorMessage(`${this.logPrefix} Error loading collaboration features: ${error.message}`);
         }
 
         // Show the collaboration feed section
         const collaborationFeed = document.getElementById(this.config.collaborationFeedId);
         if (collaborationFeed) {
             collaborationFeed.style.display = "block";
-        }
-    }
-
-    /**
-     * Display a message in the container (for errors or info)
-     * @param {string} message
-     */
-    showMessage(message) {
-        const container = document.getElementById(this.config.containerId);
-        if (container) {
-            container.innerHTML = `<div class="info-message">${message}</div>`;
         }
     }
 
@@ -373,7 +362,7 @@ class CaseCreateReadOnlyRenderer {
      */
     async loadResponses(responseSectionMain) {
         if (!this.currentRecordContext || !this.currentRecordContext.id) {
-            this.showMessage(`${this.logPrefix} No record context for loading responses`);
+            this.showErrorMessage(`${this.logPrefix} No record context for loading responses`);
             return;
         }
 
@@ -436,7 +425,7 @@ class CaseCreateReadOnlyRenderer {
             responseSectionMain.appendChild(responsesSection);
 
         } catch (error) {
-            this.showMessage(`${this.logPrefix} Error loading responses: ${error.message}`);
+            this.showErrorMessage(`${this.logPrefix} Error loading responses: ${error.message}`);
         }
     }
 
@@ -445,7 +434,7 @@ class CaseCreateReadOnlyRenderer {
      */
     async loadCollaborationFeed() {
         if (!this.currentRecordContext || !this.currentRecordContext.id) {
-            this.showMessage(`${this.logPrefix} No record context for loading collaboration feed`);
+            this.showErrorMessage(`${this.logPrefix} No record context for loading collaboration feed`);
             return;
         }
 
@@ -473,7 +462,7 @@ class CaseCreateReadOnlyRenderer {
             
             const collaborationFeedNotes = document.getElementById(this.config.collaborationNotesId);
             if (!collaborationFeedNotes) {
-                this.showMessage(`${this.logPrefix} Collaboration notes container not found`);
+                this.showErrorMessage(`${this.logPrefix} Collaboration notes container not found`);
                 return;
             }
 
@@ -506,7 +495,7 @@ class CaseCreateReadOnlyRenderer {
 
 
         } catch (error) {
-            this.showMessage(`${this.logPrefix} Error loading collaboration feed: ${error.message}`);
+            this.showErrorMessage(`${this.logPrefix} Error loading collaboration feed: ${error.message}`);
         }
     }
 
@@ -516,7 +505,7 @@ class CaseCreateReadOnlyRenderer {
     setupAddNoteButton() {
         const addNoteButton = document.getElementById(this.config.addNoteButtonId);
         if (!addNoteButton) {
-            this.showMessage(`${this.logPrefix} Add note button not found`);
+            this.showErrorMessage(`${this.logPrefix} Add note button not found`);
             return;
         }
 
@@ -537,7 +526,7 @@ class CaseCreateReadOnlyRenderer {
      */
     openQuickCreateForm() {
         if (!this.currentRecordContext || !this.currentRecordContext.id) {
-            this.showMessage(`${this.logPrefix} No record context for creating note`);
+            this.showErrorMessage(`${this.logPrefix} No record context for creating note`);
             return;
         }
 
@@ -559,63 +548,222 @@ class CaseCreateReadOnlyRenderer {
                 }
             },
             (error) => {
-                this.showMessage(`${this.logPrefix} Error opening quick create form: ${error.message}`);
+                this.showErrorMessage(`${this.logPrefix} Error opening quick create form: ${error.message}`);
             }
         );
     }
 
     /**
-     * Register upload button (placeholder - depends on external functions)
+     * Register upload button
      */
-    registerUploadButton() {
+    async registerUploadButton() {
         const uploadButton = document.getElementById(this.config.uploadButtonId);
-        if (uploadButton) {
-            // Initially hide the button until we check configuration
-            uploadButton.style.display = "none";
-
+        if (!uploadButton) {
             return;
-            // Get attachment configuration to determine if we should show the button
-            getAttachmentConfig(formContext).then(function (config) {
-                // Show the button only if both submitter and receiver exist in the config
-                if (config &&
-                    config.submitter &&
-                    config.receiver &&
-                    config.submitter.parameters &&
-                    config.receiver.parameters && (
-                        Object.keys(config.submitter.parameters).length > 0 ||
-                        Object.keys(config.receiver.parameters).length > 0)) {
-                    uploadButton.style.display = "block";
+        }
 
-                    // Add click event listener
-                    uploadButton.addEventListener("click", function () {
-                        const fileInput = document.createElement("input");
-                        fileInput.type = "file";
-                        fileInput.style.display = "none";
+        // Initially hide the button until we check configuration
+        uploadButton.style.display = "none";
 
-                        fileInput.addEventListener("change", function () {
-                            const file = fileInput.files[0];
-                            if (file) {
-                                createNoteWithFile(formContext, file)
-                                    .then(() => {
-                                        //formContext.ui.setFormNotification("Success - the file is now being uploaded", "INFO", "success");
-                                    })
-                                    .catch((error) => {
-                                        this.showMessage(`${this.logPrefix} Error uploading file: ${error.message}`);
-                                    });
-                            }
-                        });
+        try {
+            // 1. Get the case token from the record
+            const jsonData = await this.retrieveJson(
+                this.currentRecordContext.entityLogicalName,
+                this.currentRecordContext.id
+            );
 
-                        // Trigger the file input click
-                        document.body.appendChild(fileInput);
-                        fileInput.click();
-                        document.body.removeChild(fileInput);
-                    });
+            if (!jsonData || !jsonData.token) {
+                return;
+            }
+
+            const caseToken = jsonData.token;
+
+            // 2. Get attachment configuration using case token
+            const config = await this.getAttachmentConfigInternal(caseToken);
+
+            // Show the button only if both submitter and receiver exist in the config
+            if (config &&
+                config.submitter &&
+                config.receiver &&
+                config.submitter.parameters &&
+                config.receiver.parameters && (
+                    Object.keys(config.submitter.parameters).length > 0 ||
+                    Object.keys(config.receiver.parameters).length > 0)) {
+
+                uploadButton.style.display = "block";
+
+                // Remove existing handler if present (prevent duplicates)
+                if (uploadButton.uploadButtonClickHandler) {
+                    uploadButton.removeEventListener("click", uploadButton.uploadButtonClickHandler);
                 }
-            }).catch((error) => {
-                this.showMessage(`${this.logPrefix} Error checking attachment configuration: ${error.message}`);
-            });
+
+                // Add click event listener
+                uploadButton.uploadButtonClickHandler = () => {
+                    const fileInput = document.createElement("input");
+                    fileInput.type = "file";
+                    fileInput.style.display = "none";
+
+                    fileInput.addEventListener("change", async () => {
+                        const file = fileInput.files[0];
+                        if (file) {
+                            try {
+                                await this.createNoteWithFileInternal(file);
+                                this.showSuccessMessage("Success - the file is now being uploaded");
+                                // Reload collaboration feed to show upload status
+                                await this.loadCollaborationFeed();
+                            } catch (error) {
+                                this.showErrorMessage(`Error uploading file: ${error.message}`);
+                            }
+                        }
+                    });
+
+                    // Trigger the file input click
+                    document.body.appendChild(fileInput);
+                    fileInput.click();
+                    document.body.removeChild(fileInput);
+                };
+
+                uploadButton.addEventListener("click", uploadButton.uploadButtonClickHandler);
+            }
+        } catch (error) {
+            this.showErrorMessage(`${this.logPrefix} Error checking attachment configuration: ${error.message}`);
+        }
+    }
+
+    /**
+     * Get attachment configuration using case token
+     * @param {string} caseToken - The case token
+     * @returns {Promise<object>} Attachment configuration
+     */
+    async getAttachmentConfigInternal(caseToken) {
+        if (!caseToken) {
+            this.showErrorMessage("CaseToken is required.");
+        }
+
+        const parameters = {
+            CaseToken: caseToken
+        };
+
+        const request = {
+            CaseToken: parameters.CaseToken,
+            getMetadata: function () {
+                return {
+                    boundParameter: null,
+                    parameterTypes: {
+                        "CaseToken": { typeName: "Edm.String", structuralProperty: 1 }
+                    },
+                    operationType: 0,
+                    operationName: "ap_GetAttachmentConfig"
+                };
+            }
+        };
+
+        const result = await parent.Xrm.WebApi.online.execute(request);
+
+        if (result.ok) {
+            const response = await result.json();
+            if (!response.IsError) {
+                const configJson = response.GetAttachmentConfigResponse;
+                return JSON.parse(configJson);
+            } 
         } else {
-            this.showMessage(`${this.logPrefix} Upload button not found in the web resource.`);
+            this.showErrorMessage("Failed to retrieve attachment config.");
+        }
+    }
+
+    /**
+     * Create a note and upload a file (internal implementation without formContext)
+     * @param {File} file - The file to upload
+     * @returns {Promise<object>} Created note record
+     */
+    async createNoteWithFileInternal(file) {
+        const caseId = this.currentRecordContext.id;
+
+        if (!caseId) {
+            this.showErrorMessage("No case record is available to attach the file.");
+        }
+
+        this.showInfoMessage("Uploading file...");
+
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = async (event) => {
+                try {
+                    const fileContent = event.target.result.split(",")[1]; // Base64 content
+                    const noteData = {
+                        "subject": "%TOPROCESS%",
+                        "filename": file.name,
+                        "documentbody": fileContent,
+                        "mimetype": file.type,
+                        "notetext": "File attached via upload.",
+                        "objectid_ap_tsanetcase@odata.bind": `/ap_tsanetcases(${caseId})`
+                    };
+
+                    // Create the note record
+                    const result = await parent.Xrm.WebApi.createRecord("annotation", noteData);
+                    resolve(result);
+                } catch (error) {
+                    reject(error);
+                }
+            };
+
+            reader.onerror = () => {
+                reject(new Error("Error reading the selected file."));
+            };
+
+            reader.readAsDataURL(file); // Read the file as Base64
+        });
+    }
+
+    /**
+     * Show success message in the webresource
+     * @param {string} message - Success message
+     */
+    showSuccessMessage(message) {
+        this.showNotification(message, "success");
+    }
+
+    /**
+     * Show error message in the webresource
+     * @param {string} message - Error message
+     */
+    showErrorMessage(message) {
+        this.showNotification(message, "error");
+    }
+
+    /**
+     * Show info message in the webresource
+     * @param {string} message - Info message
+     */
+    showInfoMessage(message) {
+        this.showNotification(message, "info");
+    }
+
+    /**
+     * Show notification in the webresource
+     * @param {string} message - Notification message
+     * @param {string} type - Notification type (success, error, info)
+     */
+    showNotification(message, type = "info") {
+        // Remove existing notifications
+        const existingNotifications = document.querySelectorAll(".webresource-notification");
+        existingNotifications.forEach(n => n.remove());
+
+        // Create notification element
+        const notification = document.createElement("div");
+        notification.className = `webresource-notification webresource-notification-${type}`;
+        notification.textContent = message;
+
+        // Insert at the top of the container
+        const container = document.getElementById(this.config.containerId);
+        if (container) {
+            container.insertBefore(notification, container.firstChild);
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
         }
     }
 

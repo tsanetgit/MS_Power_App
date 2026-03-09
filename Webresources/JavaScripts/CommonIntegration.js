@@ -400,6 +400,7 @@ function getCases() {
 }
 
 // Function to create a note and upload a file
+//DEPRECATED
 function createNoteWithFile(formContext, file) {
     "use strict";
     const caseId = formContext.data.entity.getId();
@@ -457,6 +458,7 @@ function createNoteWithFile(formContext, file) {
 }
 
 // Get Attachment Config
+// DEPRECATED 
 function getAttachmentConfig(formContext) {
     const caseToken = formContext.getAttribute("ap_tsacasetoken").getValue();
 
