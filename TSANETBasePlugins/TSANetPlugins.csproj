@@ -127,6 +127,7 @@
     <Compile Include="GetFormByCompanyPlugin.cs" />
     <Compile Include="GetFormByDepartmentPlugin.cs" />
     <Compile Include="GetMePlugin.cs" />
+    <Compile Include="HmacSha256Plugin.cs" />
     <Compile Include="PostCasePatchCollaborationRequestPlugin.cs" />
     <Compile Include="PostCaseApprovalPlugin.cs" />
     <Compile Include="PostCaseApprovalUpdatePlugin.cs" />
