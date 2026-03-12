@@ -39,7 +39,7 @@ public class HmacSha256Plugin : IPlugin
             tracingService.Trace("HMAC-SHA256 computed successfully");
 
             // Set output parameter
-            context.OutputParameters["HashResult"] = hmacHash;
+            context.OutputParameters["HashResult"] = "sha256=" + hmacHash;
 
             tracingService.Trace("HmacSha256Plugin execution completed successfully");
         }
@@ -58,7 +58,7 @@ public class HmacSha256Plugin : IPlugin
         using (HMACSHA256 hmac = new HMACSHA256(secretBytes))
         {
             byte[] hashBytes = hmac.ComputeHash(bodyBytes);
-            return Convert.ToBase64String(hashBytes);
+            return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
         }
     }
 }
