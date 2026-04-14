@@ -84,7 +84,7 @@ public class CommonCasePlugin
 
                 if (note.CreatedAt != DateTime.MinValue)
                 {
-                    noteEntity["createdon"] = note.CreatedAt;
+                    noteEntity["overriddencreatedon"] = note.CreatedAt;
                 }
 
                 // Link to parent record
