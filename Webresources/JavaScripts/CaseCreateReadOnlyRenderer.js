@@ -376,8 +376,9 @@ class CaseCreateReadOnlyRenderer {
                     <attribute name="ap_engineerphone" />
                     <attribute name="ap_engineeremail" />
                     <attribute name="ap_description" />
+                   <attribute name="createdon" />
                     <attribute name="ap_tsaresponsecode" />
-                    <order attribute="ap_tsaresponsecode" descending="true" />
+                    <order attribute="createdon" descending="true" />
                     <filter>
                         <condition attribute="ap_tsanetcaseid" operator="eq" value="${caseId}" />
                     </filter>
@@ -405,7 +406,7 @@ class CaseCreateReadOnlyRenderer {
                 header.className = "response-header";
                 header.innerHTML = `
                     <strong>${response["ap_type@OData.Community.Display.V1.FormattedValue"] || "No Type"}</strong>
-                    <span class="timestamp">${new Date().toLocaleString()}</span>
+                    <span class="timestamp">${new Date(response.createdon).toLocaleString()}</span>
                 `;
                 responseContainer.appendChild(header);
 

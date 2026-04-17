@@ -88,6 +88,7 @@ namespace TSANetDynamicsPlugins
                     Entity updateParentCase = new Entity(parentCaseRef.LogicalName);
                     updateParentCase.Id = parentCaseRef.Id;
                     updateParentCase["ap_caseid"] = incidentRef;
+                    updateParentCase["ap_updatedbyresponse"] = true;
                     service.Update(updateParentCase);
                     tracingService.Trace("CaseResponseCreatePlugin: Updated parent case with incident reference");
                 }
