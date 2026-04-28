@@ -135,15 +135,22 @@ public class CasePatchCollaborationRequestPlugin : IPlugin
             if (response.IsError)
             {
                 tracingService.Trace($"PatchCollaborationRequestPlugin: Error response received - {response.Content}");
+
+                CommonCasePlugin commonCasePlugin = new CommonCasePlugin();
+
                 var errorResponse = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Content);
-                if (errorResponse != null && errorResponse.ContainsKey("message"))
-                {
-                    throw new InvalidPluginExecutionException(errorResponse["message"]);
-                }
-                else
-                {
-                    throw new InvalidPluginExecutionException("An unknown error occurred when updating the collaboration request.");
-                }
+                string errorMessage = errorResponse != null && errorResponse.ContainsKey("message")
+                    ? errorResponse["message"]
+                    : "An unknown error occurred when updating the collaboration request.";
+
+                commonCasePlugin.LogError(
+                    service,
+                    tracingService,
+                    "PatchCollaborationRequest Error",
+                    entity.Id,
+                    $"Case Token: {caseToken}{Environment.NewLine}Error: {errorMessage}{Environment.NewLine}Response: {response.Content}");
+
+                return;
             }
             else
             {

@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-//DEPRECATED: Use PostCasePatchCollaborationRequestPlugin instead
+//DEPRECATED: Use CasePatchCollaborationRequestPlugin instead
 public class PostCasePatchCollaborationRequestPlugin : IPlugin
 {
     public void Execute(IServiceProvider serviceProvider)
@@ -116,15 +116,22 @@ public class PostCasePatchCollaborationRequestPlugin : IPlugin
             if (response.IsError)
             {
                 tracingService.Trace($"PatchCollaborationRequestPlugin: Error response received - {response.Content}");
+
+                CommonCasePlugin commonCasePlugin = new CommonCasePlugin();
+
                 var errorResponse = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Content);
-                if (errorResponse != null && errorResponse.ContainsKey("message"))
-                {
-                    throw new InvalidPluginExecutionException(errorResponse["message"]);
-                }
-                else
-                {
-                    throw new InvalidPluginExecutionException("An unknown error occurred when updating the collaboration request.");
-                }
+                string errorMessage = errorResponse != null && errorResponse.ContainsKey("message")
+                    ? errorResponse["message"]
+                    : "An unknown error occurred when updating the collaboration request.";
+
+                commonCasePlugin.LogError(
+                    service,
+                    tracingService,
+                    "PatchCollaborationRequest Error",
+                    tsacase.Id,
+                    $"Case Token: {caseToken}{Environment.NewLine}Error: {errorMessage}{Environment.NewLine}Response: {response.Content}");
+
+                return;
             }
             else
             {

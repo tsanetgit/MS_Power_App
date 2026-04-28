@@ -37,14 +37,14 @@ public class PostCaseNoteOnCreatePlugin : IPlugin
             }
 
             EntityReference caseReference = (EntityReference)entity["ap_tsanetcaseid"];
-            Entity caseEntity = service.Retrieve(caseReference.LogicalName, caseReference.Id, new ColumnSet("ap_name", "ap_tsacasetoken"));
+            Entity tsaCaseEntity = service.Retrieve(caseReference.LogicalName, caseReference.Id, new ColumnSet("ap_name", "ap_tsacasetoken"));
 
-            if (!caseEntity.Contains("ap_tsacasetoken"))
+            if (!tsaCaseEntity.Contains("ap_tsacasetoken"))
             {
                 throw new InvalidPluginExecutionException("ap_tsacasetoken is missing in the related tsanetcase record.");
             }
 
-            string caseToken = caseEntity["ap_tsacasetoken"].ToString();
+            string caseToken = tsaCaseEntity["ap_tsacasetoken"].ToString();
 
             // Retrieve user details
             Entity user = service.Retrieve("systemuser", context.UserId, new ColumnSet("firstname", "lastname", "address1_telephone1", "internalemailaddress", "address1_city", "domainname"));
@@ -76,15 +76,23 @@ public class PostCaseNoteOnCreatePlugin : IPlugin
             ApiResponse response = commonIntegration.PostCaseNote(caseToken, summary, description, priority, submittedBy, accessToken).Result;
             if (response.IsError)
             {
+                tracingService.Trace($"PostCaseNoteOnCreatePlugin: Error response received - {response.Content}");
+
+                CommonCasePlugin commonCasePlugin = new CommonCasePlugin();
+
                 var errorResponse = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Content);
-                if (errorResponse != null && errorResponse.ContainsKey("message"))
-                {
-                    throw new InvalidPluginExecutionException(errorResponse["message"]);
-                }
-                else
-                {
-                    throw new InvalidPluginExecutionException("An unknown error occurred.");
-                }
+                string errorMessage = errorResponse != null && errorResponse.ContainsKey("message")
+                    ? errorResponse["message"]
+                    : "An unknown error occurred when updating the collaboration request.";
+
+                commonCasePlugin.LogError(
+                    service,
+                    tracingService,
+                    "PostCaseNote Error",
+                    tsaCaseEntity.Id,
+                    $"Case Token: {caseToken}{Environment.NewLine}Error: {errorMessage}{Environment.NewLine}Response: {response.Content}");
+
+                return;
             }
             else
             {

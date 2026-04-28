@@ -256,4 +256,28 @@ public class CommonCasePlugin
         tracingService.Trace("No settings found with ap_name 'settings'");
         return null;
     }
+    //Log errors to a custom log entity
+    public void LogError(IOrganizationService service, ITracingService tracingService, string name, Guid? tsanetcaseId, string logMessage)
+    {
+        try
+        {
+            tracingService.Trace($"LogError: Creating log record - {name}");
+
+            Entity logEntity = new Entity("ap_tsanetlog");
+            logEntity["ap_name"] = name;
+            logEntity["ap_log"] = logMessage;
+
+            if (tsanetcaseId.HasValue)
+            {
+                logEntity["ap_tsanetcaseid"] = new EntityReference("ap_tsanetcase", tsanetcaseId.Value);
+            }
+
+            service.Create(logEntity);
+            tracingService.Trace("LogError: Log record created successfully");
+        }
+        catch (Exception ex)
+        {
+            tracingService.Trace($"LogError: Failed to create log record - {ex.Message}");
+        }
+    }
 }
