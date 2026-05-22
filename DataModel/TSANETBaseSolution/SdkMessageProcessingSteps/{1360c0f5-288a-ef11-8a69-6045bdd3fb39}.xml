@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SdkMessageProcessingStep Name="GetCasePlugin: ap_GetCase of any Entity" SdkMessageProcessingStepId="{1360c0f5-288a-ef11-8a69-6045bdd3fb39}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SdkMessageId>86bc9d4b-268a-ef11-8a69-6045bdd3fb39</SdkMessageId>
+  <PluginTypeName>GetCasePlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a</PluginTypeName>
+  <PluginTypeId>7123ff81-a5f0-4670-ba10-30a7f724507b</PluginTypeId>
+  <AsyncAutoDelete>0</AsyncAutoDelete>
+  <FilteringAttributes></FilteringAttributes>
+  <InvocationSource>0</InvocationSource>
+  <Mode>0</Mode>
+  <Rank>1</Rank>
+  <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+  <Stage>40</Stage>
+  <IsCustomizable>1</IsCustomizable>
+  <IsHidden>0</IsHidden>
+  <SupportedDeployment>0</SupportedDeployment>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <SdkMessageProcessingStepImages />
+</SdkMessageProcessingStep>

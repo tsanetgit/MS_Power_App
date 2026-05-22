@@ -1,0 +1,1432 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ImportExportXml version="9.2.26042.168" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.26042.168" OrganizationSchemaType="Full" CRMServerServiceabilityVersion="9.2.26042.00168">
+  <SolutionManifest>
+    <UniqueName>TSANETDynamicsCS</UniqueName>
+    <LocalizedNames>
+      <LocalizedName description="TSANET Dynamics CS" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="Empower your team to efficiently manage and resolve technical support cases with TSANET, designed to streamline case tracking and enhance collaboration. " languagecode="1033" />
+    </Descriptions>
+    <Version>2.10.0.1</Version>
+    <Managed>0</Managed>
+    <Publisher>
+      <UniqueName>Appko</UniqueName>
+      <LocalizedNames>
+        <LocalizedName description="Appko" languagecode="1033" />
+      </LocalizedNames>
+      <Descriptions />
+      <EMailAddress xsi:nil="true"></EMailAddress>
+      <SupportingWebsiteUrl xsi:nil="true"></SupportingWebsiteUrl>
+      <CustomizationPrefix>ap</CustomizationPrefix>
+      <CustomizationOptionValuePrefix>12095</CustomizationOptionValuePrefix>
+      <Addresses>
+        <Address>
+          <AddressNumber>1</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+        <Address>
+          <AddressNumber>2</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+      </Addresses>
+    </Publisher>
+    <RootComponents>
+      <RootComponent type="1" schemaName="account" behavior="1" />
+      <RootComponent type="1" schemaName="ap_tsanetcase" behavior="2" />
+      <RootComponent type="1" schemaName="ap_tsanetresponse" behavior="2" />
+      <RootComponent type="1" schemaName="contact" behavior="1" />
+      <RootComponent type="1" schemaName="incident" behavior="1" />
+      <RootComponent type="29" id="{45970a28-2ae2-ef11-be20-000d3a1580d6}" behavior="0" />
+      <RootComponent type="29" id="{7e5ff6ff-d260-f011-bec2-000d3a4f2490}" behavior="0" />
+      <RootComponent type="29" id="{bc7d3846-d38c-f011-b4cc-000d3a4f2490}" behavior="0" />
+      <RootComponent type="29" id="{da48b506-d878-f011-b4cc-000d3a8ec392}" behavior="0" />
+      <RootComponent type="29" id="{f18eca02-d560-f011-bec2-6045bda9c8c9}" behavior="0" />
+      <RootComponent type="61" schemaName="ap_CaseResponseDynCS.js" behavior="0" />
+      <RootComponent type="62" schemaName="msdyn_CustomerServiceWorkspace" behavior="0" />
+      <RootComponent type="80" schemaName="msdyn_CustomerServiceWorkspace" behavior="0" />
+      <RootComponent type="91" id="{4da2fb15-5ad3-4421-8974-98d324511d7e}" schemaName="TSANetDynamicsPlugins, Version=0.1.0.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" behavior="0" />
+      <RootComponent type="92" id="{169a68e5-6e68-f011-bec2-000d3a4f2490}" behavior="0" />
+      <RootComponent type="92" id="{42d51676-ef36-f011-8c4e-000d3a176514}" behavior="0" />
+      <RootComponent type="92" id="{c2ff8492-fb9d-f011-b41c-000d3a8ec392}" behavior="0" />
+    </RootComponents>
+    <MissingDependencies>
+      <MissingDependency>
+        <Required type="1" schemaName="account" displayName="Account" parentSchemaName="" solution="msdyn_ChannelExperienceApp (1.0.26042.1013)" />
+        <Dependent type="1" schemaName="account" displayName="Account" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_casemapping" displayName="TSANET Case Mapping" solution="TSANet (2.9.0.5)" />
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_casemapping" displayName="TSANET Case Mapping" solution="TSANet (2.9.0.5)" />
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_tsanetcase" displayName="TSANET Case" solution="TSANet (2.9.0.5)" />
+        <Dependent type="1" schemaName="ap_tsanetcase" displayName="TSANET Case" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_tsanetlog" displayName="TSANET Log" solution="TSANet (2.9.0.5)" />
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_tsanetnote" displayName="TSANET Note" solution="TSANet (2.9.0.5)" />
+        <Dependent type="29" displayName="On Create TSA Note - Add Case Post" id="{45970a28-2ae2-ef11-be20-000d3a1580d6}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_tsanetnote" displayName="TSANET Note" solution="TSANet (2.9.0.5)" />
+        <Dependent type="29" displayName="On Update Email - Create TSA Note" id="{7e5ff6ff-d260-f011-bec2-000d3a4f2490}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_tsanetnote" displayName="TSANET Note" solution="TSANet (2.9.0.5)" />
+        <Dependent type="29" displayName="On Create Note - Create TSA Note" id="{f18eca02-d560-f011-bec2-6045bda9c8c9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_tsanetnote" displayName="TSANET Note" solution="TSANet (2.9.0.5)" />
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_tsanetresponse" displayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="1" schemaName="ap_tsanetresponse" displayName="TSANET Response" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_tsanetresponse" displayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="2" schemaName="ap_createcase" displayName="Create Case" parentSchemaName="ap_tsanetresponse" parentDisplayName="TSANET Response" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_tsanetresponse" displayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="2" schemaName="ap_customercasenumber" displayName="Customer Case #" parentSchemaName="ap_tsanetresponse" parentDisplayName="TSANET Response" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_tsanetresponse" displayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="2" schemaName="ap_customerid" displayName="Customer" parentSchemaName="ap_tsanetresponse" parentDisplayName="TSANET Response" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_tsanetresponse" displayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="2" schemaName="ap_incidentid" displayName="Case" parentSchemaName="ap_tsanetresponse" parentDisplayName="TSANET Response" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_tsanetresponse" displayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="29" displayName="On Update Case - Patch Approval" id="{bc7d3846-d38c-f011-b4cc-000d3a4f2490}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_tsanetresponse" displayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="29" displayName="On Create TSA Case - Auto Route" id="{da48b506-d878-f011-b4cc-000d3a8ec392}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_tsanetresponse" displayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_tsanetresponse" displayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="92" id="{169a68e5-6e68-f011-bec2-000d3a4f2490}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="ap_tsanetresponse" displayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="92" id="{42d51676-ef36-f011-8c4e-000d3a176514}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="contact" displayName="Contact" parentSchemaName="" solution="OmnichannelTelephony (1.10.0.284)" />
+        <Dependent type="1" schemaName="contact" displayName="Contact" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="entitlement" displayName="Entitlement" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="incident" displayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="1" schemaName="incident" displayName="Case" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="incident" displayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="29" displayName="On Update Case - Patch Approval" id="{bc7d3846-d38c-f011-b4cc-000d3a4f2490}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="incident" displayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="29" displayName="On Create TSA Case - Auto Route" id="{da48b506-d878-f011-b4cc-000d3a8ec392}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="incident" displayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="incident" displayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="incidentresolution" displayName="Case Resolution" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="knowledgearticleincident" displayName="Knowledge Article Incident" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="knowledgearticleincident" displayName="Knowledge Article Incident" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_customerasset" displayName="Customer Asset" solution="msdyn_AssetCommon (1.0.50.106)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_copilot" displayName="Copilot Analytics" solution="msdyn_AnalyticsForCopilot (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_copilot" displayName="Copilot Analytics" solution="msdyn_AnalyticsForCopilot (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_csrmanager" displayName="Customer Service historical analytics" solution="msdyn_AnalyticsForCS (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_csrmanager" displayName="Customer Service historical analytics" solution="msdyn_AnalyticsForCS (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_email" displayName="Email analytics" solution="msdyn_AnalyticsForCS (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_email" displayName="Email analytics" solution="msdyn_AnalyticsForCS (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_forecast" displayName="Forecast" solution="msdyn_AnalyticsForCS (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_ksinsights" displayName="Knowledge analytics" solution="msdyn_AnalyticsForCS (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_ksinsights" displayName="Knowledge analytics" solution="msdyn_AnalyticsForCS (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_mc" displayName="Model Customization analytics" solution="msdyn_AnalyticsForCS (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_mc" displayName="Model Customization analytics" solution="msdyn_AnalyticsForCS (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_oc" displayName="Omnichannel historical analytics" solution="msdyn_DataInsightsAndAnalyticsForOC (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_oc" displayName="Omnichannel historical analytics" solution="msdyn_DataInsightsAndAnalyticsForOC (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_oc_rt" displayName="Omnichannel Realtime analytics" solution="msdyn_DataInsightsAndAnalyticsForOC (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_oc_rt" displayName="Omnichannel Realtime analytics" solution="msdyn_DataInsightsAndAnalyticsForOC (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_ocmodern" displayName="Contact Center historical analytics" solution="msdyn_DataInsightsAndAnalyticsForOC (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_ur_recordrouting_rt" displayName="Real-time analytics for record routing" solution="msdyn_AnalyticsForCS (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_dataanalyticsreport_ur_recordrouting_rt" displayName="Real-time analytics for record routing" solution="msdyn_AnalyticsForCS (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_evaluation" displayName="Evaluation" solution="msdyn_QMS (1.0.26042.1015)">
+          <package appName="QMS" version="1.0.26042.1015">msdyn_QMSAnchor (1.0.26042.1015)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_evaluation" displayName="Evaluation" solution="msdyn_QMS (1.0.26042.1015)">
+          <package appName="QMS" version="1.0.26042.1015">msdyn_QMSAnchor (1.0.26042.1015)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_evaluationcriteria" displayName="Evaluation criteria" solution="msdyn_QMS (1.0.26042.1015)">
+          <package appName="QMS" version="1.0.26042.1015">msdyn_QMSAnchor (1.0.26042.1015)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_evaluationcriteria" displayName="Evaluation criteria" solution="msdyn_QMS (1.0.26042.1015)">
+          <package appName="QMS" version="1.0.26042.1015">msdyn_QMSAnchor (1.0.26042.1015)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_evaluationplan" displayName="Evaluation Plan" solution="msdyn_QMS (1.0.26042.1015)">
+          <package appName="QMS" version="1.0.26042.1015">msdyn_QMSAnchor (1.0.26042.1015)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_evaluationplan" displayName="Evaluation Plan" solution="msdyn_QMS (1.0.26042.1015)">
+          <package appName="QMS" version="1.0.26042.1015">msdyn_QMSAnchor (1.0.26042.1015)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_guardrail_rule" displayName="msdyn_guardrail_rule" solution="msdyn_GovernanceAgentIntelligence (9.0.26035.1013)">
+          <package appName="Service Agents Package" version="9.0.26035.1013">msdyn_ServiceAgentsAnchor (9.0.26035.1013)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_iotalert" displayName="IoT Alert" solution="IoTConnector (1.8.53.0)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_iotalert" displayName="IoT Alert" solution="IoTConnector (1.8.53.0)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_liveconversation" displayName="Ongoing conversation (Deprecated)" solution="OmnichannelBase (1.10.0.146)">
+          <package appName="UnifiedRoutingPrime" version="1.5.27.207">UnifiedRoutingPrimeAnchor (1.5.27.207)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_ocliveworkitem" displayName="Conversation" solution="OmnichannelBase (1.10.0.146)">
+          <package appName="UnifiedRoutingPrime" version="1.5.27.207">UnifiedRoutingPrimeAnchor (1.5.27.207)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_ocliveworkitem" displayName="Conversation" solution="OmnichannelBase (1.10.0.146)">
+          <package appName="UnifiedRoutingPrime" version="1.5.27.207">UnifiedRoutingPrimeAnchor (1.5.27.207)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_screenrecording" displayName="Screen Recording" solution="msdyn_screenrecording_manager (1.0.26042.1013)">
+          <package appName="ChannelExperienceApps" version="1.0.26042.1013">msdyn_ChannelExperienceAppsAnchor (1.0.26042.1013)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_screenrecording" displayName="Screen Recording" solution="msdyn_screenrecording_manager (1.0.26042.1013)">
+          <package appName="ChannelExperienceApps" version="1.0.26042.1013">msdyn_ChannelExperienceAppsAnchor (1.0.26042.1013)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_screenrecordinglink" displayName="ScreenRecordingLink" solution="msdyn_screenrecording_manager (1.0.26042.1013)">
+          <package appName="ChannelExperienceApps" version="1.0.26042.1013">msdyn_ChannelExperienceAppsAnchor (1.0.26042.1013)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_swarm" displayName="Swarm" solution="msdyn_Swarming (9.0.26042.2023)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_swarm" displayName="Swarm" solution="msdyn_Swarming (9.0.26042.2023)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_swarm" displayName="Swarm" solution="msdyn_Swarming (9.0.26042.2023)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_unifiedroutingrun" displayName="Routing diagnostic" solution="DecisionEngine (1.5.26042.1013)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_usersetting" displayName="User settings" solution="OmnichannelBase (1.10.0.146)">
+          <package appName="UnifiedRoutingPrime" version="1.5.27.207">UnifiedRoutingPrimeAnchor (1.5.27.207)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="serviceappointment" displayName="Service Activity" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="serviceappointment" displayName="Service Activity" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="10" schemaName="ap_tsanetresponse_tsanetcaseid_ap_tsanetcase" displayName="ap_tsanetresponse_tsanetcaseid_ap_tsanetcase" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Quick Create" parentDisplayName="TSANET Response" id="{eac776f5-8d9a-ef11-8a69-7c1e5268664d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="10" schemaName="msdyn_swarm_incident" displayName="msdyn_swarm_incident" parentSchemaName="incident" parentDisplayName="Case" solution="msdyn_SwarmingForCS (9.0.26042.2023)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_companycode" displayName="Company Code" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_companyname" displayName="Company Name" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_description" displayName="Description" parentSchemaName="ap_tsanetresponse" parentDisplayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Quick Create" parentDisplayName="TSANET Response" id="{eac776f5-8d9a-ef11-8a69-7c1e5268664d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_direction" displayName="Direction" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_direction" displayName="Direction" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="TSANet (2.9.0.5)" />
+        <Dependent type="93" id="{763990a7-fb9d-f011-b41c-000d3a4f2490}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_engineeremail" displayName="Engineer Email" parentSchemaName="ap_tsanetresponse" parentDisplayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Quick Create" parentDisplayName="TSANET Response" id="{eac776f5-8d9a-ef11-8a69-7c1e5268664d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_engineername" displayName="Engineer Name" parentSchemaName="ap_tsanetresponse" parentDisplayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Quick Create" parentDisplayName="TSANET Response" id="{eac776f5-8d9a-ef11-8a69-7c1e5268664d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_engineerphone" displayName="Engineer Phone" parentSchemaName="ap_tsanetresponse" parentDisplayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Quick Create" parentDisplayName="TSANET Response" id="{eac776f5-8d9a-ef11-8a69-7c1e5268664d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_formjson" displayName="Form JSON" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_internalcasenumber" displayName="Internal Case Number" parentSchemaName="ap_tsanetresponse" parentDisplayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Quick Create" parentDisplayName="TSANET Response" id="{eac776f5-8d9a-ef11-8a69-7c1e5268664d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_name" displayName="ID" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_sentjson" displayName="Sent JSON" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_source" displayName="Source" parentSchemaName="ap_tsanetresponse" parentDisplayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Quick Create" parentDisplayName="TSANET Response" id="{eac776f5-8d9a-ef11-8a69-7c1e5268664d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_submittercasenumber" displayName="Submitter Case Number" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_tsacasetoken" displayName="TSA Case Token" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_tsacasetoken" displayName="TSA Case Token" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="TSANet (2.9.0.5)" />
+        <Dependent type="93" id="{763990a7-fb9d-f011-b41c-000d3a4f2490}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_tsanetcaseid" displayName="TSANET Case" parentSchemaName="ap_tsanetresponse" parentDisplayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Quick Create" parentDisplayName="TSANET Response" id="{eac776f5-8d9a-ef11-8a69-7c1e5268664d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ap_type" displayName="Type" parentSchemaName="ap_tsanetresponse" parentDisplayName="TSANET Response" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Quick Create" parentDisplayName="TSANET Response" id="{eac776f5-8d9a-ef11-8a69-7c1e5268664d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="caseorigincode" displayName="Origin" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="casetypecode" displayName="Case Type" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="createdon" displayName="Created On" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="createdon" displayName="Created On" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="customerid" displayName="Customer" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="description" displayName="Description" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="entitlementid" displayName="Entitlement" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="escalatedon" displayName="Escalated On" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="firstresponsesent" displayName="First Response Sent" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="followupby" displayName="Follow Up By" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="incidentid" displayName="Case" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="isescalated" displayName="Is Escalated" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="modifiedon" displayName="Modified On" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="msdyn_precreateattachmentsid" displayName="Pre Create Entity Attachments Id" parentSchemaName="incident" parentDisplayName="Case" solution="msdyn_ModernCaseManagement (9.0.26042.2023)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ownerid" displayName="Owner" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="Active" />
+        <Dependent type="29" displayName="On Update Case - Patch Approval" id="{bc7d3846-d38c-f011-b4cc-000d3a4f2490}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ownerid" displayName="Owner" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="Active" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ownerid" displayName="Owner" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="Active" />
+        <Dependent type="92" id="{c2ff8492-fb9d-f011-b41c-000d3a8ec392}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ownerid" displayName="Owner" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="Active" />
+        <Dependent type="93" id="{763990a7-fb9d-f011-b41c-000d3a4f2490}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ownerid" displayName="Owner" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="parentcaseid" displayName="Parent Case" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="primarycontactid" displayName="Contact" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="prioritycode" displayName="Priority" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="productid" displayName="Product" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="productserialnumber" displayName="Serial Number" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="resolveby" displayName="Resolve By" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="responseby" displayName="First Response By" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="statecode" displayName="Status" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="statuscode" displayName="Status Reason" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="statuscode" displayName="Status Reason" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="subjectid" displayName="Subject" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ticketnumber" displayName="Case Number" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="title" displayName="Case Title" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="10" schemaName="ap_tsanetcase_caseid_incident" displayName="ap_tsanetcase_caseid_incident" parentSchemaName="incident" parentDisplayName="Case" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="title" displayName="Case Title" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="10" schemaName="ap_tsanetresponse_incidentid_incident" displayName="ap_tsanetresponse_incidentid_incident" parentSchemaName="incident" parentDisplayName="Case" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="title" displayName="Case Title" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="traversedpath" displayName="(Deprecated) Traversed Path" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="20" displayName="Customer service app access" solution="msdynce_Customerservicehub (9.0.5.0056)" id="{3dac4d9e-568c-e611-80d4-00155d42a122}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="20" displayName="CSR Manager" solution="msdynce_Service (9.0.5.56)" id="{824755ed-3530-47c3-8342-04eee07aea32}" parentId="{1808b939-dd07-4ca7-aa99-ddd2734378f1}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="20" displayName="Customer Service Representative" solution="msdynce_Service (9.0.5.56)" id="{96289545-b95a-448b-9fdc-7fd538ded1c3}" parentId="{ecfd0b44-5720-45e3-ae68-417ddb0fb654}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="- Insights" displayName="- Insights" parentSchemaName="msdyn_dataanalyticsreport_csrmanager" parentDisplayName="Customer Service historical analytics" solution="msdyn_AnalyticsForCS (9.0.26035.1010)" id="{42169494-69ed-488f-984b-e5d5faf73efa}">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="- Insights" displayName="- Insights" parentSchemaName="msdyn_dataanalyticsreport_forecast" parentDisplayName="Forecast" solution="msdyn_AnalyticsForCS (9.0.26035.1010)" id="{68837700-4efe-4fdd-9ac5-197e224caba7}">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="- Insights" displayName="- Insights" parentSchemaName="msdyn_dataanalyticsreport_oc" parentDisplayName="Omnichannel historical analytics" solution="msdyn_DataInsightsAndAnalyticsForOC (9.0.26035.1010)" id="{6c32370c-fa4d-4dbd-8954-99ef52ea0b1b}">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="- Insights" displayName="- Insights" parentSchemaName="msdyn_dataanalyticsreport_ksinsights" parentDisplayName="Knowledge analytics" solution="msdyn_AnalyticsForCS (9.0.26035.1010)" id="{70fb13db-6208-4b0d-afb1-90ae62cd628d}">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="- Insights" displayName="- Insights" parentSchemaName="msdyn_dataanalyticsreport_ur_recordrouting_rt" parentDisplayName="Real-time analytics for record routing" solution="msdyn_AnalyticsForCS (9.0.26035.1010)" id="{7f4850a9-b9e7-4ff1-9cb3-720352be47ed}">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="- Insights" displayName="- Insights" parentSchemaName="msdyn_dataanalyticsreport_email" parentDisplayName="Email analytics" solution="msdyn_AnalyticsForCS (9.0.26035.1010)" id="{9c3097df-c29a-4396-bbe6-3d61d09edc68}">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="- Insights" displayName="- Insights" parentSchemaName="msdyn_dataanalyticsreport_mc" parentDisplayName="Model Customization analytics" solution="msdyn_AnalyticsForCS (9.0.26035.1010)" id="{b418034c-806e-4e2d-82cc-6f09351e3420}">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="- Insights" displayName="- Insights" parentSchemaName="msdyn_dataanalyticsreport_oc_rt" parentDisplayName="Omnichannel Realtime analytics" solution="msdyn_DataInsightsAndAnalyticsForOC (9.0.26035.1010)" id="{b5f6db2a-9daa-477b-9923-922e4437418b}">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="- Insights" displayName="- Insights" parentSchemaName="msdyn_dataanalyticsreport_copilot" parentDisplayName="Copilot Analytics" solution="msdyn_AnalyticsForCopilot (9.0.26035.1010)" id="{b76d7d36-cb28-4489-a72c-8dda8819b235}">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Active Cases" displayName="Active Cases" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)" id="{00000000-0000-0000-00aa-000010001032}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Active Products Lookup View" displayName="Active Products Lookup View" parentSchemaName="product" parentDisplayName="Product" solution="msdynce_ProductManagement (9.0.4.0066)" id="{58afc3c5-8add-4552-98cb-473bc8f75619}">
+          <package appName="msdynce_ProductManagement" version="9.0.26034.10001">msdynce_ProductManagementAnchor (9.0.26034.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Active swarms" displayName="Active swarms" parentSchemaName="msdyn_swarm" parentDisplayName="Swarm" solution="msdyn_SwarmingForCS (9.0.26042.2023)" id="{ce3410ff-5f24-460e-bc28-33893f5df27f}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Active TSANET Cases" displayName="Active TSANET Cases" parentSchemaName="ap_tsanetcase" parentDisplayName="TSANET Case" solution="TSANet (2.9.0.5)" id="{84010216-d396-4eea-a04e-06f5c7799c0a}" />
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="All Accounts" displayName="All Accounts" parentSchemaName="account" parentDisplayName="Account" solution="msdynce_AppCommon (9.0.4.0066)" id="{65ffaf9a-e8c5-432d-860b-32f841b00d87}">
+          <package appName="msdynce_AppCommon" version="9.0.26041.10001">msdynce_AppCommonAnchor (9.0.26041.10001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="All Cases" displayName="All Cases" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)" id="{00000000-0000-0000-00aa-000010001030}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="All Contacts" displayName="All Contacts" parentSchemaName="contact" parentDisplayName="Contact" solution="msdynce_AppCommon (9.0.4.0066)" id="{0d5d377b-5e7c-47b5-bab1-a5cb8b4ac105}">
+          <package appName="msdynce_AppCommon" version="9.0.26041.10001">msdynce_AppCommonAnchor (9.0.26041.10001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="All evaluations" displayName="All evaluations" parentSchemaName="msdyn_evaluation" parentDisplayName="Evaluation" solution="msdyn_QMS (1.0.26042.1015)" id="{74e39c06-82f0-ef11-9341-6045bda79a4f}">
+          <package appName="QMS" version="1.0.26042.1015">msdyn_QMSAnchor (1.0.26042.1015)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="All swarms" displayName="All swarms" parentSchemaName="msdyn_swarm" parentDisplayName="Swarm" solution="msdyn_SwarmingForCS (9.0.26042.2023)" id="{5e551bb5-117f-ec11-8d20-0022480c42fd}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Associated Cases For Interaction Centric Form" displayName="Associated Cases For Interaction Centric Form" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)" id="{65ab1a2c-1cd9-4fbe-8fd3-d52142d6b3fd}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Associated Knowledge Records View" displayName="Associated Knowledge Records View" parentSchemaName="knowledgearticleincident" parentDisplayName="Knowledge Article Incident" solution="msdynce_Service (9.0.5.56)" id="{4ce7d553-9bba-4d8f-b209-899af9d3937c}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Cancelled swarms" displayName="Cancelled swarms" parentSchemaName="msdyn_swarm" parentDisplayName="Swarm" solution="msdyn_SwarmingForCS (9.0.26042.2023)" id="{4474ee26-3709-ed11-b83f-0022482aea7b}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Due and overdue activities" displayName="Due and overdue activities" parentSchemaName="activitypointer" parentDisplayName="Activity" solution="msdyn_ModernCaseManagement (9.0.26042.2023)" id="{95de183f-1945-ef11-bfe2-6045bd057909}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="My Active Cases" displayName="My Active Cases" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)" id="{00000000-0000-0000-00aa-000010001028}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="My active swarms" displayName="My active swarms" parentSchemaName="msdyn_swarm" parentDisplayName="Swarm" solution="msdyn_SwarmingForCS (9.0.26042.2023)" id="{214bc6ac-d27f-ec11-8d20-0022480c42fd}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="My Resolved Cases" displayName="My Resolved Cases" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)" id="{00000000-0000-0000-00aa-000010001029}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Resolved swarms" displayName="Resolved swarms" parentSchemaName="msdyn_swarm" parentDisplayName="Swarm" solution="msdyn_SwarmingForCS (9.0.26042.2023)" id="{9e2f290a-e1c8-4c71-9a67-fe6b98b36a88}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Routing diagnostics" displayName="Routing diagnostics" parentSchemaName="msdyn_unifiedroutingrun" parentDisplayName="Routing diagnostic" solution="OCBaseURBase (1.5.26044.1030)" id="{2a600798-8762-eb11-a812-000d3a5475f7}">
+          <package appName="UnifiedRoutingPrime" version="1.5.27.207">UnifiedRoutingPrimeAnchor (1.5.27.207)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Swarm advanced find view" displayName="Swarm advanced find view" parentSchemaName="msdyn_swarm" parentDisplayName="Swarm" solution="msdyn_Swarming (9.0.26042.2023)" id="{c4dd54d3-6b9d-4819-81df-c82f0263f838}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Swarm associated view" displayName="Swarm associated view" parentSchemaName="msdyn_swarm" parentDisplayName="Swarm" solution="msdyn_Swarming (9.0.26042.2023)" id="{f4a46971-a1b8-4ec3-9f9e-30740bc8c8e2}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Swarm associated view" displayName="Swarm associated view" parentSchemaName="msdyn_swarm" parentDisplayName="Swarm" solution="msdyn_Swarming (9.0.26042.2023)" id="{f4a46971-a1b8-4ec3-9f9e-30740bc8c8e2}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Swarm lookup view" displayName="Swarm lookup view" parentSchemaName="msdyn_swarm" parentDisplayName="Swarm" solution="msdyn_Swarming (9.0.26042.2023)" id="{792d601c-9320-493e-aa56-852b42d2935f}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Swarms being followed" displayName="Swarms being followed" parentSchemaName="msdyn_swarm" parentDisplayName="Swarm" solution="msdyn_SwarmingForCS (9.0.26042.2023)" id="{f885ad3d-1b7f-ec11-8d20-0022480c42fd}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Swarms I follow" displayName="Swarms I follow" parentSchemaName="msdyn_swarm" parentDisplayName="Swarm" solution="msdyn_SwarmingForCS (9.0.26042.2023)" id="{23e865fb-1a7f-ec11-8d20-0022480c42fd}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Valid Entitlements for Cases" displayName="Valid Entitlements for Cases" parentSchemaName="entitlement" parentDisplayName="Entitlement" solution="msdynce_Service (9.0.5.56)" id="{e7ea283b-0490-4956-939b-3325e0798fb8}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="29" displayName="IoT Alert to Case Process" solution="msdyn_ConnectedCustomerService (9.0.23122.1017)" id="{006c4c42-2abe-4b61-9149-56df5b9625f9}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="59" schemaName="Active Cases by Agent" displayName="Active Cases by Agent" parentSchemaName="incident" parentDisplayName="Case" solution="msdynce_Service (9.0.5.56)" id="{4143b74e-4a07-4d01-9ffe-2cdcaa4208fd}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Customer profile" parentDisplayName="Contact" solution="OmnichannelBase (1.10.0.146)" id="{05ea391a-d034-43fe-849b-b4fa3213a2b2}">
+          <package appName="UnifiedRoutingPrime" version="1.5.27.207">UnifiedRoutingPrimeAnchor (1.5.27.207)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Conversation Form" parentDisplayName="Conversation" solution="OmnichannelBase (1.10.0.146)" id="{136b3800-234b-420c-9d8a-458b61cb2263}">
+          <package appName="UnifiedRoutingPrime" version="1.5.27.207">UnifiedRoutingPrimeAnchor (1.5.27.207)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Timeline swarm form" parentDisplayName="Swarm" solution="msdyn_Swarming (9.0.26042.2023)" id="{16a37fb7-9c8e-4f3b-b72d-470ca4a09bd2}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Issue snapshot" parentDisplayName="Case" solution="OmnichannelPrime (1.10.0.227)" id="{185177f7-780e-4897-a60a-32a245841ee9}">
+          <package appName="OmnichannelPrime" version="1.10.0.36">msdyn_ContactCenterEnablement (1.10.0.36)</package>
+          <package appName="OmnichannelPrime" version="1.10.0.23">msdyn_OmnichannelRealtimeMonitoring (1.10.0.23)</package>
+          <package appName="OmnichannelPrime" version="1.10.0.112">msdyn_ContactCenterAdminCopilot (1.10.0.112)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Case form for swarming" parentDisplayName="Case" solution="msdyn_SwarmingForCS (9.0.26042.2023)" id="{1898d587-4b84-ec11-8d21-0022481c0d29}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Enhanced quick case form" parentDisplayName="Case" solution="msdyn_ModernCaseManagement (9.0.26042.2023)" id="{1bd69321-f7c5-ec11-a7b5-000d3a58b83a}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Information" parentDisplayName="Ongoing conversation (Deprecated)" solution="OmnichannelBase (1.10.0.146)" id="{202e2c4e-d885-4a59-b0df-060f887accd7}">
+          <package appName="UnifiedRoutingPrime" version="1.5.27.207">UnifiedRoutingPrimeAnchor (1.5.27.207)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Customer Service Representative Dashboard" solution="msdynce_ServicePatch201911 (9.0.26042.1001)" id="{338ea94a-8f9f-ea11-a812-000d3a31a607}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Cases For Customer" parentDisplayName="Account" solution="OmnichannelPrime (1.10.0.227)" id="{48028ae0-bf87-48c9-adf6-3dc9f29d7661}">
+          <package appName="OmnichannelPrime" version="1.10.0.36">msdyn_ContactCenterEnablement (1.10.0.36)</package>
+          <package appName="OmnichannelPrime" version="1.10.0.23">msdyn_OmnichannelRealtimeMonitoring (1.10.0.23)</package>
+          <package appName="OmnichannelPrime" version="1.10.0.112">msdyn_ContactCenterAdminCopilot (1.10.0.112)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Customer Service Operations Dashboard" solution="msdynce_Service (9.0.5.56)" id="{4e76815a-1f63-df11-ae90-00155d2e3002}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Cases for Customer" parentDisplayName="Contact" solution="OmnichannelPrime (1.10.0.227)" id="{5194a156-576a-4fa1-bf1a-abf7a41b0e8c}">
+          <package appName="OmnichannelPrime" version="1.10.0.36">msdyn_ContactCenterEnablement (1.10.0.36)</package>
+          <package appName="OmnichannelPrime" version="1.10.0.23">msdyn_OmnichannelRealtimeMonitoring (1.10.0.23)</package>
+          <package appName="OmnichannelPrime" version="1.10.0.112">msdyn_ContactCenterAdminCopilot (1.10.0.112)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Contact form for Conversation Customer card" parentDisplayName="Contact" solution="OmnichannelPrime (1.10.0.227)" id="{5aab71db-78a0-ed11-aad1-6045bd00698c}">
+          <package appName="OmnichannelPrime" version="1.10.0.36">msdyn_ContactCenterEnablement (1.10.0.36)</package>
+          <package appName="OmnichannelPrime" version="1.10.0.23">msdyn_OmnichannelRealtimeMonitoring (1.10.0.23)</package>
+          <package appName="OmnichannelPrime" version="1.10.0.112">msdyn_ContactCenterAdminCopilot (1.10.0.112)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Active Conversation" parentDisplayName="Conversation" solution="OmnichannelBase (1.10.0.146)" id="{5fe86453-73ea-4821-b6dd-ddc06e1755a1}">
+          <package appName="UnifiedRoutingPrime" version="1.5.27.207">UnifiedRoutingPrimeAnchor (1.5.27.207)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Customer Service Manager Dashboard" solution="msdynce_Service (9.0.5.56)" id="{65e050d3-8b71-4b53-acb5-bb9af83bf384}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Contact Quick Create" parentDisplayName="Contact" solution="msdynce_AppCommon (9.0.4.0066)" id="{661157fe-2fc9-4eaa-835f-5bfa2f7b64f7}">
+          <package appName="msdynce_AppCommon" version="9.0.26041.10001">msdynce_AppCommonAnchor (9.0.26041.10001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Customer profile cases" parentDisplayName="Account" solution="OmnichannelPrime (1.10.0.227)" id="{67e6801d-f669-ed11-9561-000d3a36d4e2}">
+          <package appName="OmnichannelPrime" version="1.10.0.36">msdyn_ContactCenterEnablement (1.10.0.36)</package>
+          <package appName="OmnichannelPrime" version="1.10.0.23">msdyn_OmnichannelRealtimeMonitoring (1.10.0.23)</package>
+          <package appName="OmnichannelPrime" version="1.10.0.112">msdyn_ContactCenterAdminCopilot (1.10.0.112)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Omnichannel Ongoing Conversations Dashboard" solution="OmnichannelBase (1.10.0.146)" id="{7a33c42b-02f9-e811-8161-000d3afe51f1}">
+          <package appName="UnifiedRoutingPrime" version="1.5.27.207">UnifiedRoutingPrimeAnchor (1.5.27.207)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Account form for Conversation Customer Card" parentDisplayName="Account" solution="OmnichannelPrime (1.10.0.227)" id="{944bd820-76a0-ed11-aad1-6045bd00698c}">
+          <package appName="OmnichannelPrime" version="1.10.0.36">msdyn_ContactCenterEnablement (1.10.0.36)</package>
+          <package appName="OmnichannelPrime" version="1.10.0.23">msdyn_OmnichannelRealtimeMonitoring (1.10.0.23)</package>
+          <package appName="OmnichannelPrime" version="1.10.0.112">msdyn_ContactCenterAdminCopilot (1.10.0.112)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="TimelineWallControl - Contact - Main" parentDisplayName="Contact" solution="OmnichannelBase (1.10.0.146)" id="{986258b5-2985-4ae0-970a-5e1d108ab793}">
+          <package appName="UnifiedRoutingPrime" version="1.5.27.207">UnifiedRoutingPrimeAnchor (1.5.27.207)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Social Profile for Interactive experience" parentDisplayName="Social Profile" solution="msdynce_SocialProfile (9.0.1.0015)" id="{a0ea0f71-dc25-47b6-8cc9-9ef8144ae424}">
+          <package appName="msdynce_SocialProfile" version="9.0.1.0015">msdynce_SocialProfile (9.0.1.0015)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Case for Customer Card" parentDisplayName="Case" solution="OmnichannelPrime (1.10.0.227)" id="{a4af0b8e-8095-ed11-aad1-6045bd00698c}">
+          <package appName="OmnichannelPrime" version="1.10.0.36">msdyn_ContactCenterEnablement (1.10.0.36)</package>
+          <package appName="OmnichannelPrime" version="1.10.0.23">msdyn_OmnichannelRealtimeMonitoring (1.10.0.23)</package>
+          <package appName="OmnichannelPrime" version="1.10.0.112">msdyn_ContactCenterAdminCopilot (1.10.0.112)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Swarm form" parentDisplayName="Swarm" solution="msdyn_Swarming (9.0.26042.2023)" id="{a6d9e075-5993-4a1b-b003-4a8d091c5d8b}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Customer Service Performance Dashboard" solution="msdynce_Service (9.0.5.56)" id="{acb40ffe-a1e0-47d0-a472-799911009df6}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Case for Multisession experience" parentDisplayName="Case" solution="msdynce_ServicePatch201911 (9.0.26042.1001)" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Swarm full page control" parentDisplayName="Swarm" solution="msdyn_Swarming (9.0.26042.2023)" id="{b864afd8-d593-42d2-a93d-36228d497055}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Ongoing Conversation Main Form" parentDisplayName="Ongoing conversation (Deprecated)" solution="OmnichannelBase (1.10.0.146)" id="{b9f3f0af-8100-46cd-b6fb-20169f8a12f2}">
+          <package appName="UnifiedRoutingPrime" version="1.5.27.207">UnifiedRoutingPrimeAnchor (1.5.27.207)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Customer profile cases" parentDisplayName="Contact" solution="OmnichannelPrime (1.10.0.227)" id="{c621206a-f769-ed11-9561-000d3a36d4e2}">
+          <package appName="OmnichannelPrime" version="1.10.0.36">msdyn_ContactCenterEnablement (1.10.0.36)</package>
+          <package appName="OmnichannelPrime" version="1.10.0.23">msdyn_OmnichannelRealtimeMonitoring (1.10.0.23)</package>
+          <package appName="OmnichannelPrime" version="1.10.0.112">msdyn_ContactCenterAdminCopilot (1.10.0.112)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Account Quick Create" parentDisplayName="Account" solution="msdynce_AppCommon (9.0.4.0066)" id="{c9e7ec2d-efca-4e4c-b3e3-f63c4bba5e4b}">
+          <package appName="msdynce_AppCommon" version="9.0.26041.10001">msdynce_AppCommonAnchor (9.0.26041.10001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Enhanced full case form" parentDisplayName="Case" solution="msdyn_ModernCaseManagement (9.0.26042.2023)" id="{cd0d48a0-10c6-ec11-a7b5-000d3a58b83a}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Ongoing conversations quick view form" parentDisplayName="Ongoing conversation (Deprecated)" solution="OmnichannelBase (1.10.0.146)" id="{d014c994-1732-4988-b36a-651f017bf164}">
+          <package appName="UnifiedRoutingPrime" version="1.5.27.207">UnifiedRoutingPrimeAnchor (1.5.27.207)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Contact for Multisession experience" parentDisplayName="Contact" solution="msdynce_ServicePatch201911 (9.0.26042.1001)" id="{e06af4d1-2812-45c7-a9c2-9fb73fee7bec}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Omnichannel Representative Dashboard" solution="OmnichannelBase (1.10.0.146)" id="{e8fb53c5-2f79-e811-8162-000d3aa3ef73}">
+          <package appName="UnifiedRoutingPrime" version="1.5.27.207">UnifiedRoutingPrimeAnchor (1.5.27.207)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Customer profile" parentDisplayName="Account" solution="OmnichannelBase (1.10.0.146)" id="{e9a9c8a9-e94d-47a9-a6c3-ec37ddb83b99}">
+          <package appName="UnifiedRoutingPrime" version="1.5.27.207">UnifiedRoutingPrimeAnchor (1.5.27.207)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Contact form for Customer Card" parentDisplayName="Contact" solution="msdyn_ModernCaseManagement (9.0.26042.2023)" id="{edfc131b-8d2d-ed11-9db2-002248285e57}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Case Quick Create for Multisession" parentDisplayName="Case" solution="msdynce_ServicePatch201911 (9.0.26042.1001)" id="{f43b46e9-17a4-4443-afc4-141d40a46f22}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Account form for Customer Card" parentDisplayName="Account" solution="msdyn_ModernCaseManagement (9.0.26042.2023)" id="{f5f9a07e-0f28-ed11-9db1-000d3a8d107a}">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Account for Multisession experience" parentDisplayName="Account" solution="msdynce_ServicePatch201911 (9.0.26042.1001)" id="{ff49442f-8c60-4877-bdae-8fe51e6f4636}">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="ap_CaseCreateForm.html" displayName="ap_CaseCreateForm.html" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="ap_CaseResponse.js" displayName="ap_CaseResponse.js" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Quick Create" parentDisplayName="TSANET Response" id="{eac776f5-8d9a-ef11-8a69-7c1e5268664d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="ap_CaseTSA.js" displayName="ap_CaseTSA.js" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="ap_CommonIntegration.js" displayName="ap_CommonIntegration.js" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="ap_CommonScripts.js" displayName="ap_CommonScripts.js" solution="TSANet (2.9.0.5)" />
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Case" id="{a6216037-6d4d-44f3-bca4-b3141e6816b9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="ap_tsanetcase_icon.svg" displayName="ap_tsanetcase_icon.svg" solution="TSANet (2.9.0.5)" />
+        <Dependent type="1" schemaName="ap_tsanetcase" displayName="TSANET Case" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_/Analytics/imgs/Copilot.svg" displayName="msdyn_/Analytics/imgs/Copilot.svg" solution="msdyn_AnalyticsForCopilot (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_/Analytics/imgs/CustomerServiceInsights.svg" displayName="msdyn_/Analytics/imgs/CustomerServiceInsights.svg" solution="msdyn_AnalyticsForCS (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_/Analytics/imgs/CustomizedReportsIcon.svg" displayName="msdyn_/Analytics/imgs/CustomizedReportsIcon.svg" solution="msdyn_AnalyticsForCS (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_/Analytics/imgs/EmailSentimentIcon.svg" displayName="msdyn_/Analytics/imgs/EmailSentimentIcon.svg" solution="msdyn_AnalyticsForCS (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_/Analytics/imgs/KnowledgeSearchIcon.svg" displayName="msdyn_/Analytics/imgs/KnowledgeSearchIcon.svg" solution="msdyn_AnalyticsForCS (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_/Analytics/imgs/OmnichannelReportIcon.svg" displayName="msdyn_/Analytics/imgs/OmnichannelReportIcon.svg" solution="msdyn_DataInsightsAndAnalyticsForOC (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_/Analytics/imgs/RealtimeReportIcon.svg" displayName="msdyn_/Analytics/imgs/RealtimeReportIcon.svg" solution="msdyn_DataInsightsAndAnalyticsForOC (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_/Analytics/imgs/URRealTimeIcon.svg" displayName="msdyn_/Analytics/imgs/URRealTimeIcon.svg" solution="msdyn_AnalyticsForCS (9.0.26035.1010)">
+          <package appName="CustomerServiceAnalytics" version="9.0.26035.1010">msdyn_CustomerServiceAnalyticsAnchor (9.0.26035.1010)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_AIOptimizationHubIConFinal" displayName="msdyn_AIOptimizationHubIConFinal" solution="msdyn_CopilotTrustCenter (1.186.3419.6)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_CopilotCaseSummaryLibrary.js" displayName="msdyn_CopilotCaseSummaryLibrary.js" solution="msdyn_CSIntelligence (9.2.26042.1052)">
+          <package appName="Service Intelligence Package" version="9.2.26042.1052">msdyn_ServiceIntelligenceAnchor (9.2.26042.1052)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_formSparkleRegular.svg" displayName="msdyn_formSparkleRegular.svg" solution="msdyn_OCIntelligence (9.2.26042.1052)">
+          <package appName="Service Intelligence Package" version="9.2.26042.1052">msdyn_ServiceIntelligenceAnchor (9.2.26042.1052)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_GovernanceAgentSiteMapIcon" displayName="msdyn_GovernanceAgentSiteMapIcon" solution="msdyn_CSAdminCenterApp (1.186.3419.6)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_InboxSitemapIcon" displayName="msdyn_InboxSitemapIcon" solution="msdyn_InboxSolution (1.0.26035.1002)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdyn_Personalization" displayName="msdyn_Personalization" solution="msdyn_OmnichannelEngagementHubPatch (1.5.27.3)">
+          <package appName="OmnichannelPrimeChat" version="1.5.27.191">OmnichannelPrimeChatAnchor (1.5.27.191)</package>
+          <package appName="OmnichannelPrimeSms" version="1.5.27.215">OmnichannelPrimeSMSAnchor (1.5.27.215)</package>
+          <package appName="OmnichannelPrimeFacebook" version="1.5.27.112">OmnichannelPrimeFacebookAnchor (1.5.27.112)</package>
+          <package appName="OmnichannelPrimeSocialChannels" version="1.5.27.122">OmnichannelPrimeSocialChannelsAnchor (1.5.27.122)</package>
+          <package appName="OmnichannelPrimeTeams" version="1.5.27.97">OmnichannelPrimeTeams (1.5.27.97)</package>
+          <package appName="OmnichannelPrimeTelephony" version="1.5.27.574">OmnichannelPrimeTelephony (1.5.27.574)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msdynce_CustomerServiceHub/_imgs/AppIcon/CustomerServiceHubIcon.svg" displayName="msdynce_CustomerServiceHub/_imgs/AppIcon/CustomerServiceHubIcon.svg" solution="msdynce_Customerservicehub (9.0.5.0056)">
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="Swarming/msdyn_Swarming.js" displayName="Swarming/msdyn_Swarming.js" solution="msdyn_Swarming (9.0.26042.2023)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="SwarmingForCS/msdyn_SwarmingForCS.js" displayName="SwarmingForCS/msdyn_SwarmingForCS.js" solution="msdyn_SwarmingForCS (9.0.26042.2023)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="62" schemaName="msdyn_CustomerServiceWorkspace" solution="msdyn_CustomerServiceWorkspace (9.0.26034.1000)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="62" schemaName="msdyn_CustomerServiceWorkspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="66" schemaName="MscrmControls.CSIntelligence.CopilotCaseSummaryControl" displayName="MscrmControls.CSIntelligence.CopilotCaseSummaryControl" solution="msdyn_CSIntelligence (9.2.26042.1052)">
+          <package appName="Service Intelligence Package" version="9.2.26042.1052">msdyn_ServiceIntelligenceAnchor (9.2.26042.1052)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="66" schemaName="MscrmControls.CustomerService.DueOpenActivitiesControl" displayName="MscrmControls.CustomerService.DueOpenActivitiesControl" solution="msdyn_ModernCaseManagement (9.0.26042.2023)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="66" schemaName="MscrmControls.CustomerService.SelectionTreeViewControl" displayName="MscrmControls.CustomerService.SelectionTreeViewControl" solution="msdynce_ServiceManagementControlsExtension (9.1.26042.1001)">
+          <package appName="msdynce_ServiceLevelAgreement" version="9.0.26035.1004">msdynce_ServiceLevelAgreementAnchor (9.0.26035.1004)</package>
+          <package appName="msdynce_Service" version="9.0.26042.1001">msdynce_ServiceAnchor (9.0.26042.1001)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="66" schemaName="MscrmControls.FieldControls.AttachmentListControl" displayName="MscrmControls.FieldControls.AttachmentListControl" solution="msdyn_ModernCaseManagement (9.0.26042.2023)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="66" schemaName="MscrmControls.FieldControls.OptionSetWrapper" displayName="MscrmControls.FieldControls.OptionSetWrapper" solution="msdyn_ModernCaseManagement (9.0.26042.2023)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="66" schemaName="MscrmControls.FieldControls.QueueItemControl" displayName="MscrmControls.FieldControls.QueueItemControl" solution="msdyn_ModernCaseManagement (9.0.26042.2023)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="60" displayName="Case for Multisession experience" parentDisplayName="Case" id="{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="66" schemaName="MscrmControls.FieldControls.ToggleControl" displayName="MscrmControls.FieldControls.ToggleControl" solution="BaseCustomControlsCore (9.0.2604.2009)">
+          <package appName="Base Custom Controls" version="9.0.2604.2009">BaseCustomControlsCore (9.0.2604.2009)</package>
+        </Required>
+        <Dependent type="60" displayName="Quick Create" parentDisplayName="TSANET Response" id="{eac776f5-8d9a-ef11-8a69-7c1e5268664d}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" solution="msdyn_CustomerServiceWorkspace (9.0.26034.1000)">
+          <package appName="ServiceExtended" version="9.0.26042.2023">msdyn_ServiceExtendedAnchor (9.0.26042.2023)</package>
+        </Required>
+        <Dependent type="80" schemaName="msdyn_CustomerServiceWorkspace" displayName="Customer Service workspace" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="90" schemaName="CasePatchCollaborationRequestPlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" displayName="CasePatchCollaborationRequestPlugin" solution="TSANet (2.9.0.5)" id="{6842c92e-f7d5-4f7d-9b90-d72ab99e987a}" />
+        <Dependent type="92" id="{c2ff8492-fb9d-f011-b41c-000d3a8ec392}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="SettingDefinition" displayName="msdyn_enablertecopilot" solution="msdyn_SalesCopilot (9.1.26034.10002)" id.uniquename="msdyn_enablertecopilot">
+          <package appName="msdynce_Sales" version="9.0.26034.10006">msdynce_SalesAnchor (9.0.26034.10006)</package>
+        </Required>
+        <Dependent type="AppSetting" displayName="parentappmoduleid.uniquename=msdyn_CustomerServiceWorkspace,settingdefinitionid.uniquename=msdyn_enablertecopilot" id.parentappmoduleid.uniquename="msdyn_CustomerServiceWorkspace" id.settingdefinitionid.uniquename="msdyn_enablertecopilot" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="SettingDefinition" displayName="msdyn_rtecopilotdefaultonruncompleted" solution="msdyn_CSIntelligence (9.2.26042.1052)" id.uniquename="msdyn_rtecopilotdefaultonruncompleted">
+          <package appName="Service Intelligence Package" version="9.2.26042.1052">msdyn_ServiceIntelligenceAnchor (9.2.26042.1052)</package>
+        </Required>
+        <Dependent type="AppSetting" displayName="parentappmoduleid.uniquename=msdyn_CustomerServiceWorkspace,settingdefinitionid.uniquename=msdyn_rtecopilotdefaultonruncompleted" id.parentappmoduleid.uniquename="msdyn_CustomerServiceWorkspace" id.settingdefinitionid.uniquename="msdyn_rtecopilotdefaultonruncompleted" />
+      </MissingDependency>
+    </MissingDependencies>
+  </SolutionManifest>
+</ImportExportXml>

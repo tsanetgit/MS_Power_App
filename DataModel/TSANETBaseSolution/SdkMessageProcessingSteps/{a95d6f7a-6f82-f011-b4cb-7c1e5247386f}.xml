@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SdkMessageProcessingStep Name="PostPatchCollaborationRequestPlugin: ap_PostPatchCollaborationRequest of any Entity" SdkMessageProcessingStepId="{a95d6f7a-6f82-f011-b4cb-7c1e5247386f}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SdkMessageId>5e99eeca-6d82-f011-b4cb-7c1e5247386f</SdkMessageId>
+  <PluginTypeName>PostPatchCollaborationRequestPlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a</PluginTypeName>
+  <PluginTypeId>a35869a0-38b9-431f-9a51-481a1688b08a</PluginTypeId>
+  <AsyncAutoDelete>0</AsyncAutoDelete>
+  <FilteringAttributes></FilteringAttributes>
+  <InvocationSource>0</InvocationSource>
+  <Mode>0</Mode>
+  <Rank>1</Rank>
+  <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+  <Stage>40</Stage>
+  <IsCustomizable>1</IsCustomizable>
+  <IsHidden>0</IsHidden>
+  <SupportedDeployment>0</SupportedDeployment>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <SdkMessageProcessingStepImages />
+</SdkMessageProcessingStep>

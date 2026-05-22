@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SdkMessageProcessingStep Name="RefreshCasePlugin: ap_RefreshCase of ap_tsanetcase" SdkMessageProcessingStepId="{4ae09f95-9e9e-f011-bbd2-7ced8d1ed479}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SdkMessageId>5af2d747-9d9e-f011-bbd2-7ced8d1ed479</SdkMessageId>
+  <PluginTypeName>RefreshCasePlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a</PluginTypeName>
+  <PluginTypeId>4baccd46-7f64-45a2-8b7a-78a6e624e867</PluginTypeId>
+  <PrimaryEntity>ap_tsanetcase</PrimaryEntity>
+  <AsyncAutoDelete>0</AsyncAutoDelete>
+  <FilteringAttributes></FilteringAttributes>
+  <InvocationSource>0</InvocationSource>
+  <Mode>0</Mode>
+  <Rank>1</Rank>
+  <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+  <Stage>40</Stage>
+  <IsCustomizable>1</IsCustomizable>
+  <IsHidden>0</IsHidden>
+  <SupportedDeployment>0</SupportedDeployment>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <SdkMessageProcessingStepImages />
+</SdkMessageProcessingStep>

@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{71420524-7de9-4016-bd3e-3a8639c21cde}</formid>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form headerdensity="HighWithControls">
+      <tabs>
+        <tab verticallayout="true" id="{a51d649a-6124-4296-8894-cec5b7ea1ad8}" IsUserDefined="1">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{decccf40-ff1f-4146-8769-6cf21158c957}">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{6e3cf74e-7b15-4739-9d57-a3bb7abafb3e}">
+                        <labels>
+                          <label description="Name" languagecode="1033" />
+                        </labels>
+                        <control id="ap_name" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="ap_name" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ce056eae-2cea-4e4f-af0b-59644a38043f}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="URI" languagecode="1033" />
+                        </labels>
+                        <control id="ap_uri" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_uri" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{a4978804-1e9f-4858-baf2-400d4deaad39}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Client ID" languagecode="1033" />
+                        </labels>
+                        <control id="ap_clientid" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_clientid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d3a4a087-7116-40dd-a6cb-017b89e7a6d1}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Secret" languagecode="1033" />
+                        </labels>
+                        <control id="ap_secret" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_secret" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{7ff5aa25-205c-45d5-9302-b5dd4f0ae51f}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Webhook Secret" languagecode="1033" />
+                        </labels>
+                        <control id="ap_webhooksecret" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_webhooksecret" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <header id="{9cf217e5-40cb-4e00-8898-08b79d325fa5}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{05454db8-2d39-4146-8759-660676b5dbf0}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{f46cc710-736d-4f20-b89e-f9e1b16055e7}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{cc46d565-3685-4c30-960b-9dd51273d1f6}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{b8a2df4a-55e9-4e7c-9d51-c269dacf3b12}" colspan="1" rowspan="1">
+              <labels>
+                <label description="Owner" languagecode="1033" />
+              </labels>
+              <control id="header_ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{5f142d3e-e322-4060-bf12-449da95a031b}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{066baeba-9a38-4a7b-ab4e-2c4a4c74ec38}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{02175ce3-caa8-4082-87fe-627f831733fd}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{157c3949-132c-472e-bf9c-caf8018c9b55}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

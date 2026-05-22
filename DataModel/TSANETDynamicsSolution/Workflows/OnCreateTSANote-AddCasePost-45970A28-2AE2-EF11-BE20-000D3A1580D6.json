@@ -1,0 +1,167 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "ap_sharedcommondataserviceforapps_23ace"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_conversionservice_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "ap_sharedconversionservice_58f2c"
+        },
+        "api": {
+          "name": "shared_conversionservice"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "Note": {
+          "metadata": {
+            "operationMetadataId": "1c0a383a-d3af-4a5b-b647-e22c6472b13e"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps_1",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "ap_tsanetnote",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filterexpression": "ap_isautomated ne true"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "TSACaseNotNull": {
+          "actions": {
+            "Get_a_row_TSANET_Case": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "4ffca6d2-77b5-4e52-96cb-8facdab3c87e"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps_1",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "ap_tsanetcases",
+                  "recordId": "@triggerOutputs()?['body/_ap_tsanetcaseid_value']",
+                  "$select": "_ap_caseid_value,ap_name"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "CaseNotNull": {
+              "actions": {
+                "Html_Description_to_text": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "a9cee34f-3c62-4b58-975b-cba6d2394bf7"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_conversionservice_1",
+                      "operationId": "HtmlToText",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_conversionservice"
+                    },
+                    "parameters": {
+                      "Content": "<p>@{triggerOutputs()?['body/ap_description']}</p>"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "Add_a_new_Post": {
+                  "runAfter": {
+                    "Html_Description_to_text": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "373ebcdc-3592-43a0-a545-d4b30e06fec8"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps_1",
+                      "operationId": "CreateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "posts",
+                      "item/source": 1,
+                      "item/largetext": "TSANET",
+                      "item/text": "New TSANET Note created for case @{outputs('Get_a_row_TSANET_Case')?['body/ap_name']}\nCompany Name: @{triggerOutputs()?['body/ap_companyname']}\nCreated By: @{triggerOutputs()?['body/ap_creatorname']}\nSummary: @{triggerOutputs()?['body/ap_name']}\nDescription: @{body('Html_Description_to_text')}",
+                      "item/type": 3,
+                      "item/regardingobjectid_incident@odata.bind": "incidents(@{outputs('Get_a_row_TSANET_Case')?['body/_ap_caseid_value']})"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                }
+              },
+              "runAfter": {
+                "Get_a_row_TSANET_Case": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "not": {
+                  "equals": [
+                    "@outputs('Get_a_row_TSANET_Case')?['body/_ap_caseid_value']",
+                    "@null"
+                  ]
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "6e591227-a171-4d78-b956-241fc3e81285"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {},
+          "expression": {
+            "not": {
+              "equals": [
+                "@triggerOutputs()?['body/_ap_tsanetcaseid_value']",
+                "@null"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "f2b70c71-8552-4d23-ac3b-8f1bf5de4da7"
+          },
+          "type": "If"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebResource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebResourceId>{2d9fc5f8-298a-ef11-8a69-6045bdd3fb39}</WebResourceId>
+  <Name>ap_refresh_button_icon.svg</Name>
+  <DisplayName>ap_refresh_button_icon.svg</DisplayName>
+  <WebResourceType>11</WebResourceType>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsEnabledForMobileClient>1</IsEnabledForMobileClient>
+  <IsAvailableForMobileOffline>0</IsAvailableForMobileOffline>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <IsHidden>0</IsHidden>
+  <FileName>/WebResources/ap_refresh_button_iconsvg2D9FC5F8-298A-EF11-8A69-6045BDD3FB39</FileName>
+</WebResource>

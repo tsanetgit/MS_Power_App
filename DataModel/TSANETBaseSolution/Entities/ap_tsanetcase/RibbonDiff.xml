@@ -1,0 +1,414 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RibbonDiffXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CustomActions>
+    <CustomAction Id="ap.ap_tsanetcase.Accept.Button.CustomAction" Location="Mscrm.Form.ap_tsanetcase.MainTab.Save.Controls._children" Sequence="49">
+      <CommandUIDefinition>
+        <Button Alt="$LocLabels:ap.ap_tsanetcase.Accept.Button.Alt" Command="ap.ap_tsanetcase.Accept.Command" Id="ap.ap_tsanetcase.Accept.Button" LabelText="$LocLabels:ap.ap_tsanetcase.Accept.Button.LabelText" Sequence="49" TemplateAlias="o2" ToolTipTitle="$LocLabels:ap.ap_tsanetcase.Accept.Button.ToolTipTitle" ToolTipDescription="$LocLabels:ap.ap_tsanetcase.Accept.Button.ToolTipDescription" ModernImage="$webresource:ap_accept_button.svg" />
+      </CommandUIDefinition>
+    </CustomAction>
+    <CustomAction Id="ap.ap_tsanetcase.AcceptUpdate.Button.CustomAction" Location="Mscrm.Form.ap_tsanetcase.MainTab.Save.Controls._children" Sequence="50">
+      <CommandUIDefinition>
+        <Button Alt="$LocLabels:ap.ap_tsanetcase.AcceptUpdate.Button.Alt" Command="ap.ap_tsanetcase.AcceptUpdate.Command" Id="ap.ap_tsanetcase.AcceptUpdate.Button" LabelText="$LocLabels:ap.ap_tsanetcase.AcceptUpdate.Button.LabelText" Sequence="50" TemplateAlias="o2" ToolTipTitle="$LocLabels:ap.ap_tsanetcase.AcceptUpdate.Button.ToolTipTitle" ToolTipDescription="$LocLabels:ap.ap_tsanetcase.AcceptUpdate.Button.ToolTipDescription" ModernImage="$webresource:ap_acceptupdate_button.svg" />
+      </CommandUIDefinition>
+    </CustomAction>
+    <CustomAction Id="ap.ap_tsanetcase.AddNote.Button.CustomAction" Location="Mscrm.SubGrid.ap_tsanetcase.MainTab.Management.Controls._children" Sequence="23">
+      <CommandUIDefinition>
+        <Button Alt="$LocLabels:ap.ap_tsanetcase.AddNote.Button.Alt" Command="ap.ap_tsanetcase.AddNote.Command" Id="ap.ap_tsanetcase.AddNote.Button" LabelText="$LocLabels:ap.ap_tsanetcase.AddNote.Button.LabelText" Sequence="23" TemplateAlias="o1" ToolTipTitle="$LocLabels:ap.ap_tsanetcase.AddNote.Button.ToolTipTitle" ToolTipDescription="$LocLabels:ap.ap_tsanetcase.AddNote.Button.ToolTipDescription" ModernImage="$webresource:ap_tsanetnote_icon.svg" />
+      </CommandUIDefinition>
+    </CustomAction>
+    <CustomAction Id="ap.ap_tsanetcase.AddNoteView.Button.CustomAction" Location="Mscrm.HomepageGrid.ap_tsanetcase.MainTab.Collaborate.Controls._children" Sequence="85">
+      <CommandUIDefinition>
+        <Button Alt="$LocLabels:ap.ap_tsanetcase.AddNoteView.Button.Alt" Command="ap.ap_tsanetcase.AddNote.Command" Id="ap.ap_tsanetcase.AddNoteView.Button" Image16by16="" LabelText="$LocLabels:ap.ap_tsanetcase.AddNoteView.Button.LabelText" Sequence="85" TemplateAlias="isv" ToolTipTitle="$LocLabels:ap.ap_tsanetcase.AddNoteView.Button.ToolTipTitle" ToolTipDescription="$LocLabels:ap.ap_tsanetcase.AddNoteView.Button.ToolTipDescription" ModernImage="$webresource:ap_tsanetnote_icon.svg" />
+      </CommandUIDefinition>
+    </CustomAction>
+    <CustomAction Id="ap.ap_tsanetcase.Close.Button.CustomAction" Location="Mscrm.Form.ap_tsanetcase.MainTab.Save.Controls._children" Sequence="54">
+      <CommandUIDefinition>
+        <Button Alt="$LocLabels:ap.ap_tsanetcase.Close.Button.Alt" Command="ap.ap_tsanetcase.Close.Command" Id="ap.ap_tsanetcase.Close.Button" LabelText="$LocLabels:ap.ap_tsanetcase.Close.Button.LabelText" Sequence="54" TemplateAlias="o2" ToolTipTitle="$LocLabels:ap.ap_tsanetcase.Close.Button.ToolTipTitle" ToolTipDescription="$LocLabels:ap.ap_tsanetcase.Close.Button.ToolTipDescription" ModernImage="$webresource:ap_close_button.svg" />
+      </CommandUIDefinition>
+    </CustomAction>
+    <CustomAction Id="ap.ap_tsanetcase.Refresh.Button.CustomAction" Location="Mscrm.Form.ap_tsanetcase.MainTab.Save.Controls._children" Sequence="30">
+      <CommandUIDefinition>
+        <Button Alt="$LocLabels:ap.ap_tsanetcase.Refresh.Button.Alt" Command="ap.ap_tsanetcase.Refresh.Command" Id="ap.ap_tsanetcase.Refresh.Button" LabelText="$LocLabels:ap.ap_tsanetcase.Refresh.Button.LabelText" Sequence="30" TemplateAlias="o2" ToolTipTitle="$LocLabels:ap.ap_tsanetcase.Refresh.Button.ToolTipTitle" ToolTipDescription="$LocLabels:ap.ap_tsanetcase.Refresh.Button.ToolTipDescription" ModernImage="$webresource:ap_refresh_button_icon.svg" />
+      </CommandUIDefinition>
+    </CustomAction>
+    <CustomAction Id="ap.ap_tsanetcase.RefreshCases.Button.CustomAction" Location="Mscrm.HomepageGrid.ap_tsanetcase.MainTab.Management.Controls._children" Sequence="15">
+      <CommandUIDefinition>
+        <Button Alt="$LocLabels:ap.ap_tsanetcase.RefreshCases.Button.Alt" Command="ap.ap_tsanetcase.RefreshCases.Command" Id="ap.ap_tsanetcase.RefreshCases.Button" LabelText="$LocLabels:ap.ap_tsanetcase.RefreshCases.Button.LabelText" Sequence="15" TemplateAlias="o1" ToolTipTitle="$LocLabels:ap.ap_tsanetcase.RefreshCases.Button.ToolTipTitle" ToolTipDescription="$LocLabels:ap.ap_tsanetcase.RefreshCases.Button.ToolTipDescription" ModernImage="$webresource:ap_refresh_button_icon.svg" />
+      </CommandUIDefinition>
+    </CustomAction>
+    <CustomAction Id="ap.ap_tsanetcase.Reject.Button.CustomAction" Location="Mscrm.Form.ap_tsanetcase.MainTab.Save.Controls._children" Sequence="52">
+      <CommandUIDefinition>
+        <Button Alt="$LocLabels:ap.ap_tsanetcase.Reject.Button.Alt" Command="ap.ap_tsanetcase.Reject.Command" Id="ap.ap_tsanetcase.Reject.Button" LabelText="$LocLabels:ap.ap_tsanetcase.Reject.Button.LabelText" Sequence="52" TemplateAlias="o2" ToolTipTitle="$LocLabels:ap.ap_tsanetcase.Reject.Button.ToolTipTitle" ToolTipDescription="$LocLabels:ap.ap_tsanetcase.Reject.Button.ToolTipDescription" ModernImage="$webresource:ap_reject_button.svg" />
+      </CommandUIDefinition>
+    </CustomAction>
+    <CustomAction Id="ap.ap_tsanetcase.RequestInfo.Button.CustomAction" Location="Mscrm.Form.ap_tsanetcase.MainTab.Save.Controls._children" Sequence="51">
+      <CommandUIDefinition>
+        <Button Alt="$LocLabels:ap.ap_tsanetcase.RequestInfo.Button.Alt" Command="ap.ap_tsanetcase.RequestInfo.Command" Id="ap.ap_tsanetcase.RequestInfo.Button" LabelText="$LocLabels:ap.ap_tsanetcase.RequestInfo.Button.LabelText" Sequence="51" TemplateAlias="o2" ToolTipTitle="$LocLabels:ap.ap_tsanetcase.RequestInfo.Button.ToolTipTitle" ToolTipDescription="$LocLabels:ap.ap_tsanetcase.RequestInfo.Button.ToolTipDescription" ModernImage="$webresource:ap_requestinfo_button.svg" />
+      </CommandUIDefinition>
+    </CustomAction>
+    <CustomAction Id="ap.ap_tsanetcase.ResponseInfo.Button.CustomAction" Location="Mscrm.Form.ap_tsanetcase.MainTab.Save.Controls._children" Sequence="53">
+      <CommandUIDefinition>
+        <Button Alt="$LocLabels:ap.ap_tsanetcase.ResponseInfo.Button.Alt" Command="ap.ap_tsanetcase.ResponseInfo.Command" Id="ap.ap_tsanetcase.ResponseInfo.Button" LabelText="$LocLabels:ap.ap_tsanetcase.ResponseInfo.Button.LabelText" Sequence="53" TemplateAlias="o2" ToolTipTitle="$LocLabels:ap.ap_tsanetcase.ResponseInfo.Button.ToolTipTitle" ToolTipDescription="$LocLabels:ap.ap_tsanetcase.ResponseInfo.Button.ToolTipDescription" ModernImage="$webresource:ap_responseinfo_button.svg" />
+      </CommandUIDefinition>
+    </CustomAction>
+    <HideCustomAction HideActionId="ap.Mscrm.Form.ap_tsanetcase.Activate.Hide" Location="Mscrm.Form.ap_tsanetcase.Activate" />
+    <HideCustomAction HideActionId="ap.Mscrm.Form.ap_tsanetcase.Deactivate.Hide" Location="Mscrm.Form.ap_tsanetcase.Deactivate" />
+    <HideCustomAction HideActionId="ap.Mscrm.HomepageGrid.ap_tsanetcase.Activate.Hide" Location="Mscrm.HomepageGrid.ap_tsanetcase.Activate" />
+    <HideCustomAction HideActionId="ap.Mscrm.HomepageGrid.ap_tsanetcase.Deactivate.Hide" Location="Mscrm.HomepageGrid.ap_tsanetcase.Deactivate" />
+    <HideCustomAction HideActionId="ap.Mscrm.SubGrid.ap_tsanetcase.Activate.Hide" Location="Mscrm.SubGrid.ap_tsanetcase.Activate" />
+    <HideCustomAction HideActionId="ap.Mscrm.SubGrid.ap_tsanetcase.Deactivate.Hide" Location="Mscrm.SubGrid.ap_tsanetcase.Deactivate" />
+  </CustomActions>
+  <Templates>
+    <RibbonTemplates Id="Mscrm.Templates"></RibbonTemplates>
+  </Templates>
+  <CommandDefinitions>
+    <CommandDefinition Id="ap.ap_tsanetcase.Accept.Command">
+      <EnableRules />
+      <DisplayRules>
+        <DisplayRule Id="ap.ap_tsanetcase.Inbound.DisplayRule" />
+        <DisplayRule Id="ap.ap_tsanetcase.OpenORInfo.DisplayRule" />
+      </DisplayRules>
+      <Actions>
+        <JavaScriptFunction FunctionName="AcceptButton" Library="$webresource:ap_CaseTSAButtons.js">
+          <CrmParameter Value="PrimaryControl" />
+        </JavaScriptFunction>
+      </Actions>
+    </CommandDefinition>
+    <CommandDefinition Id="ap.ap_tsanetcase.AcceptUpdate.Command">
+      <EnableRules />
+      <DisplayRules>
+        <DisplayRule Id="ap.ap_tsanetcase.Inbound.DisplayRule" />
+        <DisplayRule Id="ap.ap_tsanetcase.Accepted.DisplayRule" />
+      </DisplayRules>
+      <Actions>
+        <JavaScriptFunction FunctionName="AcceptUpdateButton" Library="$webresource:ap_CaseTSAButtons.js">
+          <CrmParameter Value="PrimaryControl" />
+        </JavaScriptFunction>
+      </Actions>
+    </CommandDefinition>
+    <CommandDefinition Id="ap.ap_tsanetcase.AddNote.Command">
+      <EnableRules>
+        <EnableRule Id="ap.ap_tsanetcase.OneRow.EnableRule" />
+      </EnableRules>
+      <DisplayRules />
+      <Actions>
+        <JavaScriptFunction FunctionName="AddNoteButton" Library="$webresource:ap_CaseTSAButtons.js">
+          <CrmParameter Value="SelectedControlSelectedItemIds" />
+        </JavaScriptFunction>
+      </Actions>
+    </CommandDefinition>
+    <CommandDefinition Id="ap.ap_tsanetcase.Close.Command">
+      <EnableRules />
+      <DisplayRules>
+        <DisplayRule Id="ap.ap_tsanetcase.Accepted.DisplayRule" />
+        <DisplayRule Id="ap.ap_tsanetcase.Outbound.DisplayRule" />
+      </DisplayRules>
+      <Actions>
+        <JavaScriptFunction FunctionName="CloseButton" Library="$webresource:ap_CaseTSAButtons.js">
+          <CrmParameter Value="PrimaryControl" />
+        </JavaScriptFunction>
+      </Actions>
+    </CommandDefinition>
+    <CommandDefinition Id="ap.ap_tsanetcase.Refresh.Command">
+      <EnableRules>
+        <EnableRule Id="ap.ap_tsanetcase.Existing.EnableRule" />
+      </EnableRules>
+      <DisplayRules />
+      <Actions>
+        <JavaScriptFunction FunctionName="buttonRefreshCase" Library="$webresource:ap_CaseTSA.js">
+          <CrmParameter Value="PrimaryControl" />
+        </JavaScriptFunction>
+      </Actions>
+    </CommandDefinition>
+    <CommandDefinition Id="ap.ap_tsanetcase.RefreshCases.Command">
+      <EnableRules>
+        <EnableRule Id="ap.ap_tsanetcase.NotSelected.EnableRule" />
+      </EnableRules>
+      <DisplayRules />
+      <Actions>
+        <JavaScriptFunction FunctionName="getCases" Library="$webresource:ap_CommonIntegration.js">
+          <CrmParameter Value="PrimaryControl" />
+        </JavaScriptFunction>
+      </Actions>
+    </CommandDefinition>
+    <CommandDefinition Id="ap.ap_tsanetcase.Reject.Command">
+      <EnableRules />
+      <DisplayRules>
+        <DisplayRule Id="ap.ap_tsanetcase.Inbound.DisplayRule" />
+        <DisplayRule Id="ap.ap_tsanetcase.OpenORInfo.DisplayRule" />
+      </DisplayRules>
+      <Actions>
+        <JavaScriptFunction FunctionName="RejectButton" Library="$webresource:ap_CaseTSAButtons.js">
+          <CrmParameter Value="PrimaryControl" />
+        </JavaScriptFunction>
+      </Actions>
+    </CommandDefinition>
+    <CommandDefinition Id="ap.ap_tsanetcase.RequestInfo.Command">
+      <EnableRules />
+      <DisplayRules>
+        <DisplayRule Id="ap.ap_tsanetcase.Inbound.DisplayRule" />
+        <DisplayRule Id="ap.ap_tsanetcase.Open.DisplayRule" />
+      </DisplayRules>
+      <Actions>
+        <JavaScriptFunction FunctionName="RequestInfoButton" Library="$webresource:ap_CaseTSAButtons.js">
+          <CrmParameter Value="PrimaryControl" />
+        </JavaScriptFunction>
+      </Actions>
+    </CommandDefinition>
+    <CommandDefinition Id="ap.ap_tsanetcase.ResponseInfo.Command">
+      <EnableRules />
+      <DisplayRules>
+        <DisplayRule Id="ap.ap_tsanetcase.ReqInfo.DisplayRule" />
+        <DisplayRule Id="ap.ap_tsanetcase.Outbound.DisplayRule" />
+      </DisplayRules>
+      <Actions>
+        <JavaScriptFunction FunctionName="ResponseInfoButton" Library="$webresource:ap_CaseTSAButtons.js">
+          <CrmParameter Value="PrimaryControl" />
+        </JavaScriptFunction>
+      </Actions>
+    </CommandDefinition>
+  </CommandDefinitions>
+  <RuleDefinitions>
+    <TabDisplayRules />
+    <DisplayRules>
+      <DisplayRule Id="ap.ap_tsanetcase.Accepted.DisplayRule">
+        <ValueRule Field="statuscode" Value="120950003" />
+      </DisplayRule>
+      <DisplayRule Id="ap.ap_tsanetcase.Inbound.DisplayRule">
+        <ValueRule Field="ap_direction" Value="0" />
+      </DisplayRule>
+      <DisplayRule Id="ap.ap_tsanetcase.Open.DisplayRule">
+        <ValueRule Field="statuscode" Value="1" />
+      </DisplayRule>
+      <DisplayRule Id="ap.ap_tsanetcase.OpenORInfo.DisplayRule">
+        <OrRule>
+          <Or>
+            <ValueRule Field="statuscode" Value="1" />
+          </Or>
+          <Or>
+            <ValueRule Field="statuscode" Value="120950001" />
+          </Or>
+        </OrRule>
+      </DisplayRule>
+      <DisplayRule Id="ap.ap_tsanetcase.Outbound.DisplayRule">
+        <ValueRule Field="ap_direction" Value="1" />
+      </DisplayRule>
+      <DisplayRule Id="ap.ap_tsanetcase.ReqInfo.DisplayRule">
+        <ValueRule Field="statuscode" Value="120950001" />
+      </DisplayRule>
+    </DisplayRules>
+    <EnableRules>
+      <EnableRule Id="ap.ap_tsanetcase.Existing.EnableRule">
+        <FormStateRule State="Existing" />
+      </EnableRule>
+      <EnableRule Id="ap.ap_tsanetcase.NotSelected.EnableRule">
+        <SelectionCountRule Maximum="0" />
+      </EnableRule>
+      <EnableRule Id="ap.ap_tsanetcase.OneRow.EnableRule">
+        <SelectionCountRule Minimum="1" Maximum="1" />
+      </EnableRule>
+    </EnableRules>
+  </RuleDefinitions>
+  <LocLabels>
+    <LocLabel Id="ap.ap_tsanetcase.Accept.Button.Alt">
+      <Titles>
+        <Title description="Accept" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.Accept.Button.LabelText">
+      <Titles>
+        <Title description="Accept" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.Accept.Button.ToolTipDescription">
+      <Titles>
+        <Title description="Accept TSA Case" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.Accept.Button.ToolTipTitle">
+      <Titles>
+        <Title description="Accept TSA Case" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.AcceptUpdate.Button.Alt">
+      <Titles>
+        <Title description="Update Approval" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.AcceptUpdate.Button.LabelText">
+      <Titles>
+        <Title description="Update Approval" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.AcceptUpdate.Button.ToolTipDescription">
+      <Titles>
+        <Title description="Update Approval" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.AcceptUpdate.Button.ToolTipTitle">
+      <Titles>
+        <Title description="Update Approval" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.AddNote.Button.Alt">
+      <Titles>
+        <Title description="Add Note" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.AddNote.Button.LabelText">
+      <Titles>
+        <Title description="Add Note" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.AddNote.Button.ToolTipDescription">
+      <Titles>
+        <Title description="Add Note" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.AddNote.Button.ToolTipTitle">
+      <Titles>
+        <Title description="Add Note" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.AddNoteView.Button.Alt">
+      <Titles>
+        <Title description="Add Note" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.AddNoteView.Button.LabelText">
+      <Titles>
+        <Title description="Add Note" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.AddNoteView.Button.ToolTipDescription">
+      <Titles>
+        <Title description="Add Note" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.AddNoteView.Button.ToolTipTitle">
+      <Titles>
+        <Title description="Add Note" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.Close.Button.Alt">
+      <Titles>
+        <Title description="Close TSA Case" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.Close.Button.LabelText">
+      <Titles>
+        <Title description="Close TSA Case" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.Close.Button.ToolTipDescription">
+      <Titles>
+        <Title description="Close TSA Case" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.Close.Button.ToolTipTitle">
+      <Titles>
+        <Title description="Close TSA Case" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.Refresh.Button.Alt">
+      <Titles>
+        <Title description="Refresh Data" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.Refresh.Button.LabelText">
+      <Titles>
+        <Title description="Refresh Data" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.Refresh.Button.ToolTipDescription">
+      <Titles>
+        <Title description="Refresh Data from TSA NET" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.Refresh.Button.ToolTipTitle">
+      <Titles>
+        <Title description="Refresh Data" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.RefreshCases.Button.Alt">
+      <Titles>
+        <Title description="Refresh Data" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.RefreshCases.Button.LabelText">
+      <Titles>
+        <Title description="Refresh Data" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.RefreshCases.Button.ToolTipDescription">
+      <Titles>
+        <Title description="Refresh Data from TSA NET" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.RefreshCases.Button.ToolTipTitle">
+      <Titles>
+        <Title description="Refresh Data" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.Reject.Button.Alt">
+      <Titles>
+        <Title description="Reject" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.Reject.Button.LabelText">
+      <Titles>
+        <Title description="Reject" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.Reject.Button.ToolTipDescription">
+      <Titles>
+        <Title description="Reject TSA Case" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.Reject.Button.ToolTipTitle">
+      <Titles>
+        <Title description="Reject TSA Case" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.RequestInfo.Button.Alt">
+      <Titles>
+        <Title description="Request Information" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.RequestInfo.Button.LabelText">
+      <Titles>
+        <Title description="Request Information" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.RequestInfo.Button.ToolTipDescription">
+      <Titles>
+        <Title description="Request Information TSA Case" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.RequestInfo.Button.ToolTipTitle">
+      <Titles>
+        <Title description="Request Information TSA Case" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.ResponseInfo.Button.Alt">
+      <Titles>
+        <Title description="Response Information" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.ResponseInfo.Button.LabelText">
+      <Titles>
+        <Title description="Response Information" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.ResponseInfo.Button.ToolTipDescription">
+      <Titles>
+        <Title description="Response Information TSA Case" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+    <LocLabel Id="ap.ap_tsanetcase.ResponseInfo.Button.ToolTipTitle">
+      <Titles>
+        <Title description="Response Information TSA Case" languagecode="1033" />
+      </Titles>
+    </LocLabel>
+  </LocLabels>
+</RibbonDiffXml>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RibbonDiffXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CustomActions>
+    <HideCustomAction HideActionId="ap.Mscrm.Form.ap_tsanetresponse.Activate.Hide" Location="Mscrm.Form.ap_tsanetresponse.Activate" />
+    <HideCustomAction HideActionId="ap.Mscrm.Form.ap_tsanetresponse.Deactivate.Hide" Location="Mscrm.Form.ap_tsanetresponse.Deactivate" />
+    <HideCustomAction HideActionId="ap.Mscrm.HomepageGrid.ap_tsanetresponse.Activate.Hide" Location="Mscrm.HomepageGrid.ap_tsanetresponse.Activate" />
+    <HideCustomAction HideActionId="ap.Mscrm.HomepageGrid.ap_tsanetresponse.Deactivate.Hide" Location="Mscrm.HomepageGrid.ap_tsanetresponse.Deactivate" />
+    <HideCustomAction HideActionId="ap.Mscrm.SubGrid.ap_tsanetresponse.Activate.Hide" Location="Mscrm.SubGrid.ap_tsanetresponse.Activate" />
+    <HideCustomAction HideActionId="ap.Mscrm.SubGrid.ap_tsanetresponse.Deactivate.Hide" Location="Mscrm.SubGrid.ap_tsanetresponse.Deactivate" />
+  </CustomActions>
+  <Templates>
+    <RibbonTemplates Id="Mscrm.Templates"></RibbonTemplates>
+  </Templates>
+  <CommandDefinitions />
+  <RuleDefinitions>
+    <TabDisplayRules />
+    <DisplayRules />
+    <EnableRules />
+  </RuleDefinitions>
+  <LocLabels />
+</RibbonDiffXml>

@@ -1,0 +1,309 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "ap_sharedcommondataserviceforapps_23ace"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "Case": {
+          "metadata": {
+            "operationMetadataId": "b9f0d086-51f5-4d2e-83fd-9f394ac26419"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "ap_tsanetcase",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "ownerid,ap_caseid",
+              "subscriptionRequest/filterexpression": "ap_direction eq 0 and statuscode eq 120950003"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "IsUser": {
+          "actions": {
+            "NotUpdatedByResp": {
+              "actions": {
+                "Get_a_row_User": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "7737d1fb-22f6-49cb-ac51-79e34a5d9702"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "GetItem",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "systemusers",
+                      "recordId": "@triggerOutputs()?['body/_ownerid_value']",
+                      "x-ms-odata-metadata-full": false,
+                      "$select": "fullname,address1_telephone1,internalemailaddress"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "Get_a_row_Case": {
+                  "runAfter": {
+                    "Get_a_row_User": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "9f2fab76-0358-4ce2-a17d-853b4f40a7af"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "GetItem",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "incidents",
+                      "recordId": "@triggerOutputs()?['body/_ap_caseid_value']",
+                      "$select": "ticketnumber"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "List_rows_TSA_Resps": {
+                  "runAfter": {
+                    "Get_a_row_Case": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "f2f05870-22a4-429e-9c8f-e8d8384fd7b3"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "ListRecords",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "ap_tsanetresponses",
+                      "$select": "ap_tsanetresponseid,ap_internalcasenumber,ap_engineeremail",
+                      "$filter": "ap_type eq 5 and _ap_tsanetcaseid_value eq @{triggerOutputs()?['body/ap_tsanetcaseid']}",
+                      "$orderby": "createdon desc",
+                      "$top": 1
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "Apply_to_each": {
+                  "foreach": "@outputs('List_rows_TSA_Resps')?['body/value']",
+                  "actions": {
+                    "Exists": {
+                      "actions": {
+                        "Set_variable": {
+                          "runAfter": {},
+                          "metadata": {
+                            "operationMetadataId": "1a0a82dc-58c4-405c-aab0-f9f2df44f32b"
+                          },
+                          "type": "SetVariable",
+                          "inputs": {
+                            "name": "Exists",
+                            "value": "@true"
+                          }
+                        }
+                      },
+                      "runAfter": {},
+                      "expression": {
+                        "and": [
+                          {
+                            "equals": [
+                              "@items('Apply_to_each')?['ap_internalcasenumber']",
+                              "@outputs('Get_a_row_Case')?['body/ticketnumber']"
+                            ]
+                          },
+                          {
+                            "equals": [
+                              "@items('Apply_to_each')?['ap_engineeremail']",
+                              "@outputs('Get_a_row_User')?['body/internalemailaddress']"
+                            ]
+                          }
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "bb7f83dd-f0bd-4a35-898d-a395edfa6fe5"
+                      },
+                      "type": "If"
+                    }
+                  },
+                  "runAfter": {
+                    "List_rows_TSA_Resps": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "f7fd7788-df35-4904-9c76-6c91bb071924"
+                  },
+                  "type": "Foreach"
+                },
+                "NotExists": {
+                  "actions": {
+                    "Add_TSA_Resp": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "5cc5abf6-9375-4bce-9193-0d04683661a0"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "CreateRecord",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                        },
+                        "parameters": {
+                          "entityName": "ap_tsanetresponses",
+                          "item/ap_tsanetcaseid@odata.bind": "ap_tsanetcases(@{triggerOutputs()?['body/ap_tsanetcaseid']})",
+                          "item/ap_type": 5,
+                          "item/ap_engineeremail": "@outputs('Get_a_row_User')?['body/internalemailaddress']",
+                          "item/ap_engineername": "@outputs('Get_a_row_User')?['body/fullname']",
+                          "item/ap_engineerphone": "@outputs('Get_a_row_User')?['body/address1_telephone1']",
+                          "item/ap_internalcasenumber": "@triggerOutputs()?['body/ap_submittercasenumber']",
+                          "item/ownerid@odata.bind": "systemusers(@{triggerOutputs()?['body/_ownerid_value']})"
+                        },
+                        "authentication": "@parameters('$authentication')"
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "Apply_to_each": [
+                      "Succeeded"
+                    ]
+                  },
+                  "expression": {
+                    "equals": [
+                      "@variables('Exists')",
+                      "@false"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5dfe9ac6-7df8-406c-a880-8955a3d8ccb9"
+                  },
+                  "type": "If"
+                }
+              },
+              "runAfter": {},
+              "else": {
+                "actions": {
+                  "Update_TSANET_Case": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "52d0ed2e-26ae-49f5-a6d9-ccf0125d4545"
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "host": {
+                        "connectionName": "shared_commondataserviceforapps",
+                        "operationId": "UpdateOnlyRecord",
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                      },
+                      "parameters": {
+                        "entityName": "ap_tsanetcases",
+                        "recordId": "@triggerOutputs()?['body/ap_tsanetcaseid']",
+                        "item/ap_updatedbyresponse": false
+                      },
+                      "authentication": "@parameters('$authentication')"
+                    }
+                  }
+                }
+              },
+              "expression": {
+                "not": {
+                  "equals": [
+                    "@triggerOutputs()?['body/ap_updatedbyresponse']",
+                    "@true"
+                  ]
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "601aa189-5e1e-4f55-ac22-aa8aecf8cc6c"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_Exists": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@triggerOutputs()?['body/_ownerid_type']",
+                  "systemusers"
+                ]
+              },
+              {
+                "not": {
+                  "equals": [
+                    "@triggerOutputs()?['body/_ap_caseid_value']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fc0c28b6-dbc0-45d3-814f-599b06c05f81"
+          },
+          "type": "If"
+        },
+        "Initialize_variable_Exists": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "401017d6-50c7-49e4-9c98-1ecb8f12f32a"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Exists",
+                "type": "boolean",
+                "value": "@false"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

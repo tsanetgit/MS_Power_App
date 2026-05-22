@@ -1,0 +1,247 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "b3d7ddae-641d-4b0b-9fda-30c52cbeb712"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "HTTP": {
+          "runAfter": {
+            "NotSuccess": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "abf417f1-74fd-43d6-a7d0-934c27a35163"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "@{body('Get_Settings')?['uri']}/v1/login",
+            "body": {
+              "username": "@body('Get_Settings')?['clientid']",
+              "password": "@body('Get_Settings')?['secret']"
+            }
+          }
+        },
+        "Parse_JSON": {
+          "runAfter": {
+            "HTTP": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c13d0abd-1b9f-4cf6-8716-5ed7c397778f"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@body('HTTP')",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "accessToken": {
+                  "type": "string"
+                },
+                "tokenType": {
+                  "type": "string"
+                },
+                "expiresIn": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "runAfter": {
+            "Parse_JSON": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2e3523db-3416-49d5-98e4-a24b86015732"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "accesstoken": "@body('Parse_JSON')?['accessToken']",
+              "result": "Success",
+              "uri": "@body('Get_Settings')?['uri']"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "accesstoken": {
+                  "title": "AccessToken",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "result": {
+                  "title": "Result",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "uri": {
+                  "title": "URI",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Respond_to_a_Power_App_or_flow_2": {
+          "runAfter": {
+            "Parse_JSON": [
+              "Failed",
+              "Skipped",
+              "TimedOut"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "624a5791-ee76-4455-9e19-f43ff151d8c2"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "result": "Error",
+              "accesstoken": "-",
+              "uri": "-"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "title": "Result",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "accesstoken": {
+                  "title": "AccessToken",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "uri": {
+                  "title": "URI",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Get_Settings": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "6271a3a4-c4a3-4dfb-8d6c-63240bd00845"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "40cfe0a0-cdd5-f011-8543-00224826374b"
+            }
+          }
+        },
+        "NotSuccess": {
+          "actions": {
+            "Respond_to_a_Power_App_or_flow_3": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "624a5791-ee76-4455-9e19-f43ff151d8c2"
+              },
+              "type": "Response",
+              "kind": "PowerApp",
+              "inputs": {
+                "statusCode": 200,
+                "body": {
+                  "result": "Error",
+                  "accesstoken": "-",
+                  "uri": "-"
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "title": "Result",
+                      "x-ms-dynamically-added": true,
+                      "type": "string"
+                    },
+                    "accesstoken": {
+                      "title": "AccessToken",
+                      "x-ms-dynamically-added": true,
+                      "type": "string"
+                    },
+                    "uri": {
+                      "title": "URI",
+                      "x-ms-dynamically-added": true,
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "Terminate": {
+              "runAfter": {
+                "Respond_to_a_Power_App_or_flow_3": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "14b2e128-34c6-42df-9a5d-1177fe7c0892"
+              },
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Succeeded"
+              }
+            }
+          },
+          "runAfter": {
+            "Get_Settings": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "not": {
+              "equals": [
+                "@body('Get_Settings')?['result']",
+                "Success"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "3326e0b5-c76c-4b31-b410-bfccf84a5266"
+          },
+          "type": "If"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

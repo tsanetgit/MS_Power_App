@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PluginAssembly FullName="TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginAssemblyId="402cb749-f776-4c89-bd34-d1ac00905299" CustomizationLevel="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsolationMode>2</IsolationMode>
+  <SourceType>0</SourceType>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <FileName>/PluginAssemblies/TSANetPlugins-402CB749-F776-4C89-BD34-D1AC00905299/TSANetPlugins.dll</FileName>
+  <PluginTypes>
+    <PluginType AssemblyQualifiedName="CasePatchCollaborationRequestPlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="6842c92e-f7d5-4f7d-9b90-d72ab99e987a" Name="CasePatchCollaborationRequestPlugin">
+      <FriendlyName>fe589a44-2b18-4750-8ad5-850fe477c09b</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="GetAttachmentConfigPlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="70801fb5-bae6-44f8-9866-c094c7a09e1f" Name="GetAttachmentConfigPlugin">
+      <FriendlyName>adb26d77-f0d0-4520-ba38-ce7a876da092</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="GetCasePlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="7123ff81-a5f0-4670-ba10-30a7f724507b" Name="GetCasePlugin">
+      <FriendlyName>a23b41eb-ec5e-48d4-aeae-2c734d879ecd</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="GetCompanyPlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="d22c0618-1ee3-4620-b3f6-6c13061cba80" Name="GetCompanyPlugin">
+      <FriendlyName>6fff616a-311b-43b0-8e36-909933694ca4</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="GetFormByCompanyPlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="1329c5a0-d600-4430-b733-c8697c1f1e76" Name="GetFormByCompanyPlugin">
+      <FriendlyName>6765204e-7e17-4919-8a01-8b241963911f</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="GetFormByDepartmentPlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="55ef2916-8e5a-4811-a963-71325c48dfe8" Name="GetFormByDepartmentPlugin">
+      <FriendlyName>047c9fbc-1f34-4f6e-8414-aeaea85778dd</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="GetMePlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="4e4ecced-a928-4577-83a0-6327acce72f8" Name="GetMePlugin">
+      <FriendlyName>7f5e5c2a-aee4-4fa5-bcfc-f1141d0198aa</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="HmacSha256Plugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="b6016a5c-fc74-4dd9-9114-4b91ccd91121" Name="HmacSha256Plugin">
+      <FriendlyName>7870a820-8120-426f-94a2-3b8dc8c0fdfb</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PostCaseApprovalPlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="e7ccc68f-c784-4fb0-8f0c-0a68c5d4772c" Name="PostCaseApprovalPlugin">
+      <FriendlyName>bf036c64-f914-4c72-b66c-85de2e6466f6</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PostCaseApprovalUpdatePlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="0a352e8e-2523-4815-a79d-64f1ce67cb58" Name="PostCaseApprovalUpdatePlugin">
+      <FriendlyName>a4d25dc6-9128-4cb6-822c-d6bbeac008f7</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PostCaseNoteOnCreatePlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="12efd0b0-94b1-4048-98c5-69210559e3f7" Name="PostCaseNoteOnCreatePlugin">
+      <FriendlyName>6395cfda-ba6a-47a0-ac50-8390788aec38</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PostCaseNotePlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="792e427f-cfb5-446f-b49f-7085f34d1c65" Name="PostCaseNotePlugin">
+      <FriendlyName>754202f4-7849-46a3-87c3-65d0f1558a02</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PostCasePatchCollaborationRequestPlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="9b00968b-6f23-487f-89b3-3be20d4d9470" Name="PostCasePatchCollaborationRequestPlugin">
+      <FriendlyName>b80c14c6-071b-41d8-96e5-afe78b75e9e7</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PostCasePlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="020ba74e-dcab-4d8f-b4a6-82fb85f9320a" Name="PostCasePlugin">
+      <FriendlyName>b3c33d84-c585-479b-87bc-2c03b83e4c3a</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PostCaseResponseOnCreatePlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="02147cbe-383c-4124-93b8-fd5c31f4464c" Name="PostCaseResponseOnCreatePlugin">
+      <FriendlyName>1f623ebd-2bb5-4516-9d13-41c64f17f9e6</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="PostPatchCollaborationRequestPlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="a35869a0-38b9-431f-9a51-481a1688b08a" Name="PostPatchCollaborationRequestPlugin">
+      <FriendlyName>8c0f9abe-88d2-4180-8c9b-a5a3e5f341a0</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="RefreshCasePlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="4baccd46-7f64-45a2-8b7a-78a6e624e867" Name="RefreshCasePlugin">
+      <FriendlyName>bee89792-7167-423d-b395-5dfbc6b6205d</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="ValidateCaseNoteCreationPlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" PluginTypeId="8a0b86c6-a71a-46f7-aebb-c7624f7bc22d" Name="ValidateCaseNoteCreationPlugin">
+      <FriendlyName>d8096044-7c4b-4b12-841b-d5e53f093cf6</FriendlyName>
+    </PluginType>
+  </PluginTypes>
+</PluginAssembly>

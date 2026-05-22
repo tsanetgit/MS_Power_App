@@ -1,0 +1,251 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "ap_sharedcommondataserviceforapps_d0fba"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "e5009618-9c13-4625-ac34-665e962fcda0"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "Scope": {
+          "actions": {
+            "List_rows_Setting": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "c63537ba-a0b3-4bf3-b9f8-ef383e75135a"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "ap_tsanetsettings",
+                  "$select": "ap_uri,ap_clientid,ap_secret",
+                  "$filter": "ap_name eq 'settings'",
+                  "$top": 1
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "IsEmpty": {
+              "actions": {
+                "Respond_to_a_Power_App_or_flow": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "d2416a75-545e-4cb5-928a-f8eae3185129"
+                  },
+                  "type": "Response",
+                  "kind": "PowerApp",
+                  "inputs": {
+                    "statusCode": 200,
+                    "body": {
+                      "result": "Error",
+                      "uri": "-",
+                      "clientid": "-",
+                      "secret": "-"
+                    },
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "title": "Result",
+                          "x-ms-dynamically-added": true,
+                          "type": "string"
+                        },
+                        "uri": {
+                          "title": "URI",
+                          "x-ms-dynamically-added": true,
+                          "type": "string"
+                        },
+                        "clientid": {
+                          "title": "ClientID",
+                          "x-ms-dynamically-added": true,
+                          "type": "string"
+                        },
+                        "secret": {
+                          "title": "Secret",
+                          "x-ms-dynamically-added": true,
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "Terminate": {
+                  "runAfter": {
+                    "Respond_to_a_Power_App_or_flow": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "0f367368-9354-425f-8935-d26377bcbf6a"
+                  },
+                  "type": "Terminate",
+                  "inputs": {
+                    "runStatus": "Succeeded"
+                  }
+                }
+              },
+              "runAfter": {
+                "List_rows_Setting": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "equals": [
+                  "@empty(outputs('List_rows_Setting')?['body/value'])",
+                  ""
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "68987bab-fccf-4f8c-b27f-4fbe28e2ed82"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "ac9d2d70-4984-4f1a-a544-3acba4f745cc"
+          },
+          "type": "Scope"
+        },
+        "Respond_to_a_Power_App_or_flow_2": {
+          "runAfter": {
+            "Scope": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2c5da6c1-c8a5-4305-ac37-2ca7659c00bb"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "result": "Success",
+              "uri": "@{first(outputs('List_rows_Setting')?['body/value'])?['ap_uri']}",
+              "clientid": "@{first(outputs('List_rows_Setting')?['body/value'])?['ap_clientid']}",
+              "secret": "@{first(outputs('List_rows_Setting')?['body/value'])?['ap_secret']}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "title": "Result",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "uri": {
+                  "title": "URI",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "clientid": {
+                  "title": "ClientID",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "secret": {
+                  "title": "Secret",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Respond_to_a_Power_App_or_flow_3": {
+          "runAfter": {
+            "Scope": [
+              "Skipped",
+              "Failed",
+              "TimedOut"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "91e78cc2-06c3-4dda-b402-822f002170c2"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "result": "Error",
+              "uri": "-",
+              "clientid": "-",
+              "secret": "-"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "title": "Result",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "uri": {
+                  "title": "URI",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "clientid": {
+                  "title": "ClientID",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "secret": {
+                  "title": "Secret",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

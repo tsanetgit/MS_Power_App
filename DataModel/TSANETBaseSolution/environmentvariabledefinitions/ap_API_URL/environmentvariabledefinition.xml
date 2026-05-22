@@ -1,0 +1,11 @@
+<environmentvariabledefinition schemaname="ap_API_URL">
+  <defaultvalue>https://connect2.renolab.us</defaultvalue>
+  <displayname default="LEGACY-API_URL">
+    <label description="LEGACY-API_URL" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

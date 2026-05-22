@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AppModule>
+  <UniqueName>msdyn_CustomerServiceWorkspace</UniqueName>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <WebResourceId>21aa1d8b-2c55-e711-80f0-000d3aa2b1c4</WebResourceId>
+  <OptimizedFor></OptimizedFor>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <FormFactor>1</FormFactor>
+  <ClientType>4</ClientType>
+  <NavigationType>1</NavigationType>
+  <AppModuleComponents>
+    <AppModuleComponent type="1" schemaName="ap_casemapping" solutionaction="Added" />
+    <AppModuleComponent type="1" schemaName="ap_tsanetcase" solutionaction="Added" />
+    <AppModuleComponent type="1" schemaName="ap_tsanetlog" solutionaction="Added" />
+    <AppModuleComponent type="1" schemaName="ap_tsanetnote" solutionaction="Added" />
+    <AppModuleComponent type="1" schemaName="ap_tsanetresponse" solutionaction="Added" />
+    <AppModuleComponent type="61" id="{379cb817-9a19-4cab-b66e-e44a80693371}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{b77325c7-7470-4288-a48b-538af36f6bfe}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{24aa3eae-71b9-4909-9cc3-dd4e789649ce}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{8bf58b04-0e96-4ed1-b463-86ae44844e8d}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{f7850ce5-9145-4b84-ae79-ff83c5ed1056}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{35f66298-10ed-402d-ad1c-3540a38b1fbe}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{30f83feb-d1c6-411c-8c12-339162ca5ba2}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{5003049d-bfef-4042-b205-ba17563e8ab9}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{f745f854-c878-41d1-871e-00d040700587}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{f56da7d9-07a4-4fac-b062-8328f7a41968}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{888f8a89-979a-4b88-bfd2-9597f1a27838}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{275f0b76-74ca-4dce-b053-48c4002bc8eb}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{5b2cfad6-993b-4f65-948a-fd58f05e7981}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{c8283dd1-1d2d-4019-955e-dd5b09dedc62}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{654885fb-0e8d-4516-8f57-e85b06f09fd6}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{83adb8eb-f6a7-4bf0-8c31-02ca9294cea5}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{605146cb-c451-4f0f-9ffc-04d692d5def5}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{cc0724c0-db42-47a1-b150-fba1c975bf24}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{3c4c9cf6-d066-4735-933e-6a351d97f5b1}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{96b325d8-9ecb-4b79-8cf9-92de0be99c70}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{3e0bd46a-df8d-4235-b5af-e1eab66a785b}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{1ca2a831-98c0-46dd-a577-5794b98baf9a}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{1cddcb6a-cc37-4e5c-a2f4-29adff76a587}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{68c13473-7846-45b9-ac6d-5756ef2d25eb}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{86fc999d-cad4-40f3-a377-d9aa51041ce6}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{be1d18b0-a1d7-442e-b9db-28ad5250305c}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{bc292705-ee77-4061-ba17-b41f09cd89a3}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{2a4f5033-3cf1-4899-8123-7a7c214e2f82}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{5784c385-89e8-4e2a-be74-d5af956ce9a5}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{3c055c25-df05-4824-aa03-ea0c3754c6d2}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{e8ca4b8a-4b13-4892-8996-ccd1b1746fd7}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{efdfb454-ebd0-4ee0-b692-9b5c061ca461}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{30d1c7c3-6c1a-4c9e-9f65-a90ea5f586ac}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{f0db16c6-2df7-4720-b2cb-24963c2224a8}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{3becb237-3bbf-4fa8-8f75-f9db210c37b0}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{d6b114ad-fd03-4882-b17d-670d15214356}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{d3f68a5b-6bee-47a0-a042-dcf1ba601a1e}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{cde81e9b-5a37-4060-b4d0-990d02b5bd4b}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{8384212c-fe72-4bfe-b525-f3cd7d160b3c}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{29b68ac3-0586-4736-bd6c-ee0d8bff8b6e}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{867c0598-d2a5-4e08-965c-06b8a33b2a1a}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{cd17367d-f0c5-49bc-9356-3d965bcb071e}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{d1b206de-3387-421e-94f9-5347786fe8d7}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{51d315cd-5b63-4c78-b820-8d294ab5128d}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{a1b2c3d4-e5f6-4789-abcd-ef0123456780}" solutionaction="Removed" />
+    <AppModuleComponent type="61" id="{ec33e9c4-4ada-4410-8d02-9f3298bdc3b1}" solutionaction="Removed" />
+  </AppModuleComponents>
+  <EventHandlers>
+    <EventHandler eventname="onload" functionname="AppRuntime.Bootstrapper.CECBootstrapper.Instance.init" libraryname="msdyn_CECAppRuntime.js" parameters="" enable="true" isblocking="false" />
+    <EventHandler eventname="onload" functionname="DeepLinkLoader.DeepLinkLoader.Main" libraryname="msdyn_DeepLinkLoader.js" parameters="" enable="true" isblocking="true" />
+    <EventHandler eventname="onload" functionname="ModernCaseManagement.ModernCaseManagementLibrary.InitSessionManager" libraryname="ModernCaseManagement/Incident/msdyn_ModernCaseManagement.js" parameters="" enable="true" isblocking="false" />
+  </EventHandlers>
+  <LocalizedNames>
+    <LocalizedName description="Customer Service workspace" languagecode="1033" />
+  </LocalizedNames>
+  <Descriptions>
+    <Description description="Multi-session Customer Service with Productivity tools" languagecode="1033" />
+  </Descriptions>
+  <appsettings>
+    <appsetting settingdefinitionid.uniquename="msdyn_enablertecopilot">
+      <iscustomizable>1</iscustomizable>
+      <value>true</value>
+    </appsetting>
+    <appsetting settingdefinitionid.uniquename="msdyn_rtecopilotdefaultonruncompleted">
+      <iscustomizable>1</iscustomizable>
+      <value>true</value>
+    </appsetting>
+  </appsettings>
+</AppModule>

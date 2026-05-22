@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebResource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebResourceId>{02c38dc4-8b9a-ef11-8a69-7c1e5268664d}</WebResourceId>
+  <Name>ap_tsanetresponse_icon.svg</Name>
+  <DisplayName>ap_tsanetresponse_icon.svg</DisplayName>
+  <WebResourceType>11</WebResourceType>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsEnabledForMobileClient>1</IsEnabledForMobileClient>
+  <IsAvailableForMobileOffline>1</IsAvailableForMobileOffline>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <IsHidden>0</IsHidden>
+  <FileName>/WebResources/ap_tsanetresponse_iconsvg02C38DC4-8B9A-EF11-8A69-7C1E5268664D</FileName>
+</WebResource>

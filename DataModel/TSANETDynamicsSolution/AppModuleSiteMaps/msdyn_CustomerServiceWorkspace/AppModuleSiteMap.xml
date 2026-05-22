@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AppModuleSiteMap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SiteMapUniqueName>msdyn_CustomerServiceWorkspace</SiteMapUniqueName>
+  <EnableCollapsibleGroups>False</EnableCollapsibleGroups>
+  <ShowHome>True</ShowHome>
+  <ShowPinned>True</ShowPinned>
+  <ShowRecents>True</ShowRecents>
+  <SiteMap IntroducedVersion="undefined">
+    <Area Id="Service_Area" ResourceId="SitemapDesigner.NewArea" DescriptionResourceId="SitemapDesigner.NewArea" ShowGroups="true" IntroducedVersion="7.0.0.0" ordinalvalue="0">
+      <Group Id="App_Tabs_Group" ResourceId="SitemapDesigner.NewGroup" DescriptionResourceId="SitemapDesigner.NewGroup" IntroducedVersion="7.0.0.0" IsProfile="false" ToolTipResourseId="SitemapDesigner.Unknown" ordinalvalue="1">
+        <SubArea Id="NewSubArea_13e34968" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="queueitem" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="17" solutionaction="Modified" />
+        <SubArea Id="NewSubArea_a74d4532" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="activitypointer" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="18" solutionaction="Modified" />
+        <SubArea Id="NewSubArea_e3434638" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="contact" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="19" solutionaction="Modified" />
+        <SubArea Id="EmailReportsSubArea" Icon="$webresource:msdyn_/Analytics/imgs/EmailSentimentIcon.svg" VectorIcon="$webresource:msdyn_/Analytics/imgs/EmailSentimentIcon.svg" Entity="msdyn_dataanalyticsreport_email" Client="Web" AvailableOffline="false" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="22" solutionaction="Modified" />
+        <SubArea Id="msdyn_scheduleboard_CSW" VectorIcon="$webresource:msdyn_/fps/Icons/Sitemap/ScheduleBoard.svg" Url="/main.aspx?pagetype=entitylist&amp;etn=msdyn_scheduleboardsetting" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="16" solutionaction="Modified" />
+        <SubArea Id="NewSubArea_ed4af58a" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="account" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="20" solutionaction="Modified" />
+        <SubArea Id="NewSubArea_dc42a122" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="knowledgearticle" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="21" solutionaction="Modified" />
+        <SubArea Id="NewSubArea_governance_csw" ResourceId="SitemapDesigner.NewSubArea" VectorIcon="/WebResources/msdyn_GovernanceAgentSiteMapIcon" Icon="/WebResources/msdyn_GovernanceAgentSiteMapIcon" Url="/main.aspx?pagetype=control&amp;controlName=msdyn_MscrmControls.GovernanceAgent.GovernanceAgentSettingsControl" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="28" solutionaction="Modified" />
+        <SubArea Id="subarea_6e1cacbd" VectorIcon="/WebResources/msdyn_formSparkleRegular.svg" Icon="/WebResources/msdyn_formSparkleRegular.svg" Entity="msdyn_evaluationplan" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="31" solutionaction="Modified" />
+        <SubArea Id="NewSubArea_601f4fa8" ResourceId="SitemapDesigner.NewSubArea" Url="/main.aspx?pagetype=control&amp;controlName=MscrmControls.KnowledgeControl.KnowledgeControl&amp;data={&quot;showControl&quot;:&quot;search&quot;}" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="29" solutionaction="Modified" />
+        <SubArea Id="NewSubArea_32e96dae" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="template" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="30" solutionaction="Modified" />
+        <SubArea Id="NewSubArea_3fc6b6aa" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="emailsignature" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="32" solutionaction="Modified" />
+        <SubArea Id="NewSubArea_145e2ad1" Entity="msdyn_iotalert" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="34" solutionaction="Modified" />
+        <SubArea Id="NewSubArea_c2a1d8f8" Entity="msdyn_customerasset" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="35" solutionaction="Modified" />
+        <SubArea Id="subarea_dc6ae61f" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="msdyn_screenrecording" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="33" solutionaction="Modified" />
+        <SubArea Id="ServiceActivitySubArea_CSW_847fdf53" VectorIcon="$webresource:msdynce_CustomerServiceHub/_imgs/Sitemap/ServiceActivity.svg" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="serviceappointment" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="36" solutionaction="Modified" />
+        <SubArea Id="subarea_1d35a766" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="ap_tsanetcase" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="25" solutionaction="Added" />
+        <SubArea Id="subarea_a5679b83" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="ap_casemapping" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="26" solutionaction="Added" />
+        <SubArea Id="subarea_5143f574" ResourceId="SitemapDesigner.NewSubArea" VectorIcon="/_imgs/TableIconsFluentV9/document_one_page_sparkle.svg" Icon="/_imgs/imagestrips/transparent_spacer.gif" Url="/main.aspx?pagetype=control&amp;controlName=MscrmControls.UxAgentControl&amp;data={&quot;refId&quot;:&quot;87886a67-21df-4376-81fd-3f06357af719&quot;}" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ordinalvalue="27" solutionaction="Added">
+          <Titles>
+            <Title LCID="1033" Title="Generative page 1" ordinalvalue="0" />
+          </Titles>
+        </SubArea>
+      </Group>
+    </Area>
+  </SiteMap>
+  <LocalizedNames>
+    <LocalizedName description="Copilot Service workspace" languagecode="1033" />
+  </LocalizedNames>
+</AppModuleSiteMap>

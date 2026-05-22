@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebResource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebResourceId>{89ed0f92-5c81-ef11-ac20-00224825d9f6}</WebResourceId>
+  <Name>ap_CaseTSA.js</Name>
+  <DisplayName>ap_CaseTSA.js</DisplayName>
+  <LanguageCode>0</LanguageCode>
+  <WebResourceType>3</WebResourceType>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsEnabledForMobileClient>0</IsEnabledForMobileClient>
+  <IsAvailableForMobileOffline>0</IsAvailableForMobileOffline>
+  <DependencyXml>&lt;Dependencies&gt;&lt;Dependency componentType="WebResource"&gt;&lt;Library libraryUniqueId="{c0d6dd89-5c81-ef11-ac20-00224825d9f6}" name="ap_CommonIntegration.js" displayName="ap_CommonIntegration.js" /&gt;&lt;Library libraryUniqueId="{3dae2587-2586-ef11-ac20-6045bdfe067b}" name="ap_CommonScripts.js" displayName="ap_CommonScripts.js" /&gt;&lt;/Dependency&gt;&lt;/Dependencies&gt;</DependencyXml>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <IsHidden>0</IsHidden>
+  <FileName>/WebResources/ap_CaseTSAjs89ED0F92-5C81-EF11-AC20-00224825D9F6</FileName>
+</WebResource>

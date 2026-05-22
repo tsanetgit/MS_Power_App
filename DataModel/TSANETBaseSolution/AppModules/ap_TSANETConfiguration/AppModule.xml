@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AppModule>
+  <UniqueName>ap_TSANETConfiguration</UniqueName>
+  <IntroducedVersion>1.0.0.50</IntroducedVersion>
+  <WebResourceId>1bddf6e0-2f91-ef11-8a68-7c1e52678395</WebResourceId>
+  <OptimizedFor></OptimizedFor>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <FormFactor>1</FormFactor>
+  <ClientType>4</ClientType>
+  <NavigationType>0</NavigationType>
+  <AppModuleComponents>
+    <AppModuleComponent type="1" schemaName="ap_casemapping" />
+    <AppModuleComponent type="1" schemaName="ap_tsanetsetting" />
+    <AppModuleComponent type="62" schemaName="ap_TSANETConfiguration" />
+  </AppModuleComponents>
+  <AppModuleRoleMaps>
+    <Role id="{627090ff-40a3-4053-8790-584edc5be201}" />
+    <Role id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+  </AppModuleRoleMaps>
+  <LocalizedNames>
+    <LocalizedName description="TSANET Configuration" languagecode="1033" />
+  </LocalizedNames>
+  <Descriptions>
+    <Description description="Streamline configuration management by centralizing key settings for efficient oversight. Enable authorized users to maintain and update essential parameters with ease." languagecode="1033" />
+  </Descriptions>
+  <appelements>
+    <appelement uniquename="ap_ap_TSANETConfiguration_canvasappid_ap_tsanetconnectionsettings_856a6">
+      <canvasappid>
+        <name>ap_tsanetconnectionsettings_856a6</name>
+      </canvasappid>
+      <iscustomizable>1</iscustomizable>
+      <name>ap_ap_TSANETConfiguration_canvasappid_ap_tsanetconnectionsettings_856a6</name>
+    </appelement>
+  </appelements>
+  <appsettings>
+    <appsetting settingdefinitionid.uniquename="AppChannel">
+      <iscustomizable>1</iscustomizable>
+      <value>1</value>
+    </appsetting>
+    <appsetting settingdefinitionid.uniquename="appcopilotenabled">
+      <iscustomizable>1</iscustomizable>
+      <value>1</value>
+    </appsetting>
+    <appsetting settingdefinitionid.uniquename="OverrideAppHeaderColor">
+      <iscustomizable>1</iscustomizable>
+      <value>ap_tsanettheme.xml</value>
+    </appsetting>
+  </appsettings>
+</AppModule>

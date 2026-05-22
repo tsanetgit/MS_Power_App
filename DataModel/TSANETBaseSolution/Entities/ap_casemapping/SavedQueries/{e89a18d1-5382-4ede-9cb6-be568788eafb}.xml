@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{e89a18d1-5382-4ede-9cb6-be568788eafb}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="ap_name" select="1" icon="1" preview="1">
+        <row name="result" id="ap_casemappingid">
+          <cell name="ap_name" width="300" />
+          <cell name="ap_mappingtype" width="122" />
+          <cell name="ap_sourcejsonpath" width="136" />
+          <cell name="ap_targetattribute" width="130" />
+          <cell name="ap_attributetype" width="122" />
+          <cell name="ap_lookupsearchattribute" width="180" />
+          <cell name="ap_lookupentityname" width="155" />
+          <cell name="modifiedon" width="113" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="ap_casemapping">
+          <attribute name="ap_casemappingid" />
+          <attribute name="ap_name" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <attribute name="ap_sourcejsonpath" />
+          <attribute name="ap_targetattribute" />
+          <attribute name="ap_lookupsearchattribute" />
+          <attribute name="ap_lookupentityname" />
+          <attribute name="modifiedon" />
+          <attribute name="ap_attributetype" />
+          <attribute name="ap_mappingtype" />
+          <order attribute="ap_name" descending="false" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Active Case Mappings" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

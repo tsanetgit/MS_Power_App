@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>0</isdefault>
+    <savedqueryid>{37bd6a7b-8edc-ef11-a72f-00224826bd7d}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="ap_name" select="1" icon="1" preview="1">
+        <row name="result" id="ap_tsanetcaseid">
+          <cell name="createdon" width="125" />
+          <cell name="ap_name" width="103" />
+          <cell name="ap_direction" width="100" />
+          <cell name="statuscode" width="119" />
+          <cell name="ap_submittercasenumber" width="176" />
+          <cell name="ap_companyname" width="132" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical" distinct="true">
+        <entity name="ap_tsanetcase">
+          <attribute name="ap_tsanetcaseid" />
+          <attribute name="ap_name" />
+          <attribute name="createdon" />
+          <order attribute="createdon" descending="true" />
+          <attribute name="ap_companyname" />
+          <attribute name="ap_submittercasenumber" />
+          <attribute name="ap_direction" />
+          <attribute name="statuscode" />
+          <filter type="and">
+            <condition attribute="statuscode" operator="in">
+              <value>1</value>
+              <value>120950001</value>
+            </condition>
+          </filter>
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.8</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Action Needed TSANET Cases" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

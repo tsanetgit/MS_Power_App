@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{b05c1e9c-94d0-46c1-8968-df49b8f33ec7}</formid>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form enablerelatedinformation="false" shownavigationbar="true" hasmargin="false" relatedInformationCollapsed="false" showImage="false" maxWidth="1920" headerdensity="HighWithControls">
+      <tabs showlabels="true">
+        <tab name="Summary" verticallayout="true" id="{564b9a08-4626-46f5-8bd8-3d31e17a8873}" IsUserDefined="0" expanded="true" labelid="{c0d4705e-6f76-4a03-9aad-880e7a1aa0fb}" ordinalvalue="0">
+          <columns>
+            <column width="34%" id="0">
+              <sections>
+                <section name="Case Details Summary" showlabel="false" labelwidth="102" showbar="false" id="{09d03c8d-5a6b-4a94-b7d9-cfa1b5364015}" IsUserDefined="0" locklevel="0" celllabelposition="Left" labelid="{d3596cd8-6006-4852-b078-b5f9ae8a3d91}" ordinalvalue="1">
+                  <rows>
+                    <row>
+                      <cell id="{b6f69544-6287-4b8a-b60c-3d66f1cac75d}" userspacer="0" labelid="{30ffee63-6388-4271-a4a2-1bef9f5b5582}" ordinalvalue="10003" solutionaction="Modified" />
+                    </row>
+                    <row>
+                      <cell id="{0509590c-8955-9a39-d387-3da1583005cb}" showlabel="true" locklevel="0" labelid="{d7aebb9d-1f5d-4972-b299-92707e470c31}" ordinalvalue="10004" solutionaction="Modified" />
+                    </row>
+                    <row>
+                      <cell id="{5cae7a70-dd74-eb2b-cda8-eb56db2a9ae2}" showlabel="true" locklevel="0" labelid="{35a054ec-9524-43f6-8951-230e5e46da5d}" ordinalvalue="10005" solutionaction="Modified" />
+                    </row>
+                    <row>
+                      <cell id="{2973ce06-0486-461f-9381-48a174703d01}" labelid="{40f8f633-380a-44d8-ae9f-96561e188db9}" ordinalvalue="10006" solutionaction="Modified" />
+                    </row>
+                    <row>
+                      <cell id="{623a6a8d-8a81-6e1a-284e-bb4a5ded574a}" showlabel="true" locklevel="0" rowspan="8" labelid="{b3cd4c22-ad8f-4e48-8604-adaf935de383}" ordinalvalue="10007" solutionaction="Modified" />
+                    </row>
+                    <row>
+                      <cell id="{5fe08350-c217-446b-ab6a-c1191615931f}" locklevel="0" colspan="1" rowspan="1" ordinalvalue="10002" solutionaction="Added">
+                        <labels>
+                          <label description="Contact" languagecode="1033" />
+                        </labels>
+                        <control id="primarycontactid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="primarycontactid" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="66%" id="1">
+              <sections>
+                <section name="copilot_summary_section" id="d35be81a-baa9-4fb1-a616-a0e2105f2f1f" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false" ordinalvalue="0">
+                  <rows>
+                    <row>
+                      <cell id="{4b29cc9b-8d0c-46c0-a14d-8c359f2bcf76}" locklevel="0" colspan="1" rowspan="1" showlabel="false" ordinalvalue="10000">
+                        <labels>
+                          <label description="(Deprecated) Traversed Path" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="TabsControl" showlabel="false" showbar="false" id="{052a7135-3315-4fd9-91b6-8355cef8bb09}" IsUserDefined="0" locklevel="0" labelid="{e87d5298-d1f3-41a9-b74a-be5e932a66f2}" ordinalvalue="2" solutionaction="Modified" />
+                <section name="Summary_section_6" id="61146dee-5df5-4295-a272-7e432cf6e465" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" ordinalvalue="1" solutionaction="Added">
+                  <labels>
+                    <label description="TSA" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell locklevel="0" id="{19da23de-266b-44d7-99a2-ea43beeee6a1}" rowspan="4" colspan="1" auto="false" ordinalvalue="10000">
+                        <labels>
+                          <label description="TSA Cases" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="tsacasesgrid" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                          <parameters>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>true</EnableViewPicker>
+                            <EnableChartPicker>true</EnableChartPicker>
+                            <ChartGridMode>All</ChartGridMode>
+                            <RelationshipName>ap_tsanetcase_caseid_incident</RelationshipName>
+                            <TargetEntityType>ap_tsanetcase</TargetEntityType>
+                            <ViewId>{84010216-D396-4EEA-A04E-06F5C7799C0A}</ViewId>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab name="Tab_Attachment" id="7182f9ba-17fc-4e4a-9989-fa2360dcc453" IsUserDefined="0" locklevel="0" showlabel="true" ordinalvalue="2">
+          <columns>
+            <column width="100%" id="0">
+              <sections>
+                <section name="attachmentSection" id="72892b3f-9032-4827-9b12-dea5cfad4b51" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" ordinalvalue="0">
+                  <rows>
+                    <row>
+                      <cell id="{35cd64ab-4417-4ff8-9856-92c09b3abc8b}" locklevel="0" colspan="1" rowspan="1" showlabel="false" ordinalvalue="10000">
+                        <labels>
+                          <label description="Pre Create Entity Attachments Id" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <footer id="{75361064-6117-4ac0-b270-ea30250c4b6c}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows />
+      </footer>
+    </form>
+    <LocalizedNames>
+      <LocalizedName description="Case for Multisession experience" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="Case form for Multisession experience" languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

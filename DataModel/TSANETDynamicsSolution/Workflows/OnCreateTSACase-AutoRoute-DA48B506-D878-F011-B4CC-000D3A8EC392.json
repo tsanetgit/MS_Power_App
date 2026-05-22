@@ -1,0 +1,519 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "ap_sharedcommondataserviceforapps_23ace"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "Auto Routing of New Case (ap_AutoRoutingofnewCase)": {
+          "defaultValue": true,
+          "type": "Bool",
+          "metadata": {
+            "schemaName": "ap_AutoRoutingofnewCase"
+          }
+        }
+      },
+      "triggers": {
+        "TSACase": {
+          "metadata": {
+            "operationMetadataId": "798e0ef4-f7f8-410d-9d3f-932d35c9de7b"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "ap_tsanetcase",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filterexpression": "ap_direction eq 0 and statuscode eq 1"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Initialize_variable_CustomerCaseNumber": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "15c04414-c494-4bb2-972c-b1cb92f44cd9"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "CustomerCaseNumber",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_IncidentID": {
+          "runAfter": {
+            "Initialize_variable_CustomerEmail": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "eb6c7a29-5109-498c-9c29-c93cfdd41491"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "IncidentID",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_CustomerEmail": {
+          "runAfter": {
+            "Initialize_variable_CustomerCaseNumber": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "dd8bdf5e-d9cf-4def-b7a3-17aa54d0e3a2"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "CustomerEmail",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "IncidentIDIsNotEmpty": {
+          "actions": {
+            "Get_a_row_user": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "2ccfccf6-626f-4c22-8278-660f81241cbc"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "systemusers",
+                  "recordId": "@triggerOutputs()?['body/_createdby_value']",
+                  "$select": "mobilephone,fullname,internalemailaddress"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Add_a_new_Response": {
+              "runAfter": {
+                "Get_a_row_user": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b71c5617-45f3-4915-b319-e6646bbf548d"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "CreateRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "ap_tsanetresponses",
+                  "item/ap_tsanetcaseid@odata.bind": "ap_tsanetcases(@{triggerOutputs()?['body/ap_tsanetcaseid']})",
+                  "item/ap_type": 1,
+                  "item/ap_incidentid@odata.bind": "incidents(@{variables('IncidentID')})",
+                  "item/ap_createcase": false,
+                  "item/ap_customercasenumber": "@variables('CustomerCaseNumber')",
+                  "item/ap_description": "An engineer has been assigned and will contact you.",
+                  "item/ap_engineeremail": "@outputs('Get_a_row_user')?['body/internalemailaddress']",
+                  "item/ap_engineername": "@outputs('Get_a_row_user')?['body/fullname']",
+                  "item/ap_engineerphone": "@outputs('Get_a_row_user')?['body/mobilephone']",
+                  "item/ap_internalcasenumber": "@variables('CustomerCaseNumber')",
+                  "item/ap_source": 120950000
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "CreateCase": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@empty(variables('IncidentID'))",
+              "@false"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d82fc086-749f-4125-8fd4-0d0ac98d6595"
+          },
+          "type": "If"
+        },
+        "GetCustomerFields": {
+          "actions": {
+            "Apply_to_each": {
+              "foreach": "@outputs('JSON')?['customFields']",
+              "actions": {
+                "IsCaseNumber": {
+                  "actions": {
+                    "Set_variable": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "6813c2e4-0e99-4234-b8f4-2dd3fe381382"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "CustomerCaseNumber",
+                        "value": "@{items('Apply_to_each')?['value']}"
+                      }
+                    }
+                  },
+                  "runAfter": {},
+                  "expression": {
+                    "contains": [
+                      "@items('Apply_to_each')?['fieldName']",
+                      "Customer Case #"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "74ee0684-d55c-4d23-8bc8-3d602ad68fa7"
+                  },
+                  "type": "If"
+                },
+                "IsCustomerEmail": {
+                  "actions": {
+                    "Set_variable_2": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "68a80f6c-793f-4d3d-8c4a-ecfa99895654"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "CustomerEmail",
+                        "value": "@items('Apply_to_each')?['value']"
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "IsCaseNumber": [
+                      "Succeeded"
+                    ]
+                  },
+                  "expression": {
+                    "equals": [
+                      "@items('Apply_to_each')?['fieldName']",
+                      "Customer Email"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "1910f9ed-afe5-4ef3-b019-de4a13abfd01"
+                  },
+                  "type": "If"
+                }
+              },
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "739028ba-9159-4d61-9fb5-4d7dd7f7a30e"
+              },
+              "type": "Foreach"
+            }
+          },
+          "runAfter": {
+            "JSON": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "659711dc-2fe4-4d57-90b2-c065df705ad5"
+          },
+          "type": "Scope"
+        },
+        "SearchExistingCase": {
+          "actions": {
+            "NumberNotEmpty": {
+              "actions": {
+                "List_rows_Cases": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "51c61f59-458a-417b-9bcf-5d722cb5cb74"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "ListRecords",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "incidents",
+                      "$select": "incidentid",
+                      "$filter": "ticketnumber eq '@{variables('CustomerCaseNumber')}'",
+                      "$top": 1
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "CaseFound": {
+                  "actions": {
+                    "Set_variable_IncidentID": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "216458d2-ab67-4054-b6b2-669912f62a05"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "IncidentID",
+                        "value": "@{first(outputs('List_rows_Cases')?['body/value'])?['incidentid']}"
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "List_rows_Cases": [
+                      "Succeeded"
+                    ]
+                  },
+                  "expression": {
+                    "equals": [
+                      "@empty(outputs('List_rows_Cases')?['body/value'])",
+                      "@false"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "40b1d955-d1f9-4b92-be33-b49be52a5282"
+                  },
+                  "type": "If"
+                }
+              },
+              "runAfter": {},
+              "expression": {
+                "equals": [
+                  "@empty(variables('CustomerCaseNumber'))",
+                  "@false"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "d5b01c9e-3fdc-4132-9c12-42bc55e5deb5"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "GetCustomerFields": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a2407e94-94bb-438b-9e90-c62b34cad4bb"
+          },
+          "type": "Scope"
+        },
+        "CreateCase": {
+          "actions": {
+            "IncidentIDIsEmpty": {
+              "actions": {
+                "List_rows_Contacts": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "4905a5ed-f4ab-42b7-a022-eaaae91199b0"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "ListRecords",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "contacts",
+                      "$filter": "emailaddress1 eq '@{variables('CustomerEmail')}'",
+                      "$top": 1
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "AccountFound": {
+                  "actions": {
+                    "IsAccount": {
+                      "actions": {
+                        "Add_a_new_Case": {
+                          "runAfter": {},
+                          "metadata": {
+                            "operationMetadataId": "7d413861-ce0b-493c-8c41-dc3677d838db"
+                          },
+                          "type": "OpenApiConnection",
+                          "inputs": {
+                            "host": {
+                              "connectionName": "shared_commondataserviceforapps",
+                              "operationId": "CreateRecord",
+                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                            },
+                            "parameters": {
+                              "entityName": "incidents",
+                              "item/title": "@variables('CustomerCaseNumber')",
+                              "item/customerid_account@odata.bind": "accounts(@{first(outputs('List_rows_Contacts')?['body/value'])?['_parentcustomerid_value']})",
+                              "item/description": "@outputs('JSON')?['description']"
+                            },
+                            "authentication": "@parameters('$authentication')"
+                          }
+                        },
+                        "Set_variable_3": {
+                          "runAfter": {
+                            "Add_a_new_Case": [
+                              "Succeeded"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "23beccfb-3645-4472-b014-d27341584764"
+                          },
+                          "type": "SetVariable",
+                          "inputs": {
+                            "name": "IncidentID",
+                            "value": "@outputs('Add_a_new_Case')?['body/incidentid']"
+                          }
+                        },
+                        "Set_variable_4": {
+                          "runAfter": {
+                            "Set_variable_3": [
+                              "Succeeded"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "488ade15-86a4-43a0-84ba-5470b5c387ee"
+                          },
+                          "type": "SetVariable",
+                          "inputs": {
+                            "name": "CustomerCaseNumber",
+                            "value": "@outputs('Add_a_new_Case')?['body/ticketnumber']"
+                          }
+                        }
+                      },
+                      "runAfter": {},
+                      "expression": {
+                        "equals": [
+                          "@first(outputs('List_rows_Contacts')?['body/value'])?['_parentcustomerid_value@Microsoft.Dynamics.CRM.lookuplogicalname']",
+                          "account"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "c4019950-0f64-4946-996c-5bd5f902074e"
+                      },
+                      "type": "If"
+                    }
+                  },
+                  "runAfter": {
+                    "List_rows_Contacts": [
+                      "Succeeded"
+                    ]
+                  },
+                  "expression": {
+                    "equals": [
+                      "@empty(outputs('List_rows_Contacts')?['body/value'])",
+                      "@false"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "ed190f45-7df9-4582-b80c-c32fd2046695"
+                  },
+                  "type": "If"
+                }
+              },
+              "runAfter": {},
+              "expression": {
+                "equals": [
+                  "@empty(variables('IncidentID'))",
+                  "@true"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "0837eeba-9b4f-4efa-b3bf-07ad5cd9d627"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "SearchExistingCase": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "140792a9-bf06-46f5-9748-6f2e61e7b312"
+          },
+          "type": "Scope"
+        },
+        "AutoRouteOff": {
+          "actions": {
+            "Terminate": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "9c4082eb-7e16-43d8-a8cb-733deed3561e"
+              },
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Succeeded"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_IncidentID": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@parameters('Auto Routing of New Case (ap_AutoRoutingofnewCase)')",
+              "@false"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "31fc16c5-5940-4232-9074-825dbfebbc38"
+          },
+          "type": "If"
+        },
+        "JSON": {
+          "runAfter": {
+            "AutoRouteOff": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6e31e009-1f07-4733-9e3f-ef330f993e16"
+          },
+          "type": "Compose",
+          "inputs": "@json(triggerOutputs()?['body/ap_formjson'])"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

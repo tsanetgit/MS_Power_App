@@ -1,0 +1,1008 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "ap_sharedcommondataserviceforapps_d0fba"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "f2710afc-81c5-4386-865a-121a00e24f83"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "DateTime",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Initialize_variable_CaseID": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "9fdd5874-f0a7-4a90-bd14-c2f07194fbaa"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "CaseID",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_StatusCode": {
+          "runAfter": {
+            "Initialize_variable_CaseID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0e0849ad-3d62-47ef-9764-58be7f05a60c"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "StatusCode",
+                "type": "integer"
+              }
+            ]
+          }
+        },
+        "Initialize_variable_StateCode": {
+          "runAfter": {
+            "Initialize_variable_StatusCode": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "dc816009-9ca9-499f-8598-9ac3e1c2e059"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "StateCode",
+                "type": "integer"
+              }
+            ]
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "runAfter": {
+            "Scope": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a5b21c27-ecb1-4925-a19f-67d7f027fa98"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "result": "Success"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "title": "Result",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Scope": {
+          "actions": {
+            "Get_Token": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "0f487098-2606-4461-85b1-3f210e5695a6"
+              },
+              "type": "Workflow",
+              "inputs": {
+                "host": {
+                  "workflowReferenceName": "5501ead7-1b8a-ef11-8a69-6045bdd3fb39"
+                }
+              }
+            },
+            "GetTokenSuccess": {
+              "actions": {
+                "Apply_to_each": {
+                  "foreach": "@body('HTTP_Get_Cases')",
+                  "actions": {
+                    "Add_a_new_Log": {
+                      "runAfter": {
+                        "ProcessCasePatch": [
+                          "Failed",
+                          "Skipped",
+                          "TimedOut"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "c0549ac6-5e0c-4d45-8ddf-1b9e6e48d1c1"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "CreateRecord",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                        },
+                        "parameters": {
+                          "entityName": "ap_tsanetlogs",
+                          "item/ap_log": "TSA Collaboration Request: @{items('Apply_to_each')['token']}\nProcess: MS Flow\nCase Patch Failed\nJSON:\n@{items('Apply_to_each')}\n",
+                          "item/ap_name": "Case Patch Failed",
+                          "item/ap_tsanetcaseid@odata.bind": "@if(equals(empty(outputs('List_rows_TSA_Cases')?['body/value']),true),null,concat('ap_tsanetcases(',first(outputs('List_rows_TSA_Cases')?['body/value'])?['ap_tsanetcaseid'],')'))\r\n"
+                        },
+                        "authentication": {
+                          "type": "Raw",
+                          "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                        }
+                      }
+                    },
+                    "ProcessCasePatch": {
+                      "actions": {
+                        "CaseExists": {
+                          "actions": {
+                            "Set_variable": {
+                              "runAfter": {
+                                "Add_a_new_Case": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "db36a7fc-8540-40c9-b162-23b7b80d8ea3"
+                              },
+                              "type": "SetVariable",
+                              "inputs": {
+                                "name": "CaseID",
+                                "value": "@outputs('Add_a_new_Case')?['body/ap_tsanetcaseid']"
+                              }
+                            },
+                            "Add_a_new_Case": {
+                              "runAfter": {},
+                              "metadata": {
+                                "operationMetadataId": "8ca4f4cc-6bfb-478a-af55-ae71b7f4a57e"
+                              },
+                              "type": "OpenApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "connectionName": "shared_commondataserviceforapps",
+                                  "operationId": "CreateRecord",
+                                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                                },
+                                "parameters": {
+                                  "entityName": "ap_tsanetcases",
+                                  "item/ap_companycode": "@if(equals(outputs('Direction'),0),items('Apply_to_each')['submitCompanyId'],items('Apply_to_each')['receiveCompanyId'])",
+                                  "item/ap_companyname": "@if(equals(outputs('Direction'),0),items('Apply_to_each')['submitCompanyName'],items('Apply_to_each')['receiveCompanyName'])",
+                                  "item/ap_direction": "@outputs('Direction')",
+                                  "item/ap_formjson": "@items('Apply_to_each')",
+                                  "item/ap_name": "@items('Apply_to_each')['id']",
+                                  "item/ap_submittercasenumber": "@items('Apply_to_each')['submitterCaseNumber']",
+                                  "item/ap_tsacasetoken": "@items('Apply_to_each')['token']"
+                                },
+                                "authentication": {
+                                  "type": "Raw",
+                                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                                }
+                              }
+                            },
+                            "Update_Case_Status": {
+                              "runAfter": {
+                                "Set_variable": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "d0ce219b-a1c5-4661-8809-44b418e4dbaa"
+                              },
+                              "type": "OpenApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "connectionName": "shared_commondataserviceforapps",
+                                  "operationId": "UpdateOnlyRecord",
+                                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                                },
+                                "parameters": {
+                                  "entityName": "ap_tsanetcases",
+                                  "recordId": "@outputs('Add_a_new_Case')?['body/ap_tsanetcaseid']",
+                                  "item/statecode": "@variables('StateCode')",
+                                  "item/statuscode": "@variables('StatusCode')"
+                                },
+                                "authentication": {
+                                  "type": "Raw",
+                                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                                }
+                              }
+                            }
+                          },
+                          "runAfter": {},
+                          "else": {
+                            "actions": {
+                              "Update_a_Case": {
+                                "runAfter": {},
+                                "metadata": {
+                                  "operationMetadataId": "c2e64257-6189-4cad-9eeb-a2752fbc7354"
+                                },
+                                "type": "OpenApiConnection",
+                                "inputs": {
+                                  "host": {
+                                    "connectionName": "shared_commondataserviceforapps",
+                                    "operationId": "UpdateRecord",
+                                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                                  },
+                                  "parameters": {
+                                    "entityName": "ap_tsanetcases",
+                                    "recordId": "@first(outputs('List_rows_TSA_Cases')?['body/value'])?['ap_tsanetcaseid']",
+                                    "item/ap_formjson": "@items('Apply_to_each')",
+                                    "item/statecode": "@variables('StateCode')",
+                                    "item/statuscode": "@variables('StatusCode')",
+                                    "item/ap_submittercasenumber": "@items('Apply_to_each')['submitterCaseNumber']"
+                                  },
+                                  "authentication": {
+                                    "type": "Raw",
+                                    "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                                  }
+                                }
+                              },
+                              "Set_variable_2": {
+                                "runAfter": {
+                                  "Update_a_Case": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "24cd9714-3051-46aa-8596-b2e87c5127a6"
+                                },
+                                "type": "SetVariable",
+                                "inputs": {
+                                  "name": "CaseID",
+                                  "value": "@outputs('Update_a_Case')?['body/ap_tsanetcaseid']"
+                                }
+                              }
+                            }
+                          },
+                          "expression": {
+                            "equals": [
+                              "@empty(outputs('List_rows_TSA_Cases')?['body/value'])",
+                              "@true"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "0295d375-6f11-4d40-9cf5-e73cc50dd6b5"
+                          },
+                          "type": "If"
+                        },
+                        "Apply_to_each_Note": {
+                          "foreach": "@items('Apply_to_each')['caseNotes']",
+                          "actions": {
+                            "List_rows_Notes": {
+                              "runAfter": {},
+                              "metadata": {
+                                "operationMetadataId": "6cf359ba-3fe8-4847-b77e-2529ebc32250"
+                              },
+                              "type": "OpenApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "connectionName": "shared_commondataserviceforapps",
+                                  "operationId": "ListRecords",
+                                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                                },
+                                "parameters": {
+                                  "entityName": "ap_tsanetnotes",
+                                  "$select": "ap_tsanetnoteid",
+                                  "$filter": "ap_tsanotecode eq '@{items('Apply_to_each_Note')['id']}'",
+                                  "$top": 1
+                                },
+                                "authentication": {
+                                  "type": "Raw",
+                                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                                }
+                              }
+                            },
+                            "NoteNotExists": {
+                              "actions": {
+                                "Add_a_new_Note": {
+                                  "runAfter": {},
+                                  "metadata": {
+                                    "operationMetadataId": "6116c3cd-ddd3-4288-8ce8-ba26488250b7"
+                                  },
+                                  "type": "OpenApiConnection",
+                                  "inputs": {
+                                    "host": {
+                                      "connectionName": "shared_commondataserviceforapps",
+                                      "operationId": "CreateRecord",
+                                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                                    },
+                                    "parameters": {
+                                      "entityName": "ap_tsanetnotes",
+                                      "item/ap_tsanetcaseid@odata.bind": "ap_tsanetcases(@{variables('CaseID')})",
+                                      "item/ap_creatoremail": "@items('Apply_to_each_Note')['creatorEmail']",
+                                      "item/ap_creatorname": "@items('Apply_to_each_Note')['creatorName']",
+                                      "item/ap_description": "@items('Apply_to_each_Note')['description']",
+                                      "item/ap_tsanotecode": "@items('Apply_to_each_Note')['id']",
+                                      "item/ap_source": 120950001,
+                                      "item/ap_name": "@items('Apply_to_each_Note')['summary']",
+                                      "item/ap_companyname": "@items('Apply_to_each_Note')['companyName']",
+                                      "item/overriddencreatedon": "@items('Apply_to_each_Note')['createdAt']"
+                                    },
+                                    "authentication": {
+                                      "type": "Raw",
+                                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                                    }
+                                  }
+                                }
+                              },
+                              "runAfter": {
+                                "List_rows_Notes": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "expression": {
+                                "equals": [
+                                  "@empty(outputs('List_rows_Notes')?['body/value'])",
+                                  "@true"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "b208340f-287f-4f62-a21e-edc3b7fcc9e5"
+                              },
+                              "type": "If"
+                            }
+                          },
+                          "runAfter": {
+                            "CaseExists": [
+                              "Succeeded"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "d9751497-4c11-4382-8f5a-93790a300f63"
+                          },
+                          "type": "Foreach"
+                        },
+                        "Apply_to_each_Response": {
+                          "foreach": "@items('Apply_to_each')['caseResponses']",
+                          "actions": {
+                            "List_rows_TSA_Responses": {
+                              "runAfter": {},
+                              "metadata": {
+                                "operationMetadataId": "eedb4c97-ae87-42b2-9303-9af30e9297f0"
+                              },
+                              "type": "OpenApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "connectionName": "shared_commondataserviceforapps",
+                                  "operationId": "ListRecords",
+                                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                                },
+                                "parameters": {
+                                  "entityName": "ap_tsanetresponses",
+                                  "$select": "ap_tsanetresponseid",
+                                  "$filter": "ap_tsaresponsecode eq '@{items('Apply_to_each_Response')?['id']}'",
+                                  "$top": 1
+                                },
+                                "authentication": {
+                                  "type": "Raw",
+                                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                                }
+                              }
+                            },
+                            "ResponseNotExists": {
+                              "actions": {
+                                "SwitchByType": {
+                                  "runAfter": {},
+                                  "cases": {
+                                    "approval": {
+                                      "case": "approval",
+                                      "actions": {
+                                        "Add_a_new_row_-_approval": {
+                                          "runAfter": {},
+                                          "metadata": {
+                                            "operationMetadataId": "1e795852-bfe9-4066-ad26-6040667cae8f"
+                                          },
+                                          "type": "OpenApiConnection",
+                                          "inputs": {
+                                            "host": {
+                                              "connectionName": "shared_commondataserviceforapps",
+                                              "operationId": "CreateRecord",
+                                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                                            },
+                                            "parameters": {
+                                              "entityName": "ap_tsanetresponses",
+                                              "item/ap_tsanetcaseid@odata.bind": "ap_tsanetcases(@{variables('CaseID')})",
+                                              "item/ap_type": 1,
+                                              "item/ap_description": "@items('Apply_to_each_Response')?['nextSteps']",
+                                              "item/ap_engineeremail": "@items('Apply_to_each_Response')?['engineerEmail']",
+                                              "item/ap_engineername": "@items('Apply_to_each_Response')?['engineerName']",
+                                              "item/ap_engineerphone": "@items('Apply_to_each_Response')?['engineerPhone']",
+                                              "item/ap_internalcasenumber": "@items('Apply_to_each_Response')?['caseNumber']",
+                                              "item/ap_source": 120950001,
+                                              "item/ap_name": "Approval",
+                                              "item/overriddencreatedon": "@items('Apply_to_each_Response')?['createdAt']",
+                                              "item/ap_tsaresponsecode": "@items('Apply_to_each_Response')?['id']"
+                                            },
+                                            "authentication": {
+                                              "type": "Raw",
+                                              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "rejection": {
+                                      "case": "rejection",
+                                      "actions": {
+                                        "Add_a_new_row_-_reject": {
+                                          "runAfter": {},
+                                          "metadata": {
+                                            "operationMetadataId": "1e795852-bfe9-4066-ad26-6040667cae8f"
+                                          },
+                                          "type": "OpenApiConnection",
+                                          "inputs": {
+                                            "host": {
+                                              "connectionName": "shared_commondataserviceforapps",
+                                              "operationId": "CreateRecord",
+                                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                                            },
+                                            "parameters": {
+                                              "entityName": "ap_tsanetresponses",
+                                              "item/ap_tsanetcaseid@odata.bind": "ap_tsanetcases(@{variables('CaseID')})",
+                                              "item/ap_type": 0,
+                                              "item/ap_description": "@items('Apply_to_each_Response')?['reason']",
+                                              "item/ap_engineeremail": "@items('Apply_to_each_Response')?['engineerEmail']",
+                                              "item/ap_engineername": "@items('Apply_to_each_Response')?['engineerName']",
+                                              "item/ap_engineerphone": "@items('Apply_to_each_Response')?['engineerPhone']",
+                                              "item/ap_source": 120950001,
+                                              "item/ap_name": "Reject",
+                                              "item/overriddencreatedon": "@items('Apply_to_each_Response')?['createdAt']",
+                                              "item/ap_tsaresponsecode": "@items('Apply_to_each_Response')?['id']"
+                                            },
+                                            "authentication": {
+                                              "type": "Raw",
+                                              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "RequestInformation": {
+                                      "case": "information_request",
+                                      "actions": {
+                                        "Add_a_new_row_-_requestinfo": {
+                                          "runAfter": {},
+                                          "metadata": {
+                                            "operationMetadataId": "1e795852-bfe9-4066-ad26-6040667cae8f"
+                                          },
+                                          "type": "OpenApiConnection",
+                                          "inputs": {
+                                            "host": {
+                                              "connectionName": "shared_commondataserviceforapps",
+                                              "operationId": "CreateRecord",
+                                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                                            },
+                                            "parameters": {
+                                              "entityName": "ap_tsanetresponses",
+                                              "item/ap_tsanetcaseid@odata.bind": "ap_tsanetcases(@{variables('CaseID')})",
+                                              "item/ap_type": 2,
+                                              "item/ap_description": "@items('Apply_to_each_Response')?['nextSteps']",
+                                              "item/ap_engineeremail": "@items('Apply_to_each_Response')?['engineerEmail']",
+                                              "item/ap_engineername": "@items('Apply_to_each_Response')?['engineerName']",
+                                              "item/ap_engineerphone": "@items('Apply_to_each_Response')?['engineerPhone']",
+                                              "item/ap_source": 120950001,
+                                              "item/ap_name": "Request Information",
+                                              "item/overriddencreatedon": "@items('Apply_to_each_Response')?['createdAt']",
+                                              "item/ap_tsaresponsecode": "@items('Apply_to_each_Response')?['id']"
+                                            },
+                                            "authentication": {
+                                              "type": "Raw",
+                                              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "InformationResponse": {
+                                      "case": "information_response",
+                                      "actions": {
+                                        "Add_a_new_row_-_inforesponse": {
+                                          "runAfter": {},
+                                          "metadata": {
+                                            "operationMetadataId": "1e795852-bfe9-4066-ad26-6040667cae8f"
+                                          },
+                                          "type": "OpenApiConnection",
+                                          "inputs": {
+                                            "host": {
+                                              "connectionName": "shared_commondataserviceforapps",
+                                              "operationId": "CreateRecord",
+                                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                                            },
+                                            "parameters": {
+                                              "entityName": "ap_tsanetresponses",
+                                              "item/ap_tsanetcaseid@odata.bind": "ap_tsanetcases(@{variables('CaseID')})",
+                                              "item/ap_type": 3,
+                                              "item/ap_description": "@items('Apply_to_each_Response')?['nextSteps']",
+                                              "item/ap_engineeremail": "@items('Apply_to_each_Response')?['engineerEmail']",
+                                              "item/ap_engineername": "@items('Apply_to_each_Response')?['engineerName']",
+                                              "item/ap_engineerphone": "@items('Apply_to_each_Response')?['engineerPhone']",
+                                              "item/ap_source": 120950001,
+                                              "item/ap_name": "Information Response",
+                                              "item/overriddencreatedon": "@items('Apply_to_each_Response')?['createdAt']",
+                                              "item/ap_tsaresponsecode": "@items('Apply_to_each_Response')?['id']"
+                                            },
+                                            "authentication": {
+                                              "type": "Raw",
+                                              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "default": {
+                                    "actions": {}
+                                  },
+                                  "expression": "@toLower(items('Apply_to_each_Response')?['type'])",
+                                  "metadata": {
+                                    "operationMetadataId": "025bde64-65d7-4b57-b0ae-effa9fd26438"
+                                  },
+                                  "type": "Switch"
+                                }
+                              },
+                              "runAfter": {
+                                "List_rows_TSA_Responses": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "else": {
+                                "actions": {
+                                  "IsOutboundApproval": {
+                                    "actions": {
+                                      "Apply_to_each_2": {
+                                        "foreach": "@outputs('List_rows_TSA_Responses')?['body/value']",
+                                        "actions": {
+                                          "Update_Approval": {
+                                            "runAfter": {},
+                                            "metadata": {
+                                              "operationMetadataId": "b4240a17-76aa-45cd-a595-eda8bff3d55c"
+                                            },
+                                            "type": "OpenApiConnection",
+                                            "inputs": {
+                                              "host": {
+                                                "connectionName": "shared_commondataserviceforapps",
+                                                "operationId": "UpdateOnlyRecord",
+                                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                                              },
+                                              "parameters": {
+                                                "entityName": "ap_tsanetresponses",
+                                                "recordId": "@items('Apply_to_each_2')?['ap_tsanetresponseid']",
+                                                "item/ap_description": "@items('Apply_to_each_Response')?['nextSteps']",
+                                                "item/ap_engineeremail": "@items('Apply_to_each_Response')?['engineerEmail']",
+                                                "item/ap_engineername": "@items('Apply_to_each_Response')?['engineerName']",
+                                                "item/ap_engineerphone": "@items('Apply_to_each_Response')?['engineerPhone']",
+                                                "item/ap_internalcasenumber": "@items('Apply_to_each_Response')?['caseNumber']"
+                                              },
+                                              "authentication": {
+                                                "type": "Raw",
+                                                "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "runAfter": {},
+                                        "metadata": {
+                                          "operationMetadataId": "129f86b9-0cd8-4fda-a3fa-9d79a023bafa"
+                                        },
+                                        "type": "Foreach"
+                                      }
+                                    },
+                                    "runAfter": {},
+                                    "expression": {
+                                      "and": [
+                                        {
+                                          "equals": [
+                                            "@outputs('Direction')",
+                                            1
+                                          ]
+                                        },
+                                        {
+                                          "equals": [
+                                            "@toLower(items('Apply_to_each_Response')?['type'])",
+                                            "approval"
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "metadata": {
+                                      "operationMetadataId": "60320e38-2270-44eb-999e-02ee9976915d"
+                                    },
+                                    "type": "If"
+                                  }
+                                }
+                              },
+                              "expression": {
+                                "equals": [
+                                  "@empty(outputs('List_rows_TSA_Responses')?['body/value'])",
+                                  "@true"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "14280a66-c770-4793-81e1-fd9387d10822"
+                              },
+                              "type": "If"
+                            }
+                          },
+                          "runAfter": {
+                            "Apply_to_each_Note": [
+                              "Succeeded"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "805a9769-e648-4ef4-8cf7-c5ed4a25920d"
+                          },
+                          "type": "Foreach"
+                        }
+                      },
+                      "runAfter": {
+                        "List_rows_TSA_Cases": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "fe515915-7bc2-4b31-a2bb-de87e13003a6"
+                      },
+                      "type": "Scope"
+                    },
+                    "SwitchStatus": {
+                      "runAfter": {},
+                      "cases": {
+                        "rejected": {
+                          "case": "rejected",
+                          "actions": {
+                            "Set_variable_5": {
+                              "runAfter": {
+                                "Set_variable_4": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "35eca733-6aaf-4939-8595-3a252a002393"
+                              },
+                              "type": "SetVariable",
+                              "inputs": {
+                                "name": "StatusCode",
+                                "value": 120950002
+                              }
+                            },
+                            "Set_variable_4": {
+                              "runAfter": {},
+                              "metadata": {
+                                "operationMetadataId": "04bb488b-0731-4f3f-85bf-a7032e10a999"
+                              },
+                              "type": "SetVariable",
+                              "inputs": {
+                                "name": "StateCode",
+                                "value": 1
+                              }
+                            }
+                          }
+                        },
+                        "closed": {
+                          "case": "closed",
+                          "actions": {
+                            "Set_variable_3": {
+                              "runAfter": {
+                                "Set_variable_1": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "31264817-c68a-4cc6-a320-cdf9c2d1aaf2"
+                              },
+                              "type": "SetVariable",
+                              "inputs": {
+                                "name": "StatusCode",
+                                "value": 2
+                              }
+                            },
+                            "Set_variable_1": {
+                              "runAfter": {},
+                              "metadata": {
+                                "operationMetadataId": "02dccd14-6048-4bf2-9ce5-9b90e6a2b4cc"
+                              },
+                              "type": "SetVariable",
+                              "inputs": {
+                                "name": "StateCode",
+                                "value": 1
+                              }
+                            }
+                          }
+                        },
+                        "information": {
+                          "case": "information",
+                          "actions": {
+                            "Set_variable_7": {
+                              "runAfter": {
+                                "Set_variable_6": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "087ab615-b320-4b3b-8dfd-b3f16ce29fad"
+                              },
+                              "type": "SetVariable",
+                              "inputs": {
+                                "name": "StatusCode",
+                                "value": 120950001
+                              }
+                            },
+                            "Set_variable_6": {
+                              "runAfter": {},
+                              "metadata": {
+                                "operationMetadataId": "a3199dbb-5dc4-4fc5-9af3-904cf15f06d6"
+                              },
+                              "type": "SetVariable",
+                              "inputs": {
+                                "name": "StateCode",
+                                "value": 0
+                              }
+                            }
+                          }
+                        },
+                        "accepted": {
+                          "case": "accepted",
+                          "actions": {
+                            "Set_variable_9": {
+                              "runAfter": {
+                                "Set_variable_8": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "metadata": {
+                                "operationMetadataId": "8febe1d3-572c-4e8d-a783-416a8631c593"
+                              },
+                              "type": "SetVariable",
+                              "inputs": {
+                                "name": "StatusCode",
+                                "value": 120950003
+                              }
+                            },
+                            "Set_variable_8": {
+                              "runAfter": {},
+                              "metadata": {
+                                "operationMetadataId": "a4caafda-9e9c-4eb1-85c1-cbbacf914a08"
+                              },
+                              "type": "SetVariable",
+                              "inputs": {
+                                "name": "StateCode",
+                                "value": 0
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "default": {
+                        "actions": {
+                          "Set_variable_11": {
+                            "runAfter": {
+                              "Set_variable_10": [
+                                "Succeeded"
+                              ]
+                            },
+                            "metadata": {
+                              "operationMetadataId": "3074ec1e-c953-415a-9acb-b47556feb0e1"
+                            },
+                            "type": "SetVariable",
+                            "inputs": {
+                              "name": "StatusCode",
+                              "value": 1
+                            }
+                          },
+                          "Set_variable_10": {
+                            "runAfter": {},
+                            "metadata": {
+                              "operationMetadataId": "ffdc4209-7fd5-49e1-89bd-192253d14c28"
+                            },
+                            "type": "SetVariable",
+                            "inputs": {
+                              "name": "StateCode",
+                              "value": 0
+                            }
+                          }
+                        }
+                      },
+                      "expression": "@toLower(items('Apply_to_each')['status'])",
+                      "metadata": {
+                        "operationMetadataId": "a01be060-428d-44fd-9332-d88b400813a9"
+                      },
+                      "type": "Switch"
+                    },
+                    "Direction": {
+                      "runAfter": {
+                        "SwitchStatus": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "8276a9e1-2ea5-4f18-b594-9ffcdcc10a8b"
+                      },
+                      "type": "Compose",
+                      "inputs": "@if(equals(int(body('Get_Company_Id')?['companyid']),items('Apply_to_each')['receiveCompanyId']),0,1)"
+                    },
+                    "List_rows_TSA_Cases": {
+                      "runAfter": {
+                        "Direction": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "6048a104-c196-4cce-9ab5-2d74ca67270b"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "ListRecords",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                        },
+                        "parameters": {
+                          "entityName": "ap_tsanetcases",
+                          "$select": "ap_tsanetcaseid",
+                          "$filter": "ap_tsacasetoken eq '@{items('Apply_to_each')['token']}'",
+                          "$top": 1
+                        },
+                        "authentication": {
+                          "type": "Raw",
+                          "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                        }
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "HTTP_Get_Cases": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "e01c68af-7e75-4bd5-8955-6df5eb4f06e1"
+                  },
+                  "type": "Foreach"
+                },
+                "Get_Company_Id": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "6062fdd0-11e8-44f5-9936-05bc0a5ac8b0"
+                  },
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "82d2eff9-8cdc-ef11-a72f-00224826bd7d"
+                    },
+                    "body": {
+                      "text": "@body('Get_Token')?['accesstoken']",
+                      "text_1": "@body('Get_Token')?['uri']"
+                    }
+                  }
+                },
+                "HTTP_Get_Cases": {
+                  "runAfter": {
+                    "Get_Company_Id": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "80654909-5a54-400d-886b-3fe2de53445f"
+                  },
+                  "type": "Http",
+                  "inputs": {
+                    "method": "GET",
+                    "uri": "@{body('Get_Token')?['uri']}/v1/collaboration-requests?updatedAfter=@{triggerBody()['text']}",
+                    "headers": {
+                      "Authorization": "Bearer @{body('Get_Token')?['accesstoken']}"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Get_Token": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "equals": [
+                  "@body('Get_Token')?['result']",
+                  "Success"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "41111d7e-093c-4a42-a2dc-a60d443b2985"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_StateCode": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "261741f1-9eba-4605-8ea7-97cee6dae74c"
+          },
+          "type": "Scope"
+        },
+        "Respond_to_a_Power_App_or_flow_2": {
+          "runAfter": {
+            "Scope": [
+              "Failed",
+              "Skipped",
+              "TimedOut"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6bb4e0f7-4600-4a5d-a5ec-a747873e68bf"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "result": "Error"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "title": "Result",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

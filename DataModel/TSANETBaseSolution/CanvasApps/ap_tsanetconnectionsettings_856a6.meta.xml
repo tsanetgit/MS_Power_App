@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CanvasApp xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>ap_tsanetconnectionsettings_856a6</Name>
+  <AppVersion>2026-03-03T11:39:04Z</AppVersion>
+  <Status>Ready</Status>
+  <CreatedByClientVersion>3.26031.8.0</CreatedByClientVersion>
+  <MinClientVersion>3.26031.8.0</MinClientVersion>
+  <Tags>{"primaryDeviceWidth":"1366","primaryDeviceHeight":"768","supportsPortrait":"true","supportsLandscape":"true","primaryFormFactor":"Tablet","showStatusBar":"false","publisherVersion":"3.26031.8","minimumRequiredApiVersion":"2.2.0","hasComponent":"false","hasUnlockedComponent":"false","isUnifiedRootApp":"false","sienaVersion":"20260303T111350Z-3.26031.8.0","m365CopilotSettingValue":"0"}</Tags>
+  <IsCdsUpgraded>0</IsCdsUpgraded>
+  <GalleryItemId xsi:nil="true"></GalleryItemId>
+  <BackgroundColor>RGBA(0,176,240,1)</BackgroundColor>
+  <DisplayName>TSANET Connection Settings</DisplayName>
+  <Description xsi:nil="true"></Description>
+  <CommitMessage xsi:nil="true"></CommitMessage>
+  <Publisher xsi:nil="true"></Publisher>
+  <AuthorizationReferences>[]</AuthorizationReferences>
+  <ConnectionReferences>{"2d9019e9-9de9-417e-8818-21e5c196ef22":{"id":"/providers/microsoft.powerapps/apis/shared_logicflows","displayName":"Logic flows","iconUri":"https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/v1.0.1774/1.0.1774.4397/logicflows/icon.png","dataSources":["PowerApp-StartWebhookReg"],"dependencies":[],"dependents":[],"parameterHints":{"workflowName":{"value":"8969d38b-5c6d-4927-8860-46d64435519d"},"workflowEntityId":{"value":"b1a65914-eb16-f111-8342-6045bdf0e7d8"},"workflowDisplayName":{"value":"PowerApp-StartWebhookReg"}},"parameterHintsV2":{"workflowName":{"value":"8969d38b-5c6d-4927-8860-46d64435519d"},"workflowEntityId":{"value":"b1a65914-eb16-f111-8342-6045bdf0e7d8"},"workflowDisplayName":{"value":"PowerApp-StartWebhookReg"}},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{},"apiTier":"Standard","actions":["Run"]}}</ConnectionReferences>
+  <DatabaseReferences>{"default.cds":{"databaseDetails":{"referenceType":"Environmental","environmentName":"default.cds","overrideValues":{"status":"NotSpecified","environmentVariableName":""}},"dataSources":{"TSANET Settings":{"entitySetName":"ap_tsanetsettings","logicalName":"ap_tsanetsetting"}}}}</DatabaseReferences>
+  <AppComponents>[]</AppComponents>
+  <AppComponentDependencies>[]</AppComponentDependencies>
+  <CanConsumeAppPass>1</CanConsumeAppPass>
+  <CanvasAppType>2</CanvasAppType>
+  <BypassConsent>0</BypassConsent>
+  <AdminControlBypassConsent>0</AdminControlBypassConsent>
+  <EmbeddedApp xsi:nil="true"></EmbeddedApp>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <CdsDependencies>{"cdsdependencies":[{"dependencyid":"b1a65914-eb16-f111-8342-6045bdf0e7d8","componenttype":29,"componenttypeplatformname":"Workflow"},{"logicalname":"ap_tsanetsetting","componenttype":1}]}</CdsDependencies>
+  <IsCustomizable>1</IsCustomizable>
+  <BackgroundImageUri>/CanvasApps/ap_tsanetconnectionsettings_856a6_BackgroundImageUri</BackgroundImageUri>
+  <DocumentUri>/CanvasApps/ap_tsanetconnectionsettings_856a6_DocumentUri.msapp</DocumentUri>
+  <AdditionalUris>
+    <AdditionalUri>/CanvasApps/ap_tsanetconnectionsettings_856a6_AdditionalUris0_identity.json</AdditionalUri>
+  </AdditionalUris>
+</CanvasApp>

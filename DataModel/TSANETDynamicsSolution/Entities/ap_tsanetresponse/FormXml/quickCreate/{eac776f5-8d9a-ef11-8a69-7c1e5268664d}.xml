@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{eac776f5-8d9a-ef11-8a69-7c1e5268664d}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab id="F931FFE2-B873-473F-8F95-9502F0AA3F5E" name="tab_1" showlabel="false" labelid="{ba55fd4b-cbce-4ad4-8b88-b2199d3314d6}" ordinalvalue="0">
+          <columns>
+            <column width="34%" id="0">
+              <sections>
+                <section id="0C655D4E-C6E3-424E-9AF5-71E72D30D12E" name="tab_1_column_1_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0" labelwidth="130" labelid="{046f0141-1da0-4233-8b4a-6a3ef5933c92}" ordinalvalue="0">
+                  <rows>
+                    <row>
+                      <cell id="{e8265bf8-1c51-4de0-aecf-71eb010e4a98}" locklevel="0" colspan="1" rowspan="1" visible="false" ordinalvalue="10003">
+                        <labels>
+                          <label description="Internal Case Number" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{f9d3ae39-716c-4f7b-87b4-20250eddcd50}" locklevel="0" colspan="1" rowspan="1" ordinalvalue="10006" solutionaction="Modified">
+                        <labels>
+                          <label description="Engineer Email" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{a27c1286-05c6-40c3-8695-36b1a411fab4}" locklevel="0" colspan="1" rowspan="1" ordinalvalue="10007" solutionaction="Modified">
+                        <labels>
+                          <label description="Engineer Name" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{06b1118d-6905-4d58-9c33-599c8f9b7b49}" locklevel="0" colspan="1" rowspan="1" ordinalvalue="10008" solutionaction="Modified">
+                        <labels>
+                          <label description="Engineer Phone" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0dd297e4-cda3-4b23-83cf-06f1c5f5a23a}" locklevel="0" colspan="1" rowspan="1" visible="false" ordinalvalue="10009" solutionaction="Modified">
+                        <labels>
+                          <label description="TSANET Case" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3f106e14-a77d-4685-804f-d3252c5548c5}" locklevel="0" colspan="1" rowspan="1" visible="false" ordinalvalue="10010" solutionaction="Modified">
+                        <labels>
+                          <label description="Source" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{a1b3c9a4-e647-4273-b937-b19e78cac9e6}" locklevel="0" colspan="1" rowspan="1" visible="false" ordinalvalue="10004" solutionaction="Added">
+                        <labels>
+                          <label description="Case" languagecode="1033" />
+                        </labels>
+                        <control id="ap_incidentid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ap_incidentid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{814f250a-4af2-41d9-a524-688769b373d5}" locklevel="0" colspan="1" rowspan="1" visible="false" ordinalvalue="10005" solutionaction="Added">
+                        <labels>
+                          <label description="Create Case" languagecode="1033" />
+                        </labels>
+                        <control id="ap_createcase" classid="{F9A8A302-114E-466A-B582-6771B2AE0D92}" datafieldname="ap_createcase" disabled="false" uniqueid="{b7350f58-0704-453c-b6ed-6c2dad191cde}" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="33%" id="1">
+              <sections>
+                <section id="02DECBA0-3AE2-484D-A19F-C5353AF4F4F2" name="createcasesection" columns="1" showlabel="true" showbar="false" IsUserDefined="0" labelwidth="130" visible="false" labelid="{b17b70ad-6b92-4477-81f5-985b2cc0c237}" ordinalvalue="0" solutionaction="Modified">
+                  <labels>
+                    <label description="Create Case" languagecode="1033" solutionaction="Modified" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{43bf42a2-1726-426d-aba4-61974951cbc5}" locklevel="0" colspan="1" rowspan="1" ordinalvalue="10001" solutionaction="Added">
+                        <labels>
+                          <label description="Customer Case #" languagecode="1033" />
+                        </labels>
+                        <control id="ap_customercasenumber" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_customercasenumber" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0ee6e838-117a-4a8b-be75-155ccd503fe7}" locklevel="0" colspan="1" rowspan="1" ordinalvalue="10002" solutionaction="Added">
+                        <labels>
+                          <label description="Customer" languagecode="1033" />
+                        </labels>
+                        <control id="ap_customerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ap_customerid" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <formLibraries>
+        <Library name="ap_CaseResponseDynCS.js" libraryUniqueId="{97ef9388-2611-48bc-8277-79116ea940e4}" solutionaction="Added" />
+      </formLibraries>
+      <events>
+        <event name="onload" application="false" active="false">
+          <Handlers>
+            <Handler functionName="onLoadDynCS" libraryName="ap_CaseResponseDynCS.js" handlerUniqueId="{edce5ad3-fdfc-4a73-a291-7abf11370569}" enabled="true" parameters="" passExecutionContext="true" ordinalvalue="1" solutionaction="Added" />
+          </Handlers>
+        </event>
+      </events>
+      <controlDescriptions solutionaction="Added">
+        <controlDescription forControl="{b7350f58-0704-453c-b6ed-6c2dad191cde}">
+          <customControl id="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}">
+            <parameters>
+              <datafieldname>ap_createcase</datafieldname>
+            </parameters>
+          </customControl>
+          <customControl formFactor="0" name="MscrmControls.FieldControls.ToggleControl">
+            <parameters>
+              <value type="TwoOptions">ap_createcase</value>
+            </parameters>
+          </customControl>
+          <customControl formFactor="2" name="MscrmControls.FieldControls.ToggleControl">
+            <parameters>
+              <value type="TwoOptions">ap_createcase</value>
+            </parameters>
+          </customControl>
+          <customControl formFactor="1" name="MscrmControls.FieldControls.ToggleControl">
+            <parameters>
+              <value type="TwoOptions">ap_createcase</value>
+            </parameters>
+          </customControl>
+        </controlDescription>
+      </controlDescriptions>
+    </form>
+    <LocalizedNames>
+      <LocalizedName description="Quick Create" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

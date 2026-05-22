@@ -1,0 +1,170 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "ap_sharedcommondataserviceforapps_23ace"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "Auto Create TSANote by Note (ap_AutoCreateTSANotebyNote)": {
+          "defaultValue": true,
+          "type": "Bool",
+          "metadata": {
+            "schemaName": "ap_AutoCreateTSANotebyNote"
+          }
+        }
+      },
+      "triggers": {
+        "Note": {
+          "metadata": {
+            "operationMetadataId": "0e645954-e1e2-4851-886a-3fecebd1974e"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "annotation",
+              "subscriptionRequest/scope": 4
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "IsRegardingIncidentIsEnabled": {
+          "actions": {
+            "List_rows_-_TSANETCases": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "8c7524c5-d873-479b-9e75-f19c650f60fe"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "ap_tsanetcases",
+                  "$select": "ap_tsanetcaseid",
+                  "$filter": "_ap_caseid_value eq @{triggerOutputs()?['body/_objectid_value']} and (Microsoft.Dynamics.CRM.In(PropertyName='statuscode',PropertyValues=['120950003','120950001']))"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Get_a_row_Creator": {
+              "runAfter": {
+                "List_rows_-_TSANETCases": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "6513df2c-63fb-429b-8b08-0ebb51b9450c"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "systemusers",
+                  "recordId": "@triggerOutputs()?['body/_createdby_value']",
+                  "$select": "systemuserid,fullname,internalemailaddress"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Apply_to_each": {
+              "foreach": "@outputs('List_rows_-_TSANETCases')?['body/value']",
+              "actions": {
+                "Add_TSANET_Note": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "ab34d424-77ce-4245-955e-68ded1f10400"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "CreateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "ap_tsanetnotes",
+                      "x-ms-odata-metadata-full": false,
+                      "item/ap_tsanetcaseid@odata.bind": "ap_tsanetcases(@{items('Apply_to_each')?['ap_tsanetcaseid']})",
+                      "item/ap_creatoremail": "@outputs('Get_a_row_Creator')?['body/internalemailaddress']",
+                      "item/ap_creatorname": "@outputs('Get_a_row_Creator')?['body/fullname']",
+                      "item/ap_description": "New note in the system.\nSubject: @{triggerOutputs()?['body/subject']}\nDescription: @{if(greater(length(triggerOutputs()?['body/notetext']),1600),\r\n  substring(triggerOutputs()?['body/notetext'],0,1600),\r\n  triggerOutputs()?['body/notetext'])}",
+                      "item/ap_source": 120950000,
+                      "item/ap_name": "New note",
+                      "item/ap_isautomated": true
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                }
+              },
+              "runAfter": {
+                "Get_a_row_Creator": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "4849ebb3-a33c-4523-888b-13fb4d4bb19b"
+              },
+              "type": "Foreach"
+            }
+          },
+          "runAfter": {},
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@triggerOutputs()?['body/_objectid_type']",
+                  "incidents"
+                ]
+              },
+              {
+                "equals": [
+                  "@parameters('Auto Create TSANote by Note (ap_AutoCreateTSANotebyNote)')",
+                  "@true"
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5124d448-681e-4a31-9d7c-8a23c3eff93d"
+          },
+          "type": "If"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

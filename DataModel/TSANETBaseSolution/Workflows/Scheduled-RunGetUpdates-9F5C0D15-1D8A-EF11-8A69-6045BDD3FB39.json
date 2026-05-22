@@ -1,0 +1,69 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "recurrence": {
+            "frequency": "Minute",
+            "interval": 15,
+            "startTime": "2024-10-14T08:00:00Z"
+          },
+          "evaluatedRecurrence": {
+            "frequency": "Minute",
+            "interval": 15,
+            "startTime": "2024-10-14T08:00:00Z"
+          },
+          "metadata": {
+            "operationMetadataId": "14bc0b06-5da7-4149-9fe5-07d7dab64af9"
+          },
+          "type": "Recurrence",
+          "runtimeConfiguration": {
+            "concurrency": {
+              "runs": 1
+            }
+          }
+        }
+      },
+      "actions": {
+        "Get_Updates": {
+          "runAfter": {
+            "FromDateTime": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e0b41bf5-c616-456f-bf50-406bf839a9f6"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "3a87d339-04d8-ef11-a72f-00224826bd7d"
+            },
+            "body": {
+              "text": "@outputs('FromDateTime')"
+            }
+          }
+        },
+        "FromDateTime": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "fafc016b-8ad9-47cc-8114-cec288d697e2"
+          },
+          "type": "Compose",
+          "inputs": "@addMinutes(utcNow(), -15, 'yyyy-MM-ddTHH:mm:ssZ')"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

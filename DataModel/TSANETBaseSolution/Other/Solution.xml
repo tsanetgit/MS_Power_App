@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ImportExportXml version="9.2.26051.134" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.26051.134" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.26052.00137">
+  <SolutionManifest>
+    <UniqueName>TSANet</UniqueName>
+    <LocalizedNames>
+      <LocalizedName description="TSANET" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="Empower your team to efficiently manage and resolve technical support cases with TSANET, designed to streamline case tracking and enhance collaboration. " languagecode="1033" />
+    </Descriptions>
+    <Version>2.10.0.1</Version>
+    <Managed>0</Managed>
+    <Publisher>
+      <UniqueName>Appko</UniqueName>
+      <LocalizedNames>
+        <LocalizedName description="Appko" languagecode="1033" />
+      </LocalizedNames>
+      <Descriptions />
+      <EMailAddress xsi:nil="true"></EMailAddress>
+      <SupportingWebsiteUrl xsi:nil="true"></SupportingWebsiteUrl>
+      <CustomizationPrefix>ap</CustomizationPrefix>
+      <CustomizationOptionValuePrefix>12095</CustomizationOptionValuePrefix>
+      <Addresses>
+        <Address>
+          <AddressNumber>1</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+        <Address>
+          <AddressNumber>2</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+      </Addresses>
+    </Publisher>
+    <RootComponents>
+      <RootComponent type="1" schemaName="ap_casemapping" behavior="0" />
+      <RootComponent type="1" schemaName="ap_tsanetcase" behavior="0" />
+      <RootComponent type="1" schemaName="ap_tsanetlog" behavior="0" />
+      <RootComponent type="1" schemaName="ap_tsanetnote" behavior="0" />
+      <RootComponent type="1" schemaName="ap_tsanetresponse" behavior="0" />
+      <RootComponent type="1" schemaName="ap_tsanetsetting" behavior="0" />
+      <RootComponent type="20" id="{85926012-fba0-ef11-8a69-7c1e5217b0b8}" behavior="0" />
+      <RootComponent type="29" id="{0938c1bf-8676-f011-b4cb-7c1e521c4156}" behavior="0" />
+      <RootComponent type="29" id="{1a7dd51a-f615-f011-9989-6045bda7e508}" behavior="0" />
+      <RootComponent type="29" id="{1fcfed3d-7d01-f011-bae2-0022482a2c16}" behavior="0" />
+      <RootComponent type="29" id="{3a87d339-04d8-ef11-a72f-00224826bd7d}" behavior="0" />
+      <RootComponent type="29" id="{40cfe0a0-cdd5-f011-8543-00224826374b}" behavior="0" />
+      <RootComponent type="29" id="{5501ead7-1b8a-ef11-8a69-6045bdd3fb39}" behavior="0" />
+      <RootComponent type="29" id="{59f2d747-9d9e-f011-bbd2-7ced8d1ed479}" behavior="0" />
+      <RootComponent type="29" id="{5d99eeca-6d82-f011-b4cb-7c1e5247386f}" behavior="0" />
+      <RootComponent type="29" id="{60c3ee1f-ba80-ef11-ac20-000d3a139338}" behavior="0" />
+      <RootComponent type="29" id="{707272ce-c61a-f011-9989-7ced8d221121}" behavior="0" />
+      <RootComponent type="29" id="{82d2eff9-8cdc-ef11-a72f-00224826bd7d}" behavior="0" />
+      <RootComponent type="29" id="{85bc9d4b-268a-ef11-8a69-6045bdd3fb39}" behavior="0" />
+      <RootComponent type="29" id="{87c2be66-0bd8-ef11-a72f-00224826bd7d}" behavior="0" />
+      <RootComponent type="29" id="{88189fdc-3d13-f111-8342-6045bdf0e7d8}" behavior="0" />
+      <RootComponent type="29" id="{8ae5a8b3-328d-ef11-8a69-7c1e521b3030}" behavior="0" />
+      <RootComponent type="29" id="{93079e58-ba80-ef11-ac20-000d3a139338}" behavior="0" />
+      <RootComponent type="29" id="{9f5c0d15-1d8a-ef11-8a69-6045bdd3fb39}" behavior="0" />
+      <RootComponent type="29" id="{b1a65914-eb16-f111-8342-6045bdf0e7d8}" behavior="0" />
+      <RootComponent type="29" id="{b4367699-328d-ef11-8a69-7c1e521b3030}" behavior="0" />
+      <RootComponent type="29" id="{bbe370cf-328d-ef11-8a69-7c1e521b3030}" behavior="0" />
+      <RootComponent type="29" id="{c2ada3b0-721d-f111-88b2-6045bdf0e7d8}" behavior="0" />
+      <RootComponent type="29" id="{d4dcc064-ba80-ef11-ac20-000d3a139338}" behavior="0" />
+      <RootComponent type="29" id="{e92519e8-3d13-f111-8342-6045bdf0e7d8}" behavior="0" />
+      <RootComponent type="29" id="{ea809eb8-8f08-f011-bae2-000d3a184572}" behavior="0" />
+      <RootComponent type="29" id="{ee598fd1-0ad8-ef11-a72f-00224826bd7d}" behavior="0" />
+      <RootComponent type="300" schemaName="ap_tsanetconnectionsettings_856a6" behavior="0" />
+      <RootComponent type="61" schemaName="ap_accept_button.svg" behavior="0" />
+      <RootComponent type="61" schemaName="ap_acceptupdate_button.svg" behavior="0" />
+      <RootComponent type="61" schemaName="ap_CaseCreateForm.html" behavior="0" />
+      <RootComponent type="61" schemaName="ap_CaseCreateReadOnlyRenderer.js" behavior="0" />
+      <RootComponent type="61" schemaName="ap_casemapping_icon.svg" behavior="0" />
+      <RootComponent type="61" schemaName="ap_CaseMappingDynCS.js" behavior="0" />
+      <RootComponent type="61" schemaName="ap_CaseResponse.js" behavior="0" />
+      <RootComponent type="61" schemaName="ap_CaseTSA.js" behavior="0" />
+      <RootComponent type="61" schemaName="ap_CaseTSAButtons.js" behavior="0" />
+      <RootComponent type="61" schemaName="ap_close_button.svg" behavior="0" />
+      <RootComponent type="61" schemaName="ap_CommonIntegration.js" behavior="0" />
+      <RootComponent type="61" schemaName="ap_CommonScripts.js" behavior="0" />
+      <RootComponent type="61" schemaName="ap_refresh_button_icon.svg" behavior="0" />
+      <RootComponent type="61" schemaName="ap_reject_button.svg" behavior="0" />
+      <RootComponent type="61" schemaName="ap_requestinfo_button.svg" behavior="0" />
+      <RootComponent type="61" schemaName="ap_responseinfo_button.svg" behavior="0" />
+      <RootComponent type="61" schemaName="ap_setting_icon.svg" behavior="0" />
+      <RootComponent type="61" schemaName="ap_tsanet_logo.png" behavior="0" />
+      <RootComponent type="61" schemaName="ap_tsanetcase_icon.svg" behavior="0" />
+      <RootComponent type="61" schemaName="ap_tsanetlog_icon.svg" behavior="0" />
+      <RootComponent type="61" schemaName="ap_tsanetnote_icon.svg" behavior="0" />
+      <RootComponent type="61" schemaName="ap_tsanetresponse_icon.svg" behavior="0" />
+      <RootComponent type="61" schemaName="ap_tsanettheme.xml" behavior="0" />
+      <RootComponent type="62" schemaName="ap_TSANETConfiguration" behavior="0" />
+      <RootComponent type="80" schemaName="ap_TSANETConfiguration" behavior="0" />
+      <RootComponent type="9" schemaName="ap_direction" behavior="0" />
+      <RootComponent type="9" schemaName="ap_priorities" behavior="0" />
+      <RootComponent type="9" schemaName="ap_sourcesystem" behavior="0" />
+      <RootComponent type="9" schemaName="ap_tsaresponsetypes" behavior="0" />
+      <RootComponent type="91" id="{402cb749-f776-4c89-bd34-d1ac00905299}" schemaName="TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a" behavior="0" />
+      <RootComponent type="92" id="{12c845a9-bc80-ef11-ac20-000d3a139338}" behavior="0" />
+      <RootComponent type="92" id="{1360c0f5-288a-ef11-8a69-6045bdd3fb39}" behavior="0" />
+      <RootComponent type="92" id="{2241162a-41a0-ef11-8a69-000d3a1b2dba}" behavior="0" />
+      <RootComponent type="92" id="{2b4be7b5-4091-ef11-8a68-7c1e52678395}" behavior="0" />
+      <RootComponent type="92" id="{2cdd7c3c-7e01-f011-bae2-0022482a2c16}" behavior="0" />
+      <RootComponent type="92" id="{4ae09f95-9e9e-f011-bbd2-7ced8d1ed479}" behavior="0" />
+      <RootComponent type="92" id="{4f0af9ae-8776-f011-b4cb-7c1e521c4156}" behavior="0" />
+      <RootComponent type="92" id="{4f2d192f-348d-ef11-8a69-7c1e521b3030}" behavior="0" />
+      <RootComponent type="92" id="{512d192f-348d-ef11-8a69-7c1e521b3030}" behavior="0" />
+      <RootComponent type="92" id="{a3d241ff-9008-f011-bae2-000d3a184572}" behavior="0" />
+      <RootComponent type="92" id="{a95d6f7a-6f82-f011-b4cb-7c1e5247386f}" behavior="0" />
+      <RootComponent type="92" id="{db913537-41a0-ef11-8a69-000d3a1b2dba}" behavior="0" />
+      <RootComponent type="92" id="{e57ea076-731d-f111-88b2-6045bdf0e7d8}" behavior="0" />
+      <RootComponent type="92" id="{e820ee41-68d9-ef11-a730-00224826bd7d}" behavior="0" />
+      <RootComponent type="92" id="{eba16ca0-bc80-ef11-ac20-000d3a139338}" behavior="0" />
+      <RootComponent type="92" id="{eda16ca0-bc80-ef11-ac20-000d3a139338}" behavior="0" />
+    </RootComponents>
+    <MissingDependencies>
+      <MissingDependency>
+        <Required type="66" schemaName="MscrmControls.RichTextEditor.RichTextEditorControl" displayName="MscrmControls.RichTextEditor.RichTextEditorControl" solution="msdyn_RichTextEditor (9.0.26044.1022)">
+          <package appName="msdynce_Activities" version="9.0.26044.260422001">msdynce_EnableUCIByDefault (9.0.26044.260422001)</package>
+          <package appName="msdyn_CustomControlsExtended" version="9.0.26044.1022">msdyn_TimelineExtended (9.0.26044.1022)</package>
+        </Required>
+        <Dependent type="60" displayName="Quick Create" parentDisplayName="TSANET Note" id="{3cb912bd-7990-ef11-8a69-7c1e52014259}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="66" schemaName="MscrmControls.RichTextEditor.RichTextEditorControl" displayName="MscrmControls.RichTextEditor.RichTextEditorControl" solution="msdyn_RichTextEditor (9.0.26044.1022)">
+          <package appName="msdynce_Activities" version="9.0.26044.260422001">msdynce_EnableUCIByDefault (9.0.26044.260422001)</package>
+          <package appName="msdyn_CustomControlsExtended" version="9.0.26044.1022">msdyn_TimelineExtended (9.0.26044.1022)</package>
+        </Required>
+        <Dependent type="60" displayName="Information" parentDisplayName="TSANET Note" id="{72c5508a-7711-4862-843e-ae3df40c57f9}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="SettingDefinition" displayName="AppChannel" solution="msdyn_AppFrameworkInfraExtensions (1.0.0.16)" id.uniquename="AppChannel">
+          <package appName="PowerAppsAppFramework Package" version="1.0.0.25">PowerAppsAppFramework_Anchor (1.0.0.25)</package>
+        </Required>
+        <Dependent type="AppSetting" displayName="parentappmoduleid.uniquename=ap_TSANETConfiguration,settingdefinitionid.uniquename=AppChannel" id.parentappmoduleid.uniquename="ap_TSANETConfiguration" id.settingdefinitionid.uniquename="AppChannel" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="SettingDefinition" displayName="appcopilotenabled" solution="msdyn_AppCopilotAppInfraSettings (9.2.2026033.260316057)" id.uniquename="appcopilotenabled">
+          <package appName="PowerAppsAppCopilotApp Package" version="9.2.0.1">PowerAppsAppCopilotApp_Anchor (9.2.0.1)</package>
+          <package appName="PowerAppsAppCopilotApp Package" version="1.0.0.2">msdyn_SuggestedAction (1.0.0.2)</package>
+          <package appName="PowerAppsAppCopilotApp Package" version="9.2.0.4">msdyn_M365CopilotAppInfraSettings (9.2.0.4)</package>
+        </Required>
+        <Dependent type="AppSetting" displayName="parentappmoduleid.uniquename=ap_TSANETConfiguration,settingdefinitionid.uniquename=appcopilotenabled" id.parentappmoduleid.uniquename="ap_TSANETConfiguration" id.settingdefinitionid.uniquename="appcopilotenabled" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="SettingDefinition" displayName="OverrideAppHeaderColor" solution="msdyn_PowerAppsThemingSettings (1.0.0.13)" id.uniquename="OverrideAppHeaderColor">
+          <package appName="PowerAppsThemingApp Package" version="1.0.0.12">PowerAppsThemingApp_Anchor (1.0.0.12)</package>
+        </Required>
+        <Dependent type="AppSetting" displayName="parentappmoduleid.uniquename=ap_TSANETConfiguration,settingdefinitionid.uniquename=OverrideAppHeaderColor" id.parentappmoduleid.uniquename="ap_TSANETConfiguration" id.settingdefinitionid.uniquename="OverrideAppHeaderColor" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="SettingDefinition" displayName="OverrideAppHeaderColor" solution="msdyn_PowerAppsThemingSettings (1.0.0.13)" id.uniquename="OverrideAppHeaderColor">
+          <package appName="PowerAppsThemingApp Package" version="1.0.0.12">PowerAppsThemingApp_Anchor (1.0.0.12)</package>
+        </Required>
+        <Dependent type="SettingDefinition" displayName="OverrideAppHeaderColor" id.uniquename="OverrideAppHeaderColor" />
+      </MissingDependency>
+    </MissingDependencies>
+  </SolutionManifest>
+</ImportExportXml>

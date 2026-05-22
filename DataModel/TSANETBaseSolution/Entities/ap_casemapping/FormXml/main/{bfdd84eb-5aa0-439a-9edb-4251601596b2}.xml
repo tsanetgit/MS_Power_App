@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{bfdd84eb-5aa0-439a-9edb-4251601596b2}</formid>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form headerdensity="HighWithControls">
+      <tabs>
+        <tab verticallayout="true" id="{0e59c6ad-bdd5-478f-9f73-1c99c1971a1f}" IsUserDefined="1" name="g">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{a2239c03-eca8-4d50-b702-bb295b7592de}">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{84b8ee90-3db8-4501-9875-27cfe1ab489d}">
+                        <labels>
+                          <label description="Name" languagecode="1033" />
+                        </labels>
+                        <control id="ap_name" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="ap_name" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{45ade4b2-5d4b-4672-bb7c-d1024129ae33}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Mapping Type" languagecode="1033" />
+                        </labels>
+                        <control id="ap_mappingtype" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="ap_mappingtype" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{1b9e9b1f-09b3-408a-8d2c-1d690abf7669}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Required for Case Create" languagecode="1033" />
+                        </labels>
+                        <control id="ap_isrequired" classid="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}" datafieldname="ap_isrequired" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{094aeacd-af72-4471-88ba-33252ab46a67}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Source (Json Path or Attribute)" languagecode="1033" />
+                        </labels>
+                        <control id="ap_sourcejsonpath" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_sourcejsonpath" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ca375f9d-e25d-4e6d-835f-0f7551bd9698}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Target Attribute" languagecode="1033" />
+                        </labels>
+                        <control id="ap_targetattribute" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_targetattribute" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{63b4272d-2ad8-418c-b5b5-03c7756317ce}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Attribute Type" languagecode="1033" />
+                        </labels>
+                        <control id="ap_attributetype" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="ap_attributetype" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{c61b8edf-9c82-4573-92b4-c402ac6523ea}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Lookup Table Name" languagecode="1033" />
+                        </labels>
+                        <control id="ap_lookupentityname" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_lookupentityname" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d278525b-5a3e-4e7f-b0e2-cc8c12d6a806}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Lookup Search Attribute" languagecode="1033" />
+                        </labels>
+                        <control id="ap_lookupsearchattribute" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_lookupsearchattribute" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <header id="{84b1146a-2a7d-4e69-beba-c9e3cdf75636}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{a388ff13-992d-403e-8c84-2961f9af2afc}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{b5b2ac1f-952d-4d28-a962-3b6a28573511}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{3a82f078-6aa3-4fc8-ab69-7b7862290a88}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{93b889fb-f412-4177-9792-22208de201a7}" colspan="1" rowspan="1">
+              <labels>
+                <label description="Owner" languagecode="1033" />
+              </labels>
+              <control id="header_ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{f1a3ad4d-e18e-4dbb-b5a4-3cbc2eb59573}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{33f7a411-320b-4d2f-8b65-587caf465193}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{e6c97f35-d2df-42ce-8d73-a62249f07c3d}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{d363c20e-df9b-4685-972d-9795c6992f47}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+      <formLibraries>
+        <Library name="ap_CaseMappingDynCS.js" libraryUniqueId="{ea9c32e5-00ec-4b7f-90fc-306d82c65b38}" />
+      </formLibraries>
+      <events>
+        <event name="onload" application="false" active="false">
+          <Handlers>
+            <Handler functionName="onLoad" libraryName="ap_CaseMappingDynCS.js" handlerUniqueId="{1dcd261e-7a8d-4477-92a2-0fa6559f535b}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+      </events>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

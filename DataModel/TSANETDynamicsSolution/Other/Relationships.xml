@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EntityRelationships xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <EntityRelationship Name="ap_account_ap_tsanetresponse_961" />
+  <EntityRelationship Name="ap_contact_ap_tsanetresponse_961" />
+  <EntityRelationship Name="ap_tsanetcase_caseid_incident" />
+  <EntityRelationship Name="ap_tsanetresponse_incidentid_incident" />
+</EntityRelationships>

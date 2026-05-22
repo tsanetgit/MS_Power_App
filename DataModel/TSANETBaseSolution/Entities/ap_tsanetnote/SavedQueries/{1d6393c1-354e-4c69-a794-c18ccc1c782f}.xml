@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{1d6393c1-354e-4c69-a794-c18ccc1c782f}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="ap_name" select="1" icon="1" preview="1">
+        <row name="result" id="ap_tsanetnoteid">
+          <cell name="createdon" width="125" />
+          <cell name="ap_name" width="300" />
+          <cell name="ap_description" width="300" />
+          <cell name="ap_creatorname" width="129" />
+          <cell name="ap_creatoremail" width="129" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="ap_tsanetnote">
+          <attribute name="ap_tsanetnoteid" />
+          <attribute name="ap_name" />
+          <attribute name="createdon" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <attribute name="ap_description" />
+          <order attribute="createdon" descending="true" />
+          <attribute name="ap_creatoremail" />
+          <attribute name="ap_creatorname" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Active TSANET Notes" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

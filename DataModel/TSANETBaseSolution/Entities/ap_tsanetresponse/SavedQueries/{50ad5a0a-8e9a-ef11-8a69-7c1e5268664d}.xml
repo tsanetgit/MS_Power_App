@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>0</isdefault>
+    <savedqueryid>{50ad5a0a-8e9a-ef11-8a69-7c1e5268664d}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="ap_name" select="1" icon="1" preview="1">
+        <row name="result" id="ap_tsanetresponseid">
+          <cell name="createdon" width="125" />
+          <cell name="ap_type" width="100" />
+          <cell name="ap_description" width="300" />
+          <cell name="ap_engineername" width="128" />
+          <cell name="ap_engineeremail" width="128" />
+          <cell name="ap_engineerphone" width="130" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="ap_tsanetresponse">
+          <attribute name="ap_tsanetresponseid" />
+          <attribute name="createdon" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <order attribute="createdon" descending="true" />
+          <attribute name="ap_description" />
+          <attribute name="ap_type" />
+          <attribute name="ap_engineername" />
+          <attribute name="ap_engineeremail" />
+          <attribute name="ap_engineerphone" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="All TSANET Responses" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

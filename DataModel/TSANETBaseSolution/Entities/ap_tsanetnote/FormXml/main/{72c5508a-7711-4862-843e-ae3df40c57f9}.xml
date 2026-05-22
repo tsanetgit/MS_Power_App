@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{72c5508a-7711-4862-843e-ae3df40c57f9}</formid>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form headerdensity="HighWithControls">
+      <tabs>
+        <tab verticallayout="true" id="{a416c51f-93aa-4603-b741-97d11aa7f881}" IsUserDefined="1">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{6ee7f73e-07fb-44ec-a7e6-284d699ec8ca}">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{a5299c36-b0e1-4ab4-a85b-4e48bea42de0}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Note ID" languagecode="1033" />
+                        </labels>
+                        <control id="ap_tsanotecode" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_tsanotecode" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{173ba30d-d1d4-451a-90b1-7b14559304c7}">
+                        <labels>
+                          <label description="Summary" languagecode="1033" />
+                        </labels>
+                        <control id="ap_name" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="ap_name" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d8f7ad69-536b-49f9-ac5d-b616b229bb9d}" locklevel="0" colspan="1" rowspan="10" auto="true">
+                        <labels>
+                          <label description="Description" languagecode="1033" />
+                        </labels>
+                        <control id="ap_description" classid="{F9A8A302-114E-466A-B582-6771B2AE0D92}" datafieldname="ap_description" disabled="true" uniqueid="{c0b9e9f4-064f-4276-97dd-809e66a82ac5}" />
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row>
+                      <cell id="{c33fc963-4eeb-4abd-8e72-1b1c7bea77bf}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Creator (Email)" languagecode="1033" />
+                        </labels>
+                        <control id="ap_creatoremail" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_creatoremail" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{8cd2c5aa-83ee-4f4f-b246-9ffe3feb4c9a}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Creator (Name)" languagecode="1033" />
+                        </labels>
+                        <control id="ap_creatorname" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_creatorname" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d749510e-3f2c-4d36-b5ed-2e770b9d2267}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Company Name" languagecode="1033" />
+                        </labels>
+                        <control id="ap_companyname" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_companyname" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{654cdb35-3050-48cd-8da0-1b93fd544a51}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Source" languagecode="1033" />
+                        </labels>
+                        <control id="ap_source" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="ap_source" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{1f442d34-dcc9-42d4-b0ab-ab5c8323002b}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Automatically Created" languagecode="1033" />
+                        </labels>
+                        <control id="ap_isautomated" classid="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}" datafieldname="ap_isautomated" disabled="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <header id="{12f5e86d-53d1-4ac3-b0a1-21bef8008cf5}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{21fd8eaf-e2d7-4b96-aded-e15c5acee58d}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{24af4872-c32d-408a-8f81-9abec856de16}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{881cf16d-2883-4ddc-875b-b2a2bcf0fccc}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{f399a7da-6255-4617-ab83-5899dc290eab}" colspan="1" rowspan="1">
+              <labels>
+                <label description="Owner" languagecode="1033" />
+              </labels>
+              <control id="header_ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+            </cell>
+            <cell id="{c57e3100-0acd-4a93-a175-7960630bc070}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="TSANET Case" languagecode="1033" />
+              </labels>
+              <control id="header_ap_tsanetcaseid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ap_tsanetcaseid" disabled="true" />
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{fbfaa39b-92b9-4a03-a1b6-3a42fbb436ce}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{4dffd849-8b99-4b48-83b4-b8bdb28d7f95}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{059b421f-5257-48ce-80f3-b10a58b31c77}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{0ab615c7-9134-499a-bf86-d9d8053e330c}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+      <controlDescriptions>
+        <controlDescription forControl="{c0b9e9f4-064f-4276-97dd-809e66a82ac5}">
+          <customControl id="{E0DECE4B-6FC8-4A8F-A065-082708572369}">
+            <parameters>
+              <datafieldname>ap_description</datafieldname>
+            </parameters>
+          </customControl>
+          <customControl formFactor="0" name="MscrmControls.RichTextEditor.RichTextEditorControl">
+            <parameters>
+              <value type="Multiple">ap_description</value>
+            </parameters>
+          </customControl>
+          <customControl formFactor="2" name="MscrmControls.RichTextEditor.RichTextEditorControl">
+            <parameters>
+              <value type="Multiple">ap_description</value>
+            </parameters>
+          </customControl>
+          <customControl formFactor="1" name="MscrmControls.RichTextEditor.RichTextEditorControl">
+            <parameters>
+              <value type="Multiple">ap_description</value>
+            </parameters>
+          </customControl>
+        </controlDescription>
+      </controlDescriptions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

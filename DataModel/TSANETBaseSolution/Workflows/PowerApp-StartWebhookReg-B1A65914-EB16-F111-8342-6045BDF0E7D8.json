@@ -1,0 +1,211 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_flowmanagement": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "ap_sharedflowmanagement_670f0"
+        },
+        "api": {
+          "name": "shared_flowmanagement"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "0ec7bba2-f6fc-4764-b349-dc962d6b31a8"
+          },
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "Register_Webhook": {
+          "runAfter": {
+            "Get_URL": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "07daabb9-c745-438f-be63-00bcc6bb1971"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "e92519e8-3d13-f111-8342-6045bdf0e7d8"
+            },
+            "body": {
+              "text": "@outputs('List_Callback_URL')?['body/response/value']"
+            }
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "runAfter": {
+            "Register_Webhook": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7532f5dc-6aef-4215-8ce4-edd2390aa2c2"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "result": "@body('Register_Webhook')?['result']"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "title": "Result",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Get_URL": {
+          "actions": {
+            "List_Flows_as_Admin_(V2)": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "75e2dcc5-df1a-42f8-83db-e875583021e8"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_flowmanagement",
+                  "operationId": "ListFlowsInEnvironment_V2",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                },
+                "parameters": {
+                  "environmentName": "@workflow()?['tags']?['environmentName']",
+                  "includeSoftDeletedFlows": false
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Apply_to_each": {
+              "foreach": "@outputs('List_Flows_as_Admin_(V2)')?['body/value']",
+              "actions": {
+                "IsWebhook": {
+                  "actions": {
+                    "Set_variable": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "f16125b5-e70e-4da7-9886-f1c7a20099c3"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "FlowID",
+                        "value": "@items('Apply_to_each')?['name']"
+                      }
+                    }
+                  },
+                  "runAfter": {},
+                  "expression": {
+                    "equals": [
+                      "@items('Apply_to_each')?['properties/displayName']",
+                      "HTTP Webhook Endpoint"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "049fca65-f141-438e-8116-f9734e058015"
+                  },
+                  "type": "If"
+                }
+              },
+              "runAfter": {
+                "List_Flows_as_Admin_(V2)": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "fb289693-8ba9-4718-8de3-0a741131656c"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 50
+                }
+              }
+            },
+            "List_Callback_URL": {
+              "runAfter": {
+                "Apply_to_each": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "a904a4e3-d840-4ec8-8caa-49bdf574be41"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_flowmanagement",
+                  "operationId": "ListCallbackUrl",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_flowmanagement"
+                },
+                "parameters": {
+                  "environmentName": "@workflow()?['tags']?['environmentName']",
+                  "flowName": "@variables('FlowID')"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_variable_FlowID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a991f8cb-7608-46d5-903b-2e71fa98c632"
+          },
+          "type": "Scope"
+        },
+        "Initialize_variable_FlowID": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "71064f92-fab0-4bbc-867b-d271ea42431f"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "FlowID",
+                "type": "string"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

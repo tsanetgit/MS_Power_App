@@ -1,0 +1,11 @@
+<environmentvariabledefinition schemaname="ap_AutoCreateTSANotebyEmail">
+  <defaultvalue>yes</defaultvalue>
+  <displayname default="Auto Create TSANote by Email">
+    <label description="Auto Create TSANote by Email" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.20</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000002</type>
+</environmentvariabledefinition>

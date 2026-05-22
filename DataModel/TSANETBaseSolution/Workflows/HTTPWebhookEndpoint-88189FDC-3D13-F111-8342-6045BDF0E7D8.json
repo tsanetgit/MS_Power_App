@@ -1,0 +1,210 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "ap_sharedcommondataserviceforapps_d0fba"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "b8f7d2de-7796-49d1-9c55-b2f812d28e4c"
+          },
+          "type": "Request",
+          "kind": "Http",
+          "inputs": {
+            "method": "POST",
+            "triggerAuthenticationType": "All"
+          }
+        }
+      },
+      "actions": {
+        "Secret": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "7f26725a-e337-4c87-83ed-ef07e596e03b"
+          },
+          "type": "Compose",
+          "inputs": " @{triggerOutputs()['headers']['x-hub-signature-256']}"
+        },
+        "GetCase": {
+          "runAfter": {
+            "ValidateSecret": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "37be456f-8954-4a62-9da0-d91624f1394d"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "PerformUnboundAction",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "actionName": "ap_GetCase",
+              "item/CaseToken": "@triggerBody()?['requestToken']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Response": {
+          "runAfter": {
+            "GetCase": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "22af0add-79d5-42b1-92dd-697075bc9db1"
+          },
+          "type": "Response",
+          "kind": "Http",
+          "inputs": {
+            "statusCode": 200
+          }
+        },
+        "Response_2": {
+          "runAfter": {
+            "GetCase": [
+              "Failed",
+              "Skipped",
+              "TimedOut"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ee38433c-f179-4f0b-81d8-cb6bd216c558"
+          },
+          "type": "Response",
+          "kind": "Http",
+          "inputs": {
+            "statusCode": 500,
+            "body": {
+              "Message": "Get Case failed"
+            }
+          }
+        },
+        "List_rows_TSANET_Config": {
+          "runAfter": {
+            "Secret": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c622f1e3-75da-4736-ac18-13c1e14f4a80"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "ap_tsanetsettings",
+              "$select": "ap_webhooksecret",
+              "$filter": "ap_name eq 'settings'",
+              "$top": 1
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "ValidateSecret": {
+          "actions": {
+            "Response_3": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "ee38433c-f179-4f0b-81d8-cb6bd216c558"
+              },
+              "type": "Response",
+              "kind": "Http",
+              "inputs": {
+                "statusCode": 403,
+                "body": {
+                  "Message": "Secret validation failed"
+                }
+              }
+            },
+            "Terminate": {
+              "runAfter": {
+                "Response_3": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "bf40af36-29a4-445a-b9df-0e2622f25c51"
+              },
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Succeeded"
+              }
+            }
+          },
+          "runAfter": {
+            "Perform_an_unbound_action": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "not": {
+              "equals": [
+                "@outputs('Perform_an_unbound_action')?['body/HashResult']",
+                "@outputs('Secret')"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "df1bf010-65d9-489e-9822-f36d471ce39d"
+          },
+          "type": "If"
+        },
+        "Perform_an_unbound_action": {
+          "runAfter": {
+            "List_rows_TSANET_Config": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b1c02848-f2ba-44ed-92f0-d132e9c91bbd"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "PerformUnboundAction",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "actionName": "ap_GetHmacSha256",
+              "item/Secret": "@first(outputs('List_rows_TSANET_Config')?['body/value'])['ap_webhooksecret']",
+              "item/Body": "@triggerBody()"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

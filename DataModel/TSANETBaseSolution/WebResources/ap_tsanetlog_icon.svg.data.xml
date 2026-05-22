@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebResource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebResourceId>{e141568d-e03f-f111-bec6-000d3a101a02}</WebResourceId>
+  <Name>ap_tsanetlog_icon.svg</Name>
+  <DisplayName>ap_tsanetlog_icon.svg</DisplayName>
+  <WebResourceType>11</WebResourceType>
+  <IntroducedVersion>2.9.0.3</IntroducedVersion>
+  <IsEnabledForMobileClient>1</IsEnabledForMobileClient>
+  <IsAvailableForMobileOffline>0</IsAvailableForMobileOffline>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <IsHidden>0</IsHidden>
+  <FileName>/WebResources/ap_tsanetlog_iconsvgE141568D-E03F-F111-BEC6-000D3A101A02</FileName>
+</WebResource>

@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{eac776f5-8d9a-ef11-8a69-7c1e5268664d}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab id="F931FFE2-B873-473F-8F95-9502F0AA3F5E" name="tab_1" showlabel="false" labelid="{ba55fd4b-cbce-4ad4-8b88-b2199d3314d6}">
+          <labels>
+            <label description="New Tab" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="34%">
+              <sections>
+                <section id="0C655D4E-C6E3-424E-9AF5-71E72D30D12E" name="tab_1_column_1_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0" labelwidth="130" labelid="{046f0141-1da0-4233-8b4a-6a3ef5933c92}">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="542FBFBE-0E4C-496C-8012-555DE6581923" labelid="{1850bacc-1d4f-421b-8f95-402d08107d10}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{6c935dd8-47a3-4f66-bb6f-0349ca65685d}" locklevel="0" colspan="1" rowspan="1" labelid="{e1bdc2c1-2db7-484c-a216-022382848296}">
+                        <labels>
+                          <label description="Type" languagecode="1033" />
+                        </labels>
+                        <control id="ap_type" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="ap_type" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{2130fb18-701a-439a-b8bf-933662817c84}" locklevel="0" colspan="1" rowspan="8" labelid="{46214f6f-052f-4c6c-ac38-c5f3e7fe7a60}" visible="false">
+                        <labels>
+                          <label description="Description" languagecode="1033" />
+                        </labels>
+                        <control id="ap_description" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="ap_description" disabled="false" />
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row>
+                      <cell id="{e8265bf8-1c51-4de0-aecf-71eb010e4a98}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="Internal Case Number" languagecode="1033" />
+                        </labels>
+                        <control id="ap_internalcasenumber" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_internalcasenumber" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{f9d3ae39-716c-4f7b-87b4-20250eddcd50}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Engineer Email" languagecode="1033" />
+                        </labels>
+                        <control id="ap_engineeremail" classid="{ADA2203E-B4CD-49BE-9DDF-234642B43B52}" datafieldname="ap_engineeremail" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{a27c1286-05c6-40c3-8695-36b1a411fab4}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Engineer Name" languagecode="1033" />
+                        </labels>
+                        <control id="ap_engineername" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_engineername" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{06b1118d-6905-4d58-9c33-599c8f9b7b49}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Engineer Phone" languagecode="1033" />
+                        </labels>
+                        <control id="ap_engineerphone" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_engineerphone" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0dd297e4-cda3-4b23-83cf-06f1c5f5a23a}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="TSANET Case" languagecode="1033" />
+                        </labels>
+                        <control id="ap_tsanetcaseid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ap_tsanetcaseid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3f106e14-a77d-4685-804f-d3252c5548c5}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="Source" languagecode="1033" />
+                        </labels>
+                        <control id="ap_source" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="ap_source" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="33%">
+              <sections>
+                <section id="02DECBA0-3AE2-484D-A19F-C5353AF4F4F2" name="tab_1_column_2_section_1" columns="1" showlabel="true" showbar="false" IsUserDefined="0" labelwidth="130" visible="false" labelid="{b17b70ad-6b92-4477-81f5-985b2cc0c237}">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="266FE48D-4D04-4E9A-8C5A-7DEF9A2F059B" labelid="{3a35214f-9536-4ea0-b161-7a6bc48ad0c9}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="33%">
+              <sections>
+                <section id="46FD66EA-B686-41D9-AAE0-C565BD78EC1F" name="tab_1_column_3_section_1" columns="1" showlabel="true" showbar="false" IsUserDefined="0" labelwidth="130" visible="false" labelid="{6240f6bd-8bda-46d1-9782-f2166214cde9}">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="07C04A4E-A482-45CC-BAB7-7FCA3CD02938" labelid="{2b0b8467-6160-436c-82cc-bc26eefadb72}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Role Id="{627090ff-40a3-4053-8790-584edc5be201}" />
+        <Role Id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+      </DisplayConditions>
+      <formLibraries>
+        <Library name="ap_CaseResponse.js" libraryUniqueId="{812d019d-0d58-4dd8-a6ff-284506f56d8f}" />
+      </formLibraries>
+      <events>
+        <event name="onload" application="false" active="false">
+          <Handlers>
+            <Handler functionName="onLoad" libraryName="ap_CaseResponse.js" handlerUniqueId="{dd8b06e0-7c02-4976-ba9e-66050889fa01}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+      </events>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Quick Create" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

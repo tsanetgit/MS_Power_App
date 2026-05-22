@@ -1,0 +1,274 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "ap_sharedcommondataserviceforapps_23ace"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_conversionservice": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "ap_sharedconversionservice_70891"
+        },
+        "api": {
+          "name": "shared_conversionservice"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "Auto Create TSANote by Email (ap_AutoCreateTSANotebyEmail)": {
+          "defaultValue": true,
+          "type": "Bool",
+          "metadata": {
+            "schemaName": "ap_AutoCreateTSANotebyEmail"
+          }
+        }
+      },
+      "triggers": {
+        "Email": {
+          "metadata": {
+            "operationMetadataId": "9b478837-2bd7-4fd4-a482-847ff7f2baf9"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "email",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "statecode"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "StatusSendOrCompleted": {
+          "actions": {
+            "List_rows_-_TSANETCases": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "8c7524c5-d873-479b-9e75-f19c650f60fe"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "ap_tsanetcases",
+                  "$select": "ap_tsanetcaseid",
+                  "$filter": "_ap_caseid_value eq @{triggerOutputs()?['body/_regardingobjectid_value']} and statecode eq 0"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Apply_to_each": {
+              "foreach": "@outputs('List_rows_-_TSANETCases')?['body/value']",
+              "actions": {
+                "Add_TSANET_Note": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "ab34d424-77ce-4245-955e-68ded1f10400"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "CreateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "ap_tsanetnotes",
+                      "x-ms-odata-metadata-full": false,
+                      "item/ap_tsanetcaseid@odata.bind": "ap_tsanetcases(@{items('Apply_to_each')?['ap_tsanetcaseid']})",
+                      "item/ap_creatoremail": "@outputs('Get_a_row_Creator')?['body/internalemailaddress']",
+                      "item/ap_creatorname": "@outputs('Get_a_row_Creator')?['body/fullname']",
+                      "item/ap_description": "New email in the system.\nSubject: @{triggerOutputs()?['body/subject']}\nDescription: @{if(greater(length(body('Html_to_text')),1600),\r\n  substring(body('Html_to_text'),0,1600),\r\n  body('Html_to_text'))}",
+                      "item/ap_source": 120950000,
+                      "item/ap_name": "New email",
+                      "item/ap_isautomated": true
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                }
+              },
+              "runAfter": {
+                "Html_to_text": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "4849ebb3-a33c-4523-888b-13fb4d4bb19b"
+              },
+              "type": "Foreach"
+            },
+            "Get_a_row_Creator": {
+              "runAfter": {
+                "List_rows_-_TSANETCases": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "6513df2c-63fb-429b-8b08-0ebb51b9450c"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "systemusers",
+                  "recordId": "@triggerOutputs()?['body/_createdby_value']",
+                  "$select": "systemuserid,fullname,internalemailaddress"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Html_to_text": {
+              "runAfter": {
+                "Get_a_row_Creator": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "fe68748d-1b93-4b32-bb84-a6c0c2900074"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_conversionservice",
+                  "operationId": "HtmlToText",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_conversionservice"
+                },
+                "parameters": {
+                  "Content": "<p>@{triggerOutputs()?['body/description']}</p>"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "IsNotIncident": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "or": [
+              {
+                "equals": [
+                  "@triggerOutputs()?['body/statuscode']",
+                  3
+                ]
+              },
+              {
+                "equals": [
+                  "@triggerOutputs()?['body/statuscode']",
+                  2
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7d4ebb7f-14ce-450f-95b7-713a9f79a824"
+          },
+          "type": "If"
+        },
+        "IsNotIncident": {
+          "actions": {
+            "Terminate": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "c2a9edbf-e025-4aae-bebc-ae5c24675653"
+              },
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Succeeded"
+              }
+            }
+          },
+          "runAfter": {
+            "IsEnabled": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "or": [
+              {
+                "equals": [
+                  "@triggerOutputs()?['body/_regardingobjectid_value']",
+                  "@null"
+                ]
+              },
+              {
+                "not": {
+                  "equals": [
+                    "@triggerOutputs()?['body/_regardingobjectid_type']",
+                    "incidents"
+                  ]
+                }
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7a0860c3-f6be-453d-b234-e2f74660e721"
+          },
+          "type": "If"
+        },
+        "IsEnabled": {
+          "actions": {
+            "Terminate_2": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "fc3ecdfe-368b-4f2b-b116-62543a806eb1"
+              },
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Succeeded"
+              }
+            }
+          },
+          "runAfter": {},
+          "expression": {
+            "not": {
+              "equals": [
+                "@parameters('Auto Create TSANote by Email (ap_AutoCreateTSANotebyEmail)')",
+                "@true"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "78974498-5240-4c07-bf3f-929d62380b07"
+          },
+          "type": "If"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}
