@@ -8,7 +8,7 @@ New guide for the Dynamics on the App Store:
 https://github.com/tsanetgit/MS_Power_App/blob/main/Connect_2.0_Dynamics_Package_Install_Guide_1_1.docx
 
 Previous guide for the Power App manual installation using packages:
-https://github.com/tsanetgit/MS_Power_App/blob/main/Connect_2.0_Dynamics_Package_Install_Guide_2.docx
+https://github.com/tsanetgit/MS_Power_App/blob/main/Connect_2.0_Dynamics_Package_Install_Guide_2_1.docx
 
 ## User Guide
 
