@@ -21,6 +21,7 @@ class CaseCreateReadOnlyRenderer {
         this.initialized = false;
         this.visibilityChangeHandler = null;
         this.currentRecordContext = null;
+        this._fieldCounter = 0;
     }
 
     /**
@@ -286,12 +287,16 @@ class CaseCreateReadOnlyRenderer {
         const inputGroup = document.createElement("div");
         inputGroup.className = "input-group";
 
+        const inputId = `ro-field-${++this._fieldCounter}`;
+
         const labelElement = document.createElement("label");
         labelElement.className = "form-label";
         labelElement.textContent = label;
+        labelElement.htmlFor = inputId;
 
         const input = document.createElement("input");
         input.type = "text";
+        input.id = inputId;
         input.value = value || "";
         input.className = "form-input";
         input.readOnly = true;
@@ -308,11 +313,15 @@ class CaseCreateReadOnlyRenderer {
         const inputGroup = document.createElement("div");
         inputGroup.className = "input-group";
 
+        const textAreaId = `ro-field-${++this._fieldCounter}`;
+
         const labelElement = document.createElement("label");
         labelElement.className = "form-label";
         labelElement.textContent = label;
+        labelElement.htmlFor = textAreaId;
 
         const textArea = document.createElement("textarea");
+        textArea.id = textAreaId;
         textArea.value = value || "";
         textArea.className = "form-input";
         textArea.readOnly = true;

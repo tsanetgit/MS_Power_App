@@ -2,6 +2,8 @@
 
 // Global flag to prevent save loop
 var isSaving = false;
+// Global counter for generating unique, accessible field IDs (WCAG 4.1.2)
+var _tsaFieldIdCounter = 0;
 
 // On form load function that initializes the form
 function onFormLoad(executionContext) {
@@ -128,6 +130,7 @@ function displayCompanyResults(formContext, companies) {
         // Create a dropdown (select element)
         const selectList = document.createElement("select");
         selectList.size = companies.length + 1;  // Show all options
+        selectList.setAttribute("aria-label", "Company search results");
 
         companies.forEach(function (company) {
             const option = document.createElement("option");
@@ -437,13 +440,17 @@ function createTextInput(label, value, name, isReadOnly, isRequired, validateUrl
     const inputGroup = document.createElement("div");
     inputGroup.className = "input-group";
 
+    const inputId = `tsa-field-${++_tsaFieldIdCounter}`;
+
     const labelElement = document.createElement("label");
     labelElement.className = "form-label";
     labelElement.textContent = label;
+    labelElement.htmlFor = inputId;
     inputGroup.appendChild(labelElement);
 
     const input = document.createElement("input");
     input.type = "text";
+    input.id = inputId;
     input.value = value || "";
     input.name = name;
     input.className = "form-input";
@@ -475,12 +482,16 @@ function createTextAreaInput(label, value, name, isReadOnly, isRequired) {
     const inputGroup = document.createElement("div");
     inputGroup.className = "input-group";
 
+    const textAreaId = `tsa-field-${++_tsaFieldIdCounter}`;
+
     const labelElement = document.createElement("label");
     labelElement.className = "form-label";
     labelElement.textContent = label;
+    labelElement.htmlFor = textAreaId;
     inputGroup.appendChild(labelElement);
 
     const textArea = document.createElement("textarea");
+    textArea.id = textAreaId;
     textArea.value = value || "";
     textArea.name = name;
     textArea.className = "form-input";
@@ -512,7 +523,11 @@ function createFieldFromMetadata(field) {
     const fieldGroup = document.createElement("div");
     fieldGroup.className = "input-group";
 
+    const fieldId = `tsa-field-${++_tsaFieldIdCounter}`;
+    const labelId = `tsa-label-${_tsaFieldIdCounter}`;
+
     const labelElement = document.createElement("label");
+    labelElement.id = labelId;
     labelElement.className = "form-label";
     labelElement.textContent = field.label;
     fieldGroup.appendChild(labelElement);
@@ -522,6 +537,8 @@ function createFieldFromMetadata(field) {
         case "integer":
             inputElement = document.createElement("input");
             inputElement.type = "number";
+            inputElement.id = fieldId;
+            labelElement.htmlFor = fieldId;
             inputElement.value = field.value || 0;
             inputElement.className = "form-input";
             inputElement.name = `field_${field.fieldId}`;
@@ -529,6 +546,8 @@ function createFieldFromMetadata(field) {
         case "email":
             inputElement = document.createElement("input");
             inputElement.type = "email";
+            inputElement.id = fieldId;
+            labelElement.htmlFor = fieldId;
             inputElement.value = field.value || "";
             inputElement.className = "form-input";
             inputElement.name = `field_${field.fieldId}`;
@@ -536,6 +555,8 @@ function createFieldFromMetadata(field) {
         case "phone":
             inputElement = document.createElement("input");
             inputElement.type = "tel";
+            inputElement.id = fieldId;
+            labelElement.htmlFor = fieldId;
             inputElement.pattern = "\\d+";  // Only digits
             inputElement.value = field.value || "";
             inputElement.className = "form-input";
@@ -543,6 +564,8 @@ function createFieldFromMetadata(field) {
             break;
         case "select":
             inputElement = document.createElement("select");
+            inputElement.id = fieldId;
+            labelElement.htmlFor = fieldId;
             inputElement.className = "form-input";
             const optionsArray = field.options ? field.options.split(/\r?\n/).filter(option => option.trim() !== "") : [];
             optionsArray.forEach(option => {
@@ -556,10 +579,14 @@ function createFieldFromMetadata(field) {
         case "tierselect":
             inputElement = createTierSelect(field.selections, field.value, field.required, field.fieldId);
             inputElement.className = "form-input";
+            inputElement.setAttribute("role", "group");
+            inputElement.setAttribute("aria-labelledby", labelId);
             break;
         default:
             inputElement = document.createElement("input");
             inputElement.type = "text";
+            inputElement.id = fieldId;
+            labelElement.htmlFor = fieldId;
             inputElement.value = field.value || "";
             inputElement.className = "form-input";
             inputElement.name = `field_${field.fieldId}`;
@@ -618,6 +645,7 @@ function createTierSelect(options, selectedValue, isRequired, fieldId) {
         selectElement.className = `tier-select level-${level}`;
         selectElement.name = `field_${fieldId}-${level}`;
         selectElement.setAttribute("data-tierselect", "true"); // Add a unique attribute
+        selectElement.setAttribute("aria-label", `Selection level ${level}`);
 
         const defaultOption = document.createElement("option");
         defaultOption.value = "";
@@ -699,12 +727,16 @@ function createPrioritySelect(label, value, name) {
     const inputGroup = document.createElement("div");
     inputGroup.className = "input-group";
 
+    const selectId = `tsa-field-${++_tsaFieldIdCounter}`;
+
     const labelElement = document.createElement("label");
     labelElement.className = "form-label";
     labelElement.textContent = label;
+    labelElement.htmlFor = selectId;
     inputGroup.appendChild(labelElement);
 
     const select = document.createElement("select");
+    select.id = selectId;
     select.className = "form-input";
     select.name = name;
 
