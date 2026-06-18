@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="packages\ILRepack.2.0.35\build\ILRepack.props" Condition="Exists('packages\ILRepack.2.0.35\build\ILRepack.props')" />
   <PropertyGroup>
@@ -121,6 +121,19 @@
   <ItemGroup>
     <Compile Include="Plugins\CasePatchCollaborationRequestPlugin.cs" />
     <Compile Include="Helpers\CommonIntegrationPlugin.cs" />
+    <Compile Include="Models\ApiResponse.cs" />
+    <Compile Include="Models\Case.cs" />
+    <Compile Include="Models\CaseForm.cs" />
+    <Compile Include="Models\CaseNote.cs" />
+    <Compile Include="Models\CaseResponse.cs" />
+    <Compile Include="Models\CustomField.cs" />
+    <Compile Include="Models\CustomerData.cs" />
+    <Compile Include="Models\FieldSelection.cs" />
+    <Compile Include="Models\InternalNote.cs" />
+    <Compile Include="Models\OAuth2TokenResponse.cs" />
+    <Compile Include="Models\SubmittedBy.cs" />
+    <Compile Include="Models\SubmitterContactDetails.cs" />
+    <Compile Include="Models\TokenResponse.cs" />
     <Compile Include="Actions\GetAttachmentConfigPlugin.cs" />
     <Compile Include="Actions\GetCasePlugin.cs" />
     <Compile Include="Actions\GetCompanyPlugin.cs" />

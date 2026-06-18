@@ -18,6 +18,10 @@ public class CommonIntegrationPlugin
     private readonly string _apiUrl;
     private readonly string _clientId;
     private readonly string _clientSecret;
+    private readonly int _authorizationType;
+    private readonly string _tenantId;
+    private readonly string _oauth2Uri;
+    private readonly string _oauth2Scope;
 
     public CommonIntegrationPlugin(IOrganizationService service, ITracingService tracingService)
     {
@@ -29,6 +33,13 @@ public class CommonIntegrationPlugin
         _apiUrl = settings.GetAttributeValue<string>("ap_uri");
         _clientId = settings.GetAttributeValue<string>("ap_clientid");
         _clientSecret = settings.GetAttributeValue<string>("ap_secret");
+        _tenantId = settings.GetAttributeValue<string>("ap_tenantid");
+
+        var authTypeOptionSet = settings.GetAttributeValue<int>("ap_authorizationtype");
+        _authorizationType = authTypeOptionSet;
+
+        _oauth2Uri = GetEnvVariable(_service, "ap_OAauth2URI");
+        _oauth2Scope = GetEnvVariable(_service, "ap_OAuth2Scope");
     }
 
     // Helper method to add default headers to the HttpClient
@@ -72,7 +83,7 @@ public class CommonIntegrationPlugin
         return responseContent;
     }
 
-    // LEGACY - Method to get environment variable value by name
+    // Method to get environment variable value by name
     public static string GetEnvVariable(IOrganizationService service, string name)
     {
         var envVariables = new Dictionary<string, string>();
@@ -129,7 +140,73 @@ public class CommonIntegrationPlugin
         return val;
     }
 
+    //Method to login based on the authorization type
     public async Task<string> Login()
+    {
+        if (_authorizationType == 1)
+        {
+            return await LoginOAuth2();
+        }
+
+        return await LoginLegacy();
+    }
+
+    // OAuth2 client credentials flow
+    private async Task<string> LoginOAuth2()
+    {
+        try
+        {
+            _tracingService.Trace("Initiating OAuth2 client credentials login.");
+
+            if (string.IsNullOrEmpty(_oauth2Uri))
+                throw new InvalidOperationException("OAuth2 URI (ap_OAauth2URI) is not configured.");
+
+            if (string.IsNullOrEmpty(_tenantId))
+                throw new InvalidOperationException("Tenant ID (ap_tenantid) is not configured.");
+
+            var tokenEndpoint = $"{_oauth2Uri.TrimEnd('/')}/{_tenantId}/oauth2/v2.0/token";
+            _tracingService.Trace($"OAuth2 token endpoint: {tokenEndpoint}");
+
+            using (HttpClient client = new HttpClient())
+            {
+                var formValues = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("grant_type", "client_credentials"),
+                    new KeyValuePair<string, string>("client_id", _clientId),
+                    new KeyValuePair<string, string>("client_secret", _clientSecret),
+                    new KeyValuePair<string, string>("scope", _oauth2Scope)
+                };
+
+                var formContent = new FormUrlEncodedContent(formValues);
+
+                _tracingService.Trace("Sending OAuth2 token request.");
+                var response = await client.PostAsync(tokenEndpoint, formContent);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorBody = await response.Content.ReadAsStringAsync();
+                    _tracingService.Trace($"OAuth2 token request failed. Status: {response.StatusCode}. Response: {errorBody}");
+                    throw new InvalidOperationException($"OAuth2 login failed: {errorBody}");
+                }
+
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var tokenResponse = JsonConvert.DeserializeObject<OAuth2TokenResponse>(responseBody);
+
+                if (tokenResponse == null || string.IsNullOrEmpty(tokenResponse.AccessToken))
+                    throw new InvalidOperationException("OAuth2 token response was empty or invalid.");
+
+                _tracingService.Trace("OAuth2 access token retrieved successfully.");
+                return tokenResponse.AccessToken;
+            }
+        }
+        catch (Exception ex)
+        {
+            _tracingService.Trace($"Exception in LoginOAuth2: {ex.Message}");
+            throw;
+        }
+    }
+    //Legacy login method for Basic Authentication
+    public async Task<string> LoginLegacy()
     {
         try
         {
@@ -154,13 +231,6 @@ public class CommonIntegrationPlugin
                 _tracingService.Trace("Sending login request to API. " + _apiUrl);
 
                 var response = await client.PostAsync($"{_apiUrl}/v1/login", content);
-                // Check if the response was successful
-                if (!response.IsSuccessStatusCode)
-                {
-                    _tracingService.Trace("Login request failed. Response: " + await response.Content.ReadAsStringAsync());
-                    throw new InvalidOperationException("Failed to login.");
-                }
-
                 // Check if the response was successful
                 if (!response.IsSuccessStatusCode)
                 {
@@ -1175,315 +1245,3 @@ public class CommonIntegrationPlugin
     }
 }
 
-
-public class TokenResponse
-{
-    [JsonProperty("accessToken")]
-    public string AccessToken { get; set; }
-
-    [JsonProperty("tokenType")]
-    public string TokenType { get; set; }
-
-    [JsonProperty("expiresIn")]
-    public int ExpiresIn { get; set; }
-}
-
-public class ApiResponse
-{
-    public bool IsError { get; set; }
-    public string Content { get; set; }
-}
-
-public class CaseForm
-{
-    [JsonProperty("documentId")]
-    public int DocumentId { get; set; }
-
-    [JsonProperty("internalCaseNumber")]
-    public string InternalCaseNumber { get; set; }
-
-    [JsonProperty("receiverInternalCaseNumber")]
-    public string RecieverInternalCaseNumber { get; set; }
-
-    [JsonProperty("problemSummary")]
-    public string ProblemSummary { get; set; }
-
-    [JsonProperty("problemDescription")]
-    public string ProblemDescription { get; set; }
-
-    [JsonProperty("priority")]
-    public string priority { get; set; }
-
-    [JsonProperty("adminNote")]
-    public string AdminNote { get; set; }
-
-    [JsonProperty("EscalationInstructions")]
-    public string EscalationInstructions { get; set; }
-
-    [JsonProperty("testSubmission")]
-    public bool TestSubmission { get; set; }
-
-    [JsonProperty("customFields")]
-    public List<CustomField> CustomFields { get; set; }
-
-    [JsonProperty("internalNotes")]
-    public List<InternalNote> InternalNotes { get; set; }
-}
-
-public class CustomField
-{
-    [JsonProperty("fieldId")]
-    public int FieldId { get; set; }
-
-    [JsonProperty("section")]
-    public string Section { get; set; }
-
-    [JsonProperty("label")]
-    public string Label { get; set; }
-
-    [JsonProperty("options")]
-    public string Options { get; set; }
-
-    [JsonProperty("additionalSettings")]
-    public string AdditionalSettings { get; set; }
-
-    [JsonProperty("type")]
-    public string Type { get; set; }
-
-    [JsonProperty("displayOrder")]
-    public int DisplayOrder { get; set; }
-
-    [JsonProperty("validationRules")]
-    public string ValidationRules { get; set; }
-
-    [JsonProperty("value")]
-    public string Value { get; set; }
-
-    [JsonProperty("selections")]
-    public List<FieldSelection> Selections { get; set; }
-
-    [JsonProperty("required")]
-    public bool Required { get; set; }
-}
-
-public class FieldSelection
-{
-    [JsonProperty("value")]
-    public string Value { get; set; }
-
-    [JsonProperty("children")]
-    public List<FieldSelection> Children { get; set; }
-}
-
-class Case
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("submitCompanyName")]
-    public string SubmitCompanyName { get; set; }
-
-    [JsonProperty("submitCompanyId")]
-    public int SubmitCompanyId { get; set; }
-
-    [JsonProperty("submitterCaseNumber")]
-    public string SubmitterCaseNumber { get; set; }
-
-    [JsonProperty("receiveCompanyName")]
-    public string ReceiveCompanyName { get; set; }
-
-    [JsonProperty("receiveCompanyId")]
-    public int ReceiveCompanyId { get; set; }
-
-    [JsonProperty("receiverCaseNumber")]
-    public string ReceiverCaseNumber { get; set; }
-
-    [JsonProperty("summary")]
-    public string Summary { get; set; }
-
-    [JsonProperty("description")]
-    public string Description { get; set; }
-
-    [JsonProperty("priority")]
-    public string Priority { get; set; }
-
-    [JsonProperty("status")]
-    public string Status { get; set; }
-
-    [JsonProperty("token")]
-    public string Token { get; set; }
-
-    [JsonProperty("createdAt")]
-    public DateTime CreatedAt { get; set; }
-
-    [JsonProperty("updatedAt")]
-    public DateTime UpdatedAt { get; set; }
-
-    [JsonProperty("deletedAt")]
-    public DateTime? DeletedAt { get; set; }
-
-    [JsonProperty("responded")]
-    public bool Responded { get; set; }
-
-    [JsonProperty("respondBy")]
-    public DateTime RespondBy { get; set; }
-
-    [JsonProperty("feedbackRequested")]
-    public bool FeedbackRequested { get; set; }
-
-    [JsonProperty("reminderSent")]
-    public bool ReminderSent { get; set; }
-
-    [JsonProperty("priorityNote")]
-    public string PriorityNote { get; set; }
-
-    [JsonProperty("escalationInstructions")]
-    public string EscalationInstructions { get; set; }
-
-    [JsonProperty("testCase")]
-    public bool TestCase { get; set; }
-
-    [JsonProperty("customFields")]
-    public List<CustomerData> CustomFields { get; set; }
-
-    [JsonProperty("submittedBy")]
-    public SubmittedBy SubmittedBy { get; set; }
-
-    [JsonProperty("submitterContactDetails")]
-    public SubmitterContactDetails SubmitterContactDetails { get; set; }
-
-    [JsonProperty("caseNotes")]
-    public List<CaseNote> CaseNotes { get; set; }
-
-    [JsonProperty("caseResponses")]
-    public List<CaseResponse> CaseResponses { get; set; }
-}
-
-public class CustomerData
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("section")]
-    public string Section { get; set; }
-
-    [JsonProperty("fieldName")]
-    public string FieldName { get; set; }
-
-    [JsonProperty("value")]
-    public string Value { get; set; }
-}
-
-public class SubmitterContactDetails
-{
-    [JsonProperty("name")]
-    public string Name { get; set; }
-
-    [JsonProperty("email")]
-    public string Email { get; set; }
-
-    [JsonProperty("phone")]
-    public string Phone { get; set; }
-}
-
-public class SubmittedBy
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("username")]
-    public string Username { get; set; }
-
-    [JsonProperty("firstName")]
-    public string FirstName { get; set; }
-
-    [JsonProperty("lastName")]
-    public string LastName { get; set; }
-
-    [JsonProperty("email")]
-    public string Email { get; set; }
-
-    [JsonProperty("phone")]
-    public string Phone { get; set; }
-
-    [JsonProperty("phoneCountryCode")]
-    public string PhoneCountryCode { get; set; }
-
-    [JsonProperty("city")]
-    public string City { get; set; }
-}
-
-class CaseNote
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("caseId")]
-    public int CaseId { get; set; }
-
-    [JsonProperty("companyName")]
-    public string CompanyName { get; set; }
-
-    [JsonProperty("creatorUsername")]
-    public string CreatorUsername { get; set; }
-
-    [JsonProperty("creatorEmail")]
-    public string CreatorEmail { get; set; }
-
-    [JsonProperty("creatorName")]
-    public string CreatorName { get; set; }
-
-    [JsonProperty("summary")]
-    public string Summary { get; set; }
-
-    [JsonProperty("description")]
-    public string Description { get; set; }
-
-    [JsonProperty("priority")]
-    public string Priority { get; set; }
-
-    [JsonProperty("status")]
-    public string Status { get; set; }
-
-    [JsonProperty("token")]
-    public string Token { get; set; }
-
-    [JsonProperty("createdAt")]
-    public DateTime CreatedAt { get; set; }
-
-    [JsonProperty("updatedAt")]
-    public DateTime UpdatedAt { get; set; }
-}
-
-public class InternalNote
-{
-    [JsonProperty("note")]
-    public string Note { get; set; }
-}
-
-class CaseResponse
-{
-    [JsonProperty("id")]
-    public int Id { get; set; }
-
-    [JsonProperty("type")]
-    public string Type { get; set; }
-
-    [JsonProperty("caseNumber")]
-    public string CaseNumber { get; set; }
-
-    [JsonProperty("engineerName")]
-    public string EngineerName { get; set; }
-
-    [JsonProperty("engineerPhone")]
-    public string EngineerPhone { get; set; }
-
-    [JsonProperty("engineerEmail")]
-    public string EngineerEmail { get; set; }
-
-    [JsonProperty("nextSteps")]
-    public string NextSteps { get; set; }
-
-    [JsonProperty("createdAt")]
-    public DateTime CreatedAt { get; set; }
-}
