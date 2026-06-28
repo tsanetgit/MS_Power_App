@@ -39,7 +39,7 @@ public class CommonIntegrationPlugin
         _authorizationType = authTypeOptionSet;
 
         _oauth2Uri = GetEnvVariable(_service, "ap_OAauth2URI");
-        _oauth2Scope = GetEnvVariable(_service, "ap_OAuth2Scope");
+        _oauth2Scope = _clientId + "/.default";
     }
 
     // Helper method to add default headers to the HttpClient
