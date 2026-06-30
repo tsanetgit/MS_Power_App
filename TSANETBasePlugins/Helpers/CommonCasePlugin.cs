@@ -241,7 +241,7 @@ public class CommonCasePlugin
         tracingService.Trace("Retrieving settings from ap_setting table");
 
         var query = new QueryExpression("ap_tsanetsetting");
-        query.ColumnSet = new ColumnSet(true);
+        query.ColumnSet = new ColumnSet("ap_uri", "ap_clientid", "ap_secret", "ap_tenantid", "ap_authorizationtype", "ap_scope");
         query.Criteria.AddCondition("ap_name", ConditionOperator.Equal, "settings");
         query.TopCount = 1;
 
