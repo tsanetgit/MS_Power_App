@@ -1,6 +1,9 @@
 Microsoft Power App to be used in MS Dynamics and MS Teams
 For access to the Beta and Production environments, contact membership@tsanet.org
 
+## GitBook Documentation
+https://tsanet.gitbook.io/connect/documentation/dynamics-app/demo
+
 ## Install Guide
 
 The install guide provides information on how to install the Power App and details about the application and integration examples:
