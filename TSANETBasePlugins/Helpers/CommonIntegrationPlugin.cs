@@ -23,10 +23,14 @@ public class CommonIntegrationPlugin
     private readonly string _oauth2Uri;
     private readonly string _oauth2Scope;
 
-    public CommonIntegrationPlugin(IOrganizationService service, ITracingService tracingService)
+    private static Guid? _cachedSystemUserId;
+
+    public CommonIntegrationPlugin(IServiceProvider serviceProvider)
     {
-        _service = service;
-        _tracingService = tracingService;
+        _tracingService = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        var serviceFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
+
+        _service = CreateSystemContextService(serviceFactory);
 
         var commonCasePlugin = new CommonCasePlugin();
         Entity settings = commonCasePlugin.GetIntegrationSettings(_service, _tracingService);
@@ -40,6 +44,55 @@ public class CommonIntegrationPlugin
 
         _oauth2Uri = GetEnvVariable(_service, "ap_OAauth2URI");
         _oauth2Scope = settings.GetAttributeValue<string>("ap_scope");
+    }
+
+    /// <summary>
+    /// Creates an IOrganizationService that impersonates the non-interactive SYSTEM user,
+    /// so configuration reads do not depend on the calling user's security privileges.
+    /// </summary>
+    private static IOrganizationService CreateSystemContextService(IOrganizationServiceFactory serviceFactory)
+    {
+        if (!_cachedSystemUserId.HasValue)
+        {
+            // Bootstrap: create the service directly with a null userId, since the calling
+            // user may not have privileges to query other systemuser records
+            // (prvReadUser at the Organization level) needed to resolve the SYSTEM user id.
+            IOrganizationService elevatedService = serviceFactory.CreateOrganizationService(null);
+            _cachedSystemUserId = GetSystemUserId(elevatedService);
+        }
+
+        // Explicitly impersonate the resolved SYSTEM user id for all subsequent settings
+        // and environment variable reads.
+        return serviceFactory.CreateOrganizationService(_cachedSystemUserId);
+    }
+
+    /// <summary>
+    /// Resolves the id of the built-in, non-interactive SYSTEM user account.
+    /// </summary>
+    private static Guid GetSystemUserId(IOrganizationService service)
+    {
+        var query = new QueryExpression("systemuser")
+        {
+            ColumnSet = new ColumnSet("systemuserid"),
+            Criteria = new FilterExpression
+            {
+                Conditions =
+                {
+                    new ConditionExpression("fullname", ConditionOperator.Equal, "SYSTEM")
+                }
+            },
+            TopCount = 1
+        };
+
+        var result = service.RetrieveMultiple(query);
+        if (result.Entities.Count == 0)
+        {
+            throw new InvalidOperationException(
+                "Unable to resolve a non-interactive SYSTEM user account. " +
+                "Ensure a disabled/non-interactive SYSTEM or service account exists.");
+        }
+
+        return result.Entities[0].Id;
     }
 
     // Helper method to add default headers to the HttpClient

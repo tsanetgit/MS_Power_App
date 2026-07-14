@@ -278,6 +278,7 @@ public class CommonCasePlugin
         catch (Exception ex)
         {
             tracingService.Trace($"LogError: Failed to create log record - {ex.Message}");
+            throw;
         }
     }
 }

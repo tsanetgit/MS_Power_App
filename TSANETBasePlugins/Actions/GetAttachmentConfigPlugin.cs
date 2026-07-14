@@ -23,7 +23,7 @@ public class GetAttachmentConfigPlugin : IPlugin
             if (context.InputParameters.Contains("CaseToken") && context.InputParameters["CaseToken"] is string token)
             {
                 // Create an instance of the CommonIntegrationPlugin
-                var integrationPlugin = new CommonIntegrationPlugin(service, tracingService);
+                var integrationPlugin = new CommonIntegrationPlugin(serviceProvider);
 
                 // Retrieve the access token
                 var accessToken = integrationPlugin.Login().Result;

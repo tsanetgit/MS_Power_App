@@ -20,7 +20,7 @@ public class GetFormByDepartmentPlugin : IPlugin
             }
 
             // Initialize the common integration plugin
-            CommonIntegrationPlugin commonIntegration = new CommonIntegrationPlugin(service, tracingService);
+            CommonIntegrationPlugin commonIntegration = new CommonIntegrationPlugin(serviceProvider);
 
             // Login and get access token
             string accessToken = commonIntegration.Login().Result;

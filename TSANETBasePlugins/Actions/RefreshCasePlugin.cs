@@ -33,7 +33,7 @@ public class RefreshCasePlugin : IPlugin
             if (context.InputParameters.Contains("CaseToken") && context.InputParameters["CaseToken"] is string caseToken)
             {
                 // Create an instance of the CommonIntegrationPlugin
-                var integrationPlugin = new CommonIntegrationPlugin(service, tracingService);
+                var integrationPlugin = new CommonIntegrationPlugin(serviceProvider);
 
                 // Retrieve the access token
                 var accessToken = integrationPlugin.Login().Result;
@@ -48,22 +48,13 @@ public class RefreshCasePlugin : IPlugin
                 {
                     tracingService.Trace("Case data retrieved successfully, processing response");
 
-                    try
-                    {
-                        // Use the UpdateCasePlugin to process the response
-                        var commonCasePlugin = new CommonCasePlugin();
-                        commonCasePlugin.ProcessCaseResponse(service, tracingService, response.Content, targetRef.Id);
+                    // Use the UpdateCasePlugin to process the response
+                    var commonCasePlugin = new CommonCasePlugin();
+                    commonCasePlugin.ProcessCaseResponse(service, tracingService, response.Content, targetRef.Id);
 
-                        tracingService.Trace("Case data processed successfully");
-                        context.OutputParameters["Success"] = true;
-                        context.OutputParameters["Message"] = "Case refreshed successfully";
-                    }
-                    catch (Exception ex)
-                    {
-                        tracingService.Trace($"Error processing case data: {ex.Message}");
-                        context.OutputParameters["Success"] = false;
-                        context.OutputParameters["Message"] = $"Error processing case data: {ex.Message}";
-                    }
+                    tracingService.Trace("Case data processed successfully");
+                    context.OutputParameters["Success"] = true;
+                    context.OutputParameters["Message"] = "Case refreshed successfully";
                 }
 
                 // Return the raw JSON response to the context output parameters

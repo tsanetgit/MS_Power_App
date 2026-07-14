@@ -18,7 +18,7 @@ public class GetMePlugin : IPlugin
         try
         {
             // Create an instance of the CommonIntegrationPlugin
-            var integrationPlugin = new CommonIntegrationPlugin(service, tracingService);
+            var integrationPlugin = new CommonIntegrationPlugin(serviceProvider);
 
             // Retrieve the access token
             var accessToken = integrationPlugin.Login().Result;
