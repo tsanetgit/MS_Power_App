@@ -189,7 +189,7 @@ class CaseCreateReadOnlyRenderer {
         
         caseInfoSection.appendChild(this.createReadOnlyTextField("Priority", formJsonData.priority));
         caseInfoSection.appendChild(this.createReadOnlyTextField("Case#", formJsonData.submitterCaseNumber));
-        caseInfoSection.appendChild(this.createReadOnlyTextField("Date", formJsonData.createdAt));
+        caseInfoSection.appendChild(this.createReadOnlyDateTimeField("Date", formJsonData.createdAt));
         
         const submittedByName = formJsonData.submittedBy 
             ? `${formJsonData.submittedBy.firstName || ""} ${formJsonData.submittedBy.lastName || ""}`.trim()
@@ -304,6 +304,14 @@ class CaseCreateReadOnlyRenderer {
         inputGroup.appendChild(labelElement);
         inputGroup.appendChild(input);
         return inputGroup;
+    }
+
+    /**
+     * Create read-only datetime field, formatted using toLocaleString()
+     */
+    createReadOnlyDateTimeField(label, value) {
+        const formattedValue = value ? new Date(value).toLocaleString() : "";
+        return this.createReadOnlyTextField(label, formattedValue);
     }
 
     /**

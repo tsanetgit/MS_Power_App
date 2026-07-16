@@ -552,16 +552,16 @@ function createFieldFromMetadata(field) {
             inputElement.className = "form-input";
             inputElement.name = `field_${field.fieldId}`;
             break;
-        case "phone":
-            inputElement = document.createElement("input");
-            inputElement.type = "tel";
-            inputElement.id = fieldId;
-            labelElement.htmlFor = fieldId;
-            inputElement.pattern = "\\d+";  // Only digits
-            inputElement.value = field.value || "";
-            inputElement.className = "form-input";
-            inputElement.name = `field_${field.fieldId}`;
-            break;
+        // case "phone":
+        //     inputElement = document.createElement("input");
+        //     inputElement.type = "tel";
+        //     inputElement.id = fieldId;
+        //     labelElement.htmlFor = fieldId;
+        //     inputElement.pattern = "\\d+";  // Only digits
+        //     inputElement.value = field.value || "";
+        //     inputElement.className = "form-input";
+        //     inputElement.name = `field_${field.fieldId}`;
+        //     break;
         case "select":
             inputElement = document.createElement("select");
             inputElement.id = fieldId;
