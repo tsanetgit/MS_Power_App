@@ -24,7 +24,7 @@ $ErrorActionPreference = "Stop"
 
 $Config = @{
     Base = @{
-        Environment  = "https://org??????.crm.dynamics.com"   # TODO: doplň URL prostředí 1
+        Environment  = "https://org65ec56f5.crm.dynamics.com"   # TODO: doplň URL prostředí 1
         SolutionName = "TSANET"
         OutputFolder = "DataModel/TSANETBaseSolution"
         ZipName      = "TSANETBaseSolution.zip"
@@ -79,22 +79,26 @@ function Sync-Solution {
     Write-Step "Exporting '$SolutionName' from $Environment"
 
     # Export ze Dataverse
-    pac solution export `
-        --name $SolutionName `
-        --path $ZipPath `
-        --managed false `
-        --environment $Environment
+    $ExportArgs = @(
+        "--name", $SolutionName,
+        "--path", $ZipPath,
+        "--managed", "false",
+        "--environment", $Environment
+    )
+    pac solution export @ExportArgs
 
     Write-Success "Export dokončen: $ZipName"
 
     Write-Step "Unpacking '$SolutionName' to $OutputFolder"
 
     # Unpack do složky
-    pac solution unpack `
-        --zipfile $ZipPath `
-        --folder $FolderPath `
-        --processCanvasApps true `
-        --allowDelete true
+    $UnpackArgs = @(
+        "--zipfile", $ZipPath,
+        "--folder", $FolderPath,
+        "--processCanvasApps", "true",
+        "--allowDelete", "true"
+    )
+    pac solution unpack @UnpackArgs
 
     Write-Success "Unpack dokončen: $OutputFolder"
 }
@@ -139,20 +143,23 @@ New-Item -ItemType Directory -Force -Path "$RepoRoot/exports" | Out-Null
 # Spusť sync dle parametru Target
 try {
     if ($Target -eq "All" -or $Target -eq "Base") {
-        Sync-Solution @($Config.Base.GetEnumerator() | ForEach-Object { $_.Key + "=" + $_.Value } | Out-Null)
-        Sync-Solution `
-            -Environment  $Config.Base.Environment `
-            -SolutionName $Config.Base.SolutionName `
-            -OutputFolder $Config.Base.OutputFolder `
-            -ZipName      $Config.Base.ZipName
+        $BaseParams = @{
+            Environment  = $Config.Base.Environment
+            SolutionName = $Config.Base.SolutionName
+            OutputFolder = $Config.Base.OutputFolder
+            ZipName      = $Config.Base.ZipName
+        }
+        Sync-Solution @BaseParams
     }
 
     if ($Target -eq "All" -or $Target -eq "Dynamics") {
-        Sync-Solution `
-            -Environment  $Config.Dynamics.Environment `
-            -SolutionName $Config.Dynamics.SolutionName `
-            -OutputFolder $Config.Dynamics.OutputFolder `
-            -ZipName      $Config.Dynamics.ZipName
+        $DynamicsParams = @{
+            Environment  = $Config.Dynamics.Environment
+            SolutionName = $Config.Dynamics.SolutionName
+            OutputFolder = $Config.Dynamics.OutputFolder
+            ZipName      = $Config.Dynamics.ZipName
+        }
+        Sync-Solution @DynamicsParams
     }
 } catch {
     Write-Fail "Chyba během sync: $_"
