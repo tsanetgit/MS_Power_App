@@ -117,12 +117,12 @@
                     "parameters": {
                       "entityName": "ap_tsanetnotes",
                       "x-ms-odata-metadata-full": false,
+                      "item/ap_name": "@triggerOutputs()?['body/subject']",
                       "item/ap_tsanetcaseid@odata.bind": "ap_tsanetcases(@{items('Apply_to_each')?['ap_tsanetcaseid']})",
                       "item/ap_creatoremail": "@outputs('Get_a_row_Creator')?['body/internalemailaddress']",
                       "item/ap_creatorname": "@outputs('Get_a_row_Creator')?['body/fullname']",
-                      "item/ap_description": "New note in the system.\nSubject: @{triggerOutputs()?['body/subject']}\nDescription: @{if(greater(length(triggerOutputs()?['body/notetext']),1600),\r\n  substring(triggerOutputs()?['body/notetext'],0,1600),\r\n  triggerOutputs()?['body/notetext'])}",
+                      "item/ap_description": "@if(greater(length(triggerOutputs()?['body/notetext']),1600),\r\n  substring(triggerOutputs()?['body/notetext'],0,1600),\r\n  triggerOutputs()?['body/notetext'])",
                       "item/ap_source": 120950000,
-                      "item/ap_name": "New note",
                       "item/ap_isautomated": true
                     },
                     "authentication": "@parameters('$authentication')"

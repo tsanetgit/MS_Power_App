@@ -357,13 +357,13 @@
                                     },
                                     "parameters": {
                                       "entityName": "ap_tsanetnotes",
+                                      "item/ap_name": "@items('Apply_to_each_Note')['summary']",
                                       "item/ap_tsanetcaseid@odata.bind": "ap_tsanetcases(@{variables('CaseID')})",
                                       "item/ap_creatoremail": "@items('Apply_to_each_Note')['creatorEmail']",
                                       "item/ap_creatorname": "@items('Apply_to_each_Note')['creatorName']",
                                       "item/ap_description": "@items('Apply_to_each_Note')['description']",
                                       "item/ap_tsanotecode": "@items('Apply_to_each_Note')['id']",
                                       "item/ap_source": 120950001,
-                                      "item/ap_name": "@items('Apply_to_each_Note')['summary']",
                                       "item/ap_companyname": "@items('Apply_to_each_Note')['companyName']",
                                       "item/overriddencreatedon": "@items('Apply_to_each_Note')['createdAt']"
                                     },
@@ -936,9 +936,12 @@
                   "type": "Http",
                   "inputs": {
                     "method": "GET",
-                    "uri": "@{body('Get_Token')?['uri']}/v1/collaboration-requests?updatedAfter=@{triggerBody()['text']}",
+                    "uri": "@{body('Get_Token')?['uri']}/v2/collaboration-requests/list",
                     "headers": {
                       "Authorization": "Bearer @{body('Get_Token')?['accesstoken']}"
+                    },
+                    "queries": {
+                      "updatedAfter": "@triggerBody()['text']"
                     }
                   }
                 }

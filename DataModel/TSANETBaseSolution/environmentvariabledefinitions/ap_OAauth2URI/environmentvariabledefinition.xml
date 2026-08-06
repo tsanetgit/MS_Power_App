@@ -1,0 +1,11 @@
+<environmentvariabledefinition schemaname="ap_OAauth2URI">
+  <defaultvalue>https://login.microsoftonline.com</defaultvalue>
+  <displayname default="OAauth2URI">
+    <label description="OAauth2URI" languagecode="1033" />
+  </displayname>
+  <introducedversion>2.10.0.2</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

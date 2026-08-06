@@ -1,0 +1,91 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "b30c8010-de84-480e-8a03-a41144a5feff"
+          },
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "StartDeleteWebhooksV2": {
+          "runAfter": {
+            "StartDeleteWebhooksV1": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "730214b7-7b9b-42a4-a08d-5edf2b7ae9ea"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "b41d7ac2-3d87-f111-8075-000d3a1d342f"
+            }
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "runAfter": {
+            "StartDeleteWebhooksV2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7532f5dc-6aef-4215-8ce4-edd2390aa2c2"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "result": "@{body('StartDeleteWebhooksV2')?['result']}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "title": "Result",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "StartDeleteWebhooksV1": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "eae4abbe-cef6-4ddf-920c-fcd2c96b9651"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "952d0034-4987-f111-8075-000d3a1d342f"
+            }
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

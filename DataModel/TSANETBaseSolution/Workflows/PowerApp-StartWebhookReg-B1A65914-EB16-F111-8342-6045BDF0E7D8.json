@@ -53,7 +53,7 @@
           "type": "Workflow",
           "inputs": {
             "host": {
-              "workflowReferenceName": "e92519e8-3d13-f111-8342-6045bdf0e7d8"
+              "workflowReferenceName": "ff670484-3f87-f111-8075-000d3a1d342f"
             },
             "body": {
               "text": "@outputs('List_Callback_URL')?['body/response/value']"

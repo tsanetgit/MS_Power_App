@@ -1,0 +1,178 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "f2710afc-81c5-4386-865a-121a00e24f83"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_a_Power_App_or_flow": {
+          "runAfter": {
+            "Scope": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a5b21c27-ecb1-4925-a19f-67d7f027fa98"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "result": "Success"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "title": "Result",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Scope": {
+          "actions": {
+            "Get_Token": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "0f487098-2606-4461-85b1-3f210e5695a6"
+              },
+              "type": "Workflow",
+              "inputs": {
+                "host": {
+                  "workflowReferenceName": "5501ead7-1b8a-ef11-8a69-6045bdd3fb39"
+                }
+              }
+            },
+            "GetTokenSuccess": {
+              "actions": {
+                "HTTP_GET_Webhooks": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "80654909-5a54-400d-886b-3fe2de53445f"
+                  },
+                  "type": "Http",
+                  "inputs": {
+                    "method": "GET",
+                    "uri": "@{body('Get_Token')?['uri']}/v2/webhooks",
+                    "headers": {
+                      "Authorization": "Bearer @{body('Get_Token')?['accesstoken']}"
+                    },
+                    "retryPolicy": {
+                      "type": "none"
+                    }
+                  }
+                },
+                "Apply_to_each_webhook": {
+                  "foreach": "@body('HTTP_GET_Webhooks')",
+                  "actions": {
+                    "HTTP_DELETE_Webhooks": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "80654909-5a54-400d-886b-3fe2de53445f"
+                      },
+                      "type": "Http",
+                      "inputs": {
+                        "method": "DELETE",
+                        "uri": "@{body('Get_Token')?['uri']}/v1/webhooks/@{items('Apply_to_each_webhook')?['id']}",
+                        "headers": {
+                          "Authorization": "Bearer @{body('Get_Token')?['accesstoken']}"
+                        }
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "HTTP_GET_Webhooks": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "824588cc-454c-4a72-a6d8-31a07954583b"
+                  },
+                  "type": "Foreach"
+                }
+              },
+              "runAfter": {
+                "Get_Token": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "equals": [
+                  "@body('Get_Token')?['result']",
+                  "Success"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "41111d7e-093c-4a42-a2dc-a60d443b2985"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "261741f1-9eba-4605-8ea7-97cee6dae74c"
+          },
+          "type": "Scope"
+        },
+        "Respond_to_a_Power_App_or_flow_2": {
+          "runAfter": {
+            "Scope": [
+              "Failed",
+              "Skipped",
+              "TimedOut"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6bb4e0f7-4600-4a5d-a5ec-a747873e68bf"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "result": "Error"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "title": "Result",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

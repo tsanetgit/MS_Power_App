@@ -8,6 +8,13 @@
         "$authentication": {
           "defaultValue": {},
           "type": "SecureObject"
+        },
+        "OAauth2URI (ap_OAauth2URI)": {
+          "defaultValue": "https://login.microsoftonline.com",
+          "type": "String",
+          "metadata": {
+            "schemaName": "ap_OAauth2URI"
+          }
         }
       },
       "triggers": {
@@ -27,56 +34,9 @@
         }
       },
       "actions": {
-        "HTTP": {
-          "runAfter": {
-            "NotSuccess": [
-              "Succeeded"
-            ]
-          },
-          "metadata": {
-            "operationMetadataId": "abf417f1-74fd-43d6-a7d0-934c27a35163"
-          },
-          "type": "Http",
-          "inputs": {
-            "method": "POST",
-            "uri": "@{body('Get_Settings')?['uri']}/v1/login",
-            "body": {
-              "username": "@body('Get_Settings')?['clientid']",
-              "password": "@body('Get_Settings')?['secret']"
-            }
-          }
-        },
-        "Parse_JSON": {
-          "runAfter": {
-            "HTTP": [
-              "Succeeded"
-            ]
-          },
-          "metadata": {
-            "operationMetadataId": "c13d0abd-1b9f-4cf6-8716-5ed7c397778f"
-          },
-          "type": "ParseJson",
-          "inputs": {
-            "content": "@body('HTTP')",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "accessToken": {
-                  "type": "string"
-                },
-                "tokenType": {
-                  "type": "string"
-                },
-                "expiresIn": {
-                  "type": "integer"
-                }
-              }
-            }
-          }
-        },
         "Respond_to_a_Power_App_or_flow": {
           "runAfter": {
-            "Parse_JSON": [
+            "Scope": [
               "Succeeded"
             ]
           },
@@ -88,7 +48,7 @@
           "inputs": {
             "statusCode": 200,
             "body": {
-              "accesstoken": "@body('Parse_JSON')?['accessToken']",
+              "accesstoken": "@variables('Token')",
               "result": "Success",
               "uri": "@body('Get_Settings')?['uri']"
             },
@@ -116,7 +76,7 @@
         },
         "Respond_to_a_Power_App_or_flow_2": {
           "runAfter": {
-            "Parse_JSON": [
+            "Scope": [
               "Failed",
               "Skipped",
               "TimedOut"
@@ -157,7 +117,11 @@
           }
         },
         "Get_Settings": {
-          "runAfter": {},
+          "runAfter": {
+            "Initialize_variable_Token": [
+              "Succeeded"
+            ]
+          },
           "metadata": {
             "operationMetadataId": "6271a3a4-c4a3-4dfb-8d6c-63240bd00845"
           },
@@ -238,6 +202,113 @@
             "operationMetadataId": "3326e0b5-c76c-4b31-b410-bfccf84a5266"
           },
           "type": "If"
+        },
+        "Initialize_variable_Token": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "e31d6bcb-431b-4f6e-99bb-6be0734efc09"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Token",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Scope": {
+          "actions": {
+            "IsBearer": {
+              "actions": {
+                "HTTPBearer": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "abf417f1-74fd-43d6-a7d0-934c27a35163"
+                  },
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "@{body('Get_Settings')?['uri']}/v1/login",
+                    "body": {
+                      "username": "@body('Get_Settings')?['clientid']",
+                      "password": "@body('Get_Settings')?['secret']"
+                    }
+                  }
+                },
+                "Set_variable": {
+                  "runAfter": {
+                    "HTTPBearer": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "ae436bf0-c5e6-49fc-a51c-3e43b91be39c"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "Token",
+                    "value": "@{body('HTTPBearer')?['accessToken']}"
+                  }
+                }
+              },
+              "runAfter": {},
+              "else": {
+                "actions": {
+                  "HTTPOAuth2": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "b42a9d4f-1a6b-4c7b-bf7c-0e39fa3c4ef8"
+                    },
+                    "type": "Http",
+                    "inputs": {
+                      "method": "POST",
+                      "uri": "@{parameters('OAauth2URI (ap_OAauth2URI)')}/@{body('Get_Settings')?['tenantid']}/oauth2/v2.0/token",
+                      "headers": {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                      },
+                      "body": "grant_type=client_credentials&client_id=@{body('Get_Settings')?['clientid']}&client_secret=@{body('Get_Settings')?['secret']}&scope=@{body('Get_Settings')?['scope']}"
+                    }
+                  },
+                  "Set_variable_2": {
+                    "runAfter": {
+                      "HTTPOAuth2": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "c02df0df-240a-45f9-894a-e64eb37b6470"
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "Token",
+                      "value": "@{body('HTTPOAuth2')?['access_token']}"
+                    }
+                  }
+                }
+              },
+              "expression": {
+                "equals": [
+                  "@equals(body('Get_Settings')?['authtype'],'0')",
+                  "@true"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "60d1d6a9-6afb-41d0-9a74-d5c0ae4f6f56"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "NotSuccess": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1700fff7-8d23-4868-9317-ff5a1eae61ce"
+          },
+          "type": "Scope"
         }
       }
     },

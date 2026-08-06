@@ -59,7 +59,6 @@
                     <label description="TSA" languagecode="1033" />
                   </labels>
                   <rows>
-                    <row />
                     <row>
                       <cell locklevel="0" id="{19da23de-266b-44d7-99a2-ea43beeee6a1}" rowspan="4" colspan="1" auto="false" ordinalvalue="10000">
                         <labels>

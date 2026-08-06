@@ -44,11 +44,11 @@
             "operationMetadataId": "7f26725a-e337-4c87-83ed-ef07e596e03b"
           },
           "type": "Compose",
-          "inputs": " @{triggerOutputs()['headers']['x-hub-signature-256']}"
+          "inputs": "@trim(triggerOutputs()['headers']['x-hub-signature-256'])"
         },
         "GetCase": {
           "runAfter": {
-            "ValidateSecret": [
+            "Token": [
               "Succeeded"
             ]
           },
@@ -64,7 +64,7 @@
             },
             "parameters": {
               "actionName": "ap_GetCase",
-              "item/CaseToken": "@triggerBody()?['requestToken']"
+              "item/CaseToken": "@outputs('Token')"
             },
             "authentication": "@parameters('$authentication')"
           }
@@ -201,6 +201,18 @@
             },
             "authentication": "@parameters('$authentication')"
           }
+        },
+        "Token": {
+          "runAfter": {
+            "ValidateSecret": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9b19f129-b363-4437-93a6-d0cb250576c8"
+          },
+          "type": "Compose",
+          "inputs": "@if(equals(triggerBody()?['requestToken'],null),triggerBody()?['data/requestToken'],triggerBody()?['requestToken'])"
         }
       }
     },

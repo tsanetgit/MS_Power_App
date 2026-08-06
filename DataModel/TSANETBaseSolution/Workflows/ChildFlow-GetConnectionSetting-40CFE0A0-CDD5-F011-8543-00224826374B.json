@@ -57,7 +57,7 @@
                 },
                 "parameters": {
                   "entityName": "ap_tsanetsettings",
-                  "$select": "ap_uri,ap_clientid,ap_secret",
+                  "$select": "ap_uri,ap_clientid,ap_secret,ap_authorizationtype,ap_tenantid,ap_scope",
                   "$filter": "ap_name eq 'settings'",
                   "$top": 1
                 },
@@ -82,7 +82,10 @@
                       "result": "Error",
                       "uri": "-",
                       "clientid": "-",
-                      "secret": "-"
+                      "secret": "-",
+                      "authtype": 0,
+                      "tenantid": "-",
+                      "scope": "-"
                     },
                     "schema": {
                       "type": "object",
@@ -104,6 +107,21 @@
                         },
                         "secret": {
                           "title": "Secret",
+                          "x-ms-dynamically-added": true,
+                          "type": "string"
+                        },
+                        "authtype": {
+                          "title": "AuthType",
+                          "x-ms-dynamically-added": true,
+                          "type": "number"
+                        },
+                        "tenantid": {
+                          "title": "TenantID",
+                          "x-ms-dynamically-added": true,
+                          "type": "string"
+                        },
+                        "scope": {
+                          "title": "Scope",
                           "x-ms-dynamically-added": true,
                           "type": "string"
                         }
@@ -166,7 +184,10 @@
               "result": "Success",
               "uri": "@{first(outputs('List_rows_Setting')?['body/value'])?['ap_uri']}",
               "clientid": "@{first(outputs('List_rows_Setting')?['body/value'])?['ap_clientid']}",
-              "secret": "@{first(outputs('List_rows_Setting')?['body/value'])?['ap_secret']}"
+              "secret": "@{first(outputs('List_rows_Setting')?['body/value'])?['ap_secret']}",
+              "authtype": "@{first(outputs('List_rows_Setting')?['body/value'])?['ap_authorizationtype']}",
+              "tenantid": "@{first(outputs('List_rows_Setting')?['body/value'])?['ap_tenantid']}",
+              "scope": "@{first(outputs('List_rows_Setting')?['body/value'])?['ap_scope']}"
             },
             "schema": {
               "type": "object",
@@ -188,6 +209,21 @@
                 },
                 "secret": {
                   "title": "Secret",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "authtype": {
+                  "title": "AuthType",
+                  "x-ms-dynamically-added": true,
+                  "type": "number"
+                },
+                "tenantid": {
+                  "title": "TenantID",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "scope": {
+                  "title": "Scope",
                   "x-ms-dynamically-added": true,
                   "type": "string"
                 }
@@ -214,7 +250,10 @@
               "result": "Error",
               "uri": "-",
               "clientid": "-",
-              "secret": "-"
+              "secret": "-",
+              "authtype": 0,
+              "tenantid": "-",
+              "scope": "-"
             },
             "schema": {
               "type": "object",
@@ -236,6 +275,21 @@
                 },
                 "secret": {
                   "title": "Secret",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "authtype": {
+                  "title": "AuthType",
+                  "x-ms-dynamically-added": true,
+                  "type": "number"
+                },
+                "tenantid": {
+                  "title": "TenantID",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "scope": {
+                  "title": "Scope",
                   "x-ms-dynamically-added": true,
                   "type": "string"
                 }

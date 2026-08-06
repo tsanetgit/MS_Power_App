@@ -21,6 +21,7 @@ class CaseCreateReadOnlyRenderer {
         this.initialized = false;
         this.visibilityChangeHandler = null;
         this.currentRecordContext = null;
+        this._fieldCounter = 0;
     }
 
     /**
@@ -188,7 +189,7 @@ class CaseCreateReadOnlyRenderer {
         
         caseInfoSection.appendChild(this.createReadOnlyTextField("Priority", formJsonData.priority));
         caseInfoSection.appendChild(this.createReadOnlyTextField("Case#", formJsonData.submitterCaseNumber));
-        caseInfoSection.appendChild(this.createReadOnlyTextField("Date", formJsonData.createdAt));
+        caseInfoSection.appendChild(this.createReadOnlyDateTimeField("Date", formJsonData.createdAt));
         
         const submittedByName = formJsonData.submittedBy 
             ? `${formJsonData.submittedBy.firstName || ""} ${formJsonData.submittedBy.lastName || ""}`.trim()
@@ -286,12 +287,16 @@ class CaseCreateReadOnlyRenderer {
         const inputGroup = document.createElement("div");
         inputGroup.className = "input-group";
 
+        const inputId = `ro-field-${++this._fieldCounter}`;
+
         const labelElement = document.createElement("label");
         labelElement.className = "form-label";
         labelElement.textContent = label;
+        labelElement.htmlFor = inputId;
 
         const input = document.createElement("input");
         input.type = "text";
+        input.id = inputId;
         input.value = value || "";
         input.className = "form-input";
         input.readOnly = true;
@@ -302,17 +307,29 @@ class CaseCreateReadOnlyRenderer {
     }
 
     /**
+     * Create read-only datetime field, formatted using toLocaleString()
+     */
+    createReadOnlyDateTimeField(label, value) {
+        const formattedValue = value ? new Date(value).toLocaleString() : "";
+        return this.createReadOnlyTextField(label, formattedValue);
+    }
+
+    /**
      * Create read-only text area
      */
     createReadOnlyTextArea(label, value) {
         const inputGroup = document.createElement("div");
         inputGroup.className = "input-group";
 
+        const textAreaId = `ro-field-${++this._fieldCounter}`;
+
         const labelElement = document.createElement("label");
         labelElement.className = "form-label";
         labelElement.textContent = label;
+        labelElement.htmlFor = textAreaId;
 
         const textArea = document.createElement("textarea");
+        textArea.id = textAreaId;
         textArea.value = value || "";
         textArea.className = "form-input";
         textArea.readOnly = true;

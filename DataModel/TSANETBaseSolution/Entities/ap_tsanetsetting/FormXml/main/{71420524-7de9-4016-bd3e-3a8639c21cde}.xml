@@ -36,6 +36,22 @@
                       </cell>
                     </row>
                     <row>
+                      <cell id="{a0a234fc-65f9-4e0b-a4fe-f3aa5769cb23}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Authorization Type" languagecode="1033" />
+                        </labels>
+                        <control id="ap_authorizationtype" classid="{C6D124CA-7EDA-4A60-AEA9-7FB8D318B68F}" datafieldname="ap_authorizationtype" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{1841efe4-e3a7-4fd9-a977-d3b481d95a65}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Tenant ID" languagecode="1033" />
+                        </labels>
+                        <control id="ap_tenantid" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_tenantid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
                       <cell id="{a4978804-1e9f-4858-baf2-400d4deaad39}" locklevel="0" colspan="1" rowspan="1">
                         <labels>
                           <label description="Client ID" languagecode="1033" />
@@ -49,6 +65,14 @@
                           <label description="Secret" languagecode="1033" />
                         </labels>
                         <control id="ap_secret" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_secret" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{6bed566c-b689-4b61-9a42-8deb4d488eb3}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="Scope" languagecode="1033" />
+                        </labels>
+                        <control id="ap_scope" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="ap_scope" disabled="false" />
                       </cell>
                     </row>
                     <row>
