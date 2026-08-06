@@ -1,0 +1,246 @@
+name: Export Solutions & Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag / solution version (e.g. v2.13.0.0)'
+        required: true
+      release_notes:
+        description: 'Release notes (multi-line body for the GitHub release)'
+        required: false
+        default: ''
+      commit_message:
+        description: 'Commit message for DataModel sync'
+        required: true
+        default: 'chore: sync Dataverse data model'
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      solution_version: ${{ steps.version.outputs.solution_version }}
+      version_suffix: ${{ steps.version.outputs.version_suffix }}
+    steps:
+      - name: Compute version strings from release_tag
+        id: version
+        run: |
+          TAG="${{ github.event.inputs.release_tag }}"
+          VERSION="${TAG#v}"
+          SUFFIX="${VERSION//./_}"
+          echo "solution_version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "version_suffix=$SUFFIX" >> "$GITHUB_OUTPUT"
+
+  export:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - key: Base
+            secret_prefix: BASE
+            solution_name: TSANet
+            output_folder: DataModel/TSANETBaseSolution
+          - key: Dynamics
+            secret_prefix: DYNAMICS
+            solution_name: TSANETDynamicsCS
+            output_folder: DataModel/TSANETDynamicsSolution
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install PAC CLI
+        uses: microsoft/powerplatform-actions/actions-install@v1
+
+      - name: Auth to Dataverse
+        run: |
+          ${{ env.POWERPLATFORMTOOLS_PACPATH }} auth create \
+            --url ${{ secrets[format('{0}_ENV_URL', matrix.secret_prefix)] }} \
+            --applicationId ${{ secrets[format('{0}_CLIENT_ID', matrix.secret_prefix)] }} \
+            --clientSecret ${{ secrets[format('{0}_CLIENT_SECRET', matrix.secret_prefix)] }} \
+            --tenant ${{ secrets[format('{0}_TENANT_ID', matrix.secret_prefix)] }}
+
+      - name: Bump solution version in Dataverse
+        run: |
+          ${{ env.POWERPLATFORMTOOLS_PACPATH }} solution online-version \
+            --solution-name ${{ matrix.solution_name }} \
+            --solution-version ${{ needs.prepare.outputs.solution_version }}
+
+      - name: Prepare export folder
+        run: |
+          mkdir -p exports
+          rm -f "exports/${{ matrix.solution_name }}_unmanaged.zip"
+          rm -f "exports/${{ matrix.solution_name }}_${{ needs.prepare.outputs.version_suffix }}_managed.zip"
+
+      - name: Export unmanaged solution
+        run: |
+          ${{ env.POWERPLATFORMTOOLS_PACPATH }} solution export \
+            --name ${{ matrix.solution_name }} \
+            --path "exports/${{ matrix.solution_name }}_unmanaged.zip" \
+            --managed false
+
+      - name: Export managed solution
+        run: |
+          ${{ env.POWERPLATFORMTOOLS_PACPATH }} solution export \
+            --name ${{ matrix.solution_name }} \
+            --path "exports/${{ matrix.solution_name }}_${{ needs.prepare.outputs.version_suffix }}_managed.zip" \
+            --managed true
+
+      - name: Clear auth
+        if: always()
+        run: ${{ env.POWERPLATFORMTOOLS_PACPATH }} auth clear
+
+      - name: Unpack unmanaged solution into DataModel
+        run: |
+          rm -rf "${{ matrix.output_folder }}"
+          mkdir -p "${{ matrix.output_folder }}"
+          ${{ env.POWERPLATFORMTOOLS_PACPATH }} solution unpack \
+            --zipfile "exports/${{ matrix.solution_name }}_unmanaged.zip" \
+            --folder "${{ matrix.output_folder }}" \
+            --processCanvasApps true \
+            --allowDelete true
+
+      - name: Upload managed solution artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: managed-${{ matrix.key }}
+          path: exports/${{ matrix.solution_name }}_${{ needs.prepare.outputs.version_suffix }}_managed.zip
+          retention-days: 5
+
+      - name: Upload DataModel artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: datamodel-${{ matrix.key }}
+          path: ${{ matrix.output_folder }}
+          retention-days: 5
+
+  commit-datamodel:
+    needs: export
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Download Base DataModel
+        uses: actions/download-artifact@v4
+        with:
+          name: datamodel-Base
+          path: DataModel/TSANETBaseSolution
+
+      - name: Download Dynamics DataModel
+        uses: actions/download-artifact@v4
+        with:
+          name: datamodel-Dynamics
+          path: DataModel/TSANETDynamicsSolution
+
+      - name: Commit and push
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add DataModel/
+          git diff --staged --quiet || git commit -m "${{ github.event.inputs.commit_message }}"
+          git push
+
+  build-package:
+    needs: [prepare, export]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install PAC CLI
+        uses: microsoft/powerplatform-actions/actions-install@v1
+
+      - name: Download Base managed solution
+        uses: actions/download-artifact@v4
+        with:
+          name: managed-Base
+          path: managed
+
+      - name: Download Dynamics managed solution
+        uses: actions/download-artifact@v4
+        with:
+          name: managed-Dynamics
+          path: managed
+
+      - name: Init package project
+        run: |
+          ${{ env.POWERPLATFORMTOOLS_PACPATH }} package init \
+            --outputDirectory pdpkg \
+            --package-name TSANET \
+            --publisher app
+
+      - name: Add solutions to package project
+        working-directory: pdpkg
+        run: |
+          for f in ../managed/*_managed.zip; do
+            echo "Adding $f"
+            ${{ env.POWERPLATFORMTOOLS_PACPATH }} package add-solution --path "$f"
+          done
+
+      - name: Build package
+        working-directory: pdpkg
+        run: dotnet publish -c Release
+
+      - name: Locate built .pdpkg.zip
+        id: locate
+        working-directory: pdpkg
+        run: |
+          PKG=$(find . -name '*.pdpkg.zip' | head -n1)
+          if [ -z "$PKG" ]; then
+            echo "No .pdpkg.zip produced" >&2
+            exit 1
+          fi
+          echo "pkg_path=$PKG" >> "$GITHUB_OUTPUT"
+
+      - name: Stage package artifact
+        run: |
+          mkdir -p release-package
+          cp "pdpkg/${{ steps.locate.outputs.pkg_path }}" \
+             "release-package/TSANET_${{ needs.prepare.outputs.version_suffix }}.pdpkg.zip"
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdpkg
+          path: release-package/*.pdpkg.zip
+          retention-days: 5
+
+  release:
+    needs: [export, build-package]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Base managed solution
+        uses: actions/download-artifact@v4
+        with:
+          name: managed-Base
+          path: release-assets
+
+      - name: Download Dynamics managed solution
+        uses: actions/download-artifact@v4
+        with:
+          name: managed-Dynamics
+          path: release-assets
+
+      - name: Download package deployer package
+        uses: actions/download-artifact@v4
+        with:
+          name: pdpkg
+          path: release-assets
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.release_tag }}
+          name: ${{ github.event.inputs.release_tag }}
+          body: ${{ github.event.inputs.release_notes }}
+          files: release-assets/*
+          fail_on_unmatched_files: true
