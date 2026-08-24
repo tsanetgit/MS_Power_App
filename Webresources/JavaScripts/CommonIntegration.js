@@ -252,6 +252,53 @@ function getFormByDepartment(departmentId, formContext) {
     );
 }
 
+// getFormByDocument function
+function getFormByDocument(documentId, formContext) {
+    "use strict";
+    Xrm.Utility.showProgressIndicator("Retrieving form details...");
+    const parameters = {
+        DocumentId: documentId
+    };
+
+    // Custom action call
+    const request = {
+        DocumentId: parameters.DocumentId,
+        getMetadata: function () {
+            return {
+                boundParameter: null,
+                parameterTypes: {
+                    "DocumentId": { typeName: "Edm.Int32", structuralProperty: 1 }
+                },
+                operationType: 0,
+                operationName: "ap_GetFormByDocument"
+            };
+        }
+    };
+
+    Xrm.WebApi.online.execute(request).then(
+        function success(result) {
+            if (result.ok) {
+                result.json().then(function (response) {
+                    if (!response.IsError) {
+                        var formJson = response.FormDetails;
+                        var formDetails = JSON.parse(formJson);
+                        Xrm.Utility.closeProgressIndicator();
+                        displayDynamicForm(formDetails, formContext);
+                    }
+                    else {
+                        Xrm.Utility.closeProgressIndicator();
+                        var error = JSON.parse(response.ErrorMessage);
+                        showError(formContext, error.message);
+                    }
+                });
+            }
+        },
+        function (error) {
+            Xrm.Utility.closeProgressIndicator();
+            showError(formContext, error.message);
+        }
+    );
+}
 function postCase(submissionData, formContext) {
     "use strict";
     disableButton(true, "WebResource_casecreate");

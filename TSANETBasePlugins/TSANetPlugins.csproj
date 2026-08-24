@@ -119,6 +119,7 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\GetFormByDocumentPlugin.cs" />
     <Compile Include="Plugins\CasePatchCollaborationRequestPlugin.cs" />
     <Compile Include="Helpers\CommonIntegrationPlugin.cs" />
     <Compile Include="Models\ApiResponse.cs" />

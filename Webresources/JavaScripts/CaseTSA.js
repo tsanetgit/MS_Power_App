@@ -138,7 +138,7 @@ function displayCompanyResults(formContext, companies) {
             const departmentName = company.departmentName ? ` - ${company.departmentName}` : "";
             const tagsDisplay = tags ? ` [${tags}]` : "";
             option.text = `${company.companyName}${departmentName}${tagsDisplay}`;
-            option.value = JSON.stringify({ companyName: company.companyName, companyId: company.companyId, departmentId: company.departmentId });
+            option.value = JSON.stringify({ companyName: company.companyName, companyId: company.companyId, departmentId: company.departmentId, documentId: company.documentId });
             selectList.appendChild(option);
         });
 
@@ -149,9 +149,14 @@ function displayCompanyResults(formContext, companies) {
             if (selectedValue.companyId) {
                 selectCompany(formContext, selectedValue.companyId, selectedCompanyName);
                 // Check if a department is selected then use method for department
-                if (selectedValue.departmentId != null) {
+                if (selectedValue.documentId != null) {
+                    getFormByDocument(selectedValue.documentId, formContext);
+                }
+                else if (selectedValue.departmentId != null) {
                     getFormByDepartment(selectedValue.departmentId, formContext);
-                } else {
+                }
+                else
+                {
                     getFormByCompany(selectedValue.companyId, formContext);
                 }
                 // Hide the company search section

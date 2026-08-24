@@ -488,6 +488,53 @@ public class CommonIntegrationPlugin
         }
     }
 
+    public async Task<ApiResponse> GetFormByDocument(int documentId, string accessToken)
+    {
+        var apiResponse = new ApiResponse();
+
+        try
+        {
+            _tracingService.Trace($"Starting GetFormByDocument for document ID: {documentId}");
+
+            using (HttpClient client = new HttpClient())
+            {
+                // Add default headers
+                AddDefaultHeaders(client);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+
+                _tracingService.Trace("Sending request to retrieve form details.");
+                var response = await client.GetAsync($"{_apiUrl}/v1/forms/document/{documentId}");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    _tracingService.Trace($"Failed to retrieve form details for document ID '{documentId}'. Status Code: {response.StatusCode}");
+                    apiResponse.IsError = true;
+                    apiResponse.Content = await response.Content.ReadAsStringAsync();
+                    return apiResponse;
+                }
+
+                Stream responseStream = await response.Content.ReadAsStreamAsync();
+                string responseContent = await DecompressResponse(response.Content, responseStream);
+
+                _tracingService.Trace("Form details received, starting deserialization.");
+
+                _tracingService.Trace($"Form details successfully processed for document ID: {documentId}");
+
+                // Set the success content in the response object
+                apiResponse.IsError = false;
+                apiResponse.Content = responseContent;
+                return apiResponse;
+            }
+        }
+        catch (Exception ex)
+        {
+            _tracingService.Trace($"Exception in GetFormByDocument: {ex.Message}");
+            apiResponse.IsError = true;
+            apiResponse.Content = $"Error: Exception occurred while retrieving form details for document ID '{documentId}' - {ex.Message}";
+            return apiResponse;
+        }
+    }
+
     // Get user information from the /me endpoint
     public async Task<ApiResponse> GetMe(string accessToken)
     {
