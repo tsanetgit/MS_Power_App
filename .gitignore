@@ -366,3 +366,4 @@ FodyWeavers.xsd
 exports/
 *.zip
 .pac/
+*.cer
