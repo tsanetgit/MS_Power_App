@@ -1,0 +1,47 @@
+<Project>
+	<!--
+		Custom ILRepack merge configuration for this project.
+		Uses target names distinct from the built-in "ILRepack" / "CleanReferenceCopyLocalPaths"
+		targets declared in ILRepack.Lib.MSBuild.Task.targets: that file imports this one and
+		then re-declares its own default targets with the same names immediately afterward,
+		which (per MSBuild "last one wins" override semantics, independent of Condition)
+		would silently discard ours if the names collided. Setting $(ILRepackTargetsFile) to
+		this file's path (its default behavior, since it exists) also disables the built-in
+		default targets outright, since their Condition checks !Exists($(ILRepackTargetsFile)).
+		In addition to Newtonsoft.Json.dll, jose-jwt.dll (used by the JOSE encrypt/decrypt
+		helpers) is merged into the final plugin assembly.
+	-->
+	<Target Name="CustomILRepackMerge" AfterTargets="Build">
+		<ItemGroup>
+			<InputAssemblies Include="$(OutputPath)$(TargetName)$(TargetExt)"/>
+			<!-- Main assembly -->
+			<InputAssemblies Include="$(OutputPath)Newtonsoft.Json.dll"/>
+			<!-- Newtonsoft.Json assembly -->
+			<InputAssemblies Include="$(OutputPath)jose-jwt.dll"/>
+			<!-- jose-jwt assembly -->
+		</ItemGroup>
+
+		<ILRepack
+				Parallel="true"
+				DebugInfo="true"
+				AllowDuplicateResources="false"
+				InputAssemblies="@(InputAssemblies)"
+				TargetKind="SameAsPrimaryAssembly"
+				KeyFile="$(AssemblyOriginatorKeyFile)"
+				OutputFile="$(OutputPath)$(TargetName)$(TargetExt)"
+		/>
+	</Target>
+	<Target
+			AfterTargets="CustomILRepackMerge"
+			Name="CustomCleanReferenceCopyLocalPaths"
+			Condition="'$(ClearOutputDirectory)' != 'False'">
+		<Delete Files="@(ReferenceCopyLocalPaths-&gt;'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')"/>
+		<ItemGroup>
+			<Directories Include="$([System.IO.Directory]::GetDirectories('$(OutDir)%(DestinationSubDirectory)', '*', System.IO.SearchOption.AllDirectories))"/>
+			<Directories>
+				<Files>$([System.IO.Directory]::GetFiles("%(Directories.Identity)", "*", System.IO.SearchOption.AllDirectories).get_Length())</Files>
+			</Directories>
+		</ItemGroup>
+		<RemoveDir Directories="@(Directories)" Condition="%(Files)=='0'"/>
+	</Target>
+</Project>

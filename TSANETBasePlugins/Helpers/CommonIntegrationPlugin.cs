@@ -50,7 +50,7 @@ public class CommonIntegrationPlugin
     /// Creates an IOrganizationService that impersonates the non-interactive SYSTEM user,
     /// so configuration reads do not depend on the calling user's security privileges.
     /// </summary>
-    private static IOrganizationService CreateSystemContextService(IOrganizationServiceFactory serviceFactory)
+    public static IOrganizationService CreateSystemContextService(IOrganizationServiceFactory serviceFactory)
     {
         if (!_cachedSystemUserId.HasValue)
         {

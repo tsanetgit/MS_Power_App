@@ -57,6 +57,11 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>CRM-PKA.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignCertThumbprint>281F8AE6DF939084377F0C76ADA561DA4B3E8D07</SignCertThumbprint>
+    <SignToolPath Condition="'$(SignToolPath)' == ''">
+    </SignToolPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -69,6 +74,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="jose-jwt, Version=5.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\jose-jwt.5.3.0\lib\net461\jose-jwt.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -120,8 +128,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\GetFormByDocumentPlugin.cs" />
+    <Compile Include="Actions\EncryptTextPlugin.cs" />
+    <Compile Include="Actions\DecryptTextPlugin.cs" />
     <Compile Include="Plugins\CasePatchCollaborationRequestPlugin.cs" />
     <Compile Include="Helpers\CommonIntegrationPlugin.cs" />
+    <Compile Include="Helpers\JoseCryptoUtils.cs" />
+    <Compile Include="Helpers\JwkHelper.cs" />
+    <Compile Include="Helpers\KeyVaultKeyClient.cs" />
+    <Compile Include="Helpers\JoseEncryptHelper.cs" />
+    <Compile Include="Helpers\JoseDecryptHelper.cs" />
     <Compile Include="Models\ApiResponse.cs" />
     <Compile Include="Models\Case.cs" />
     <Compile Include="Models\CaseForm.cs" />
@@ -162,6 +177,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Tools\ResolveSignToolPath.ps1" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.2">
@@ -184,6 +200,19 @@
     <Error Condition="!Exists('packages\ILRepack.2.0.35\build\ILRepack.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\ILRepack.2.0.35\build\ILRepack.props'))" />
   </Target>
   <Import Project="packages\ILRepack.Lib.MSBuild.Task.2.0.34.2\build\ILRepack.Lib.MSBuild.Task.targets" Condition="Exists('packages\ILRepack.Lib.MSBuild.Task.2.0.34.2\build\ILRepack.Lib.MSBuild.Task.targets')" />
+  <Target Name="ResolveSignToolPath" Condition="'$(SignToolPath)' == ''" BeforeTargets="SignPlugin">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\Tools\ResolveSignToolPath.ps1&quot;" ConsoleToMSBuild="true" StandardOutputImportance="low">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_WinSdkVersionDir" />
+    </Exec>
+    <PropertyGroup Condition="'$(_WinSdkVersionDir)' != ''">
+      <SignToolPath>$(_WinSdkVersionDir)</SignToolPath>
+    </PropertyGroup>
+  </Target>
+  <Target Name="SignPlugin" AfterTargets="Build;CustomILRepackMerge">
+    <Error Condition="'$(SignCertThumbprint)' == ''" Text="SignCertThumbprint must be set to sign the plugin assembly." />
+    <Error Condition="'$(SignToolPath)' == '' or !Exists('$(SignToolPath)')" Text="SignToolPath ('$(SignToolPath)') was not found. Could not locate a matching-architecture signtool.exe from an installed Windows 10/11 SDK; set SignToolPath explicitly." />
+    <Exec Command="&quot;$(SignToolPath)&quot; sign /sha1 $(SignCertThumbprint) /s My /fd SHA256 /t http://timestamp.digicert.com &quot;$(MSBuildProjectDirectory)\$(OutputPath)$(TargetName)$(TargetExt)&quot;" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
