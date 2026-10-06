@@ -68,7 +68,7 @@ public class Case
     public string EscalationInstructions { get; set; }
 
     [JsonProperty("contactDocumentId")]
-    public string ContactDocumentId { get; set; }
+    public int ContactDocumentId { get; set; }
 
     [JsonProperty("contactDocumentName")]
     public string ContactDocumentName { get; set; }

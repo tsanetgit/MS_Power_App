@@ -26,7 +26,7 @@ public class CommonCasePlugin
             Entity tsanetcase = new Entity("ap_tsanetcase");
             tsanetcase["ap_formjson"] = caseResponseJson;
             tsanetcase["ap_companyname"] = caseResponse.SubmitCompanyName;
-            tsanetcase["ap_companycode"] = caseResponse.SubmitCompanyId.ToString();
+            tsanetcase["ap_companycode"] = caseResponse.SubmitCompanyId;
             tsanetcase["ap_name"] = caseResponse.Summary;
             tsanetcase["ap_tsacasetoken"] = caseResponse.Token;
             tsanetcase["ap_submittercasenumber"] = caseResponse.SubmitterCaseNumber;
