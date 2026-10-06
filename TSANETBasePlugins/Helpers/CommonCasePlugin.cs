@@ -27,7 +27,7 @@ public class CommonCasePlugin
             tsanetcase["ap_formjson"] = caseResponseJson;
             tsanetcase["ap_companyname"] = caseResponse.SubmitCompanyName;
             tsanetcase["ap_companycode"] = caseResponse.SubmitCompanyId;
-            tsanetcase["ap_name"] = caseResponse.Summary;
+            tsanetcase["ap_name"] = caseResponse.Id.ToString();
             tsanetcase["ap_tsacasetoken"] = caseResponse.Token;
             tsanetcase["ap_submittercasenumber"] = caseResponse.SubmitterCaseNumber;
             tsanetcase["ap_documentcode"] = caseResponse.ContactDocumentId;
@@ -35,7 +35,7 @@ public class CommonCasePlugin
 
             // Find existing case by token
             Guid? existingId = tsanetcaseId;
-            if (existingId == null && !string.IsNullOrEmpty(caseResponse.Token))
+            if (!existingId.HasValue && !string.IsNullOrEmpty(caseResponse.Token))
             {
                 var tokenQuery = new QueryExpression("ap_tsanetcase");
                 tokenQuery.ColumnSet = new ColumnSet("ap_tsanetcaseid");

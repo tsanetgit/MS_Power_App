@@ -341,9 +341,9 @@ function postCase(submissionData, formContext) {
                                 var formJson = response.PostCaseResponse;
                                 var formResponse = JSON.parse(formJson);
                                 //fill data to form
-                                formContext.getAttribute("ap_name").setValue(formResponse.id.toString());
-                                formContext.getAttribute("ap_submittercasenumber").setValue(formResponse.submitterCaseNumber.toString());
-                                formContext.getAttribute("ap_tsacasetoken").setValue(formResponse.token.toString());
+                                //formContext.getAttribute("ap_name").setValue(formResponse.id.toString());
+                                //formContext.getAttribute("ap_submittercasenumber").setValue(formResponse.submitterCaseNumber.toString());
+                                //formContext.getAttribute("ap_tsacasetoken").setValue(formResponse.token.toString());
                                 saveToFormField("ap_formjson", formResponse, formContext);  // Save JSON
                                 formContext.data.save();
                                 Xrm.Utility.closeProgressIndicator();
