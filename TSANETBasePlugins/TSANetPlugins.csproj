@@ -57,11 +57,10 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>CRM-PKA.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-  <PropertyGroup>
-    <SignCertThumbprint>281F8AE6DF939084377F0C76ADA561DA4B3E8D07</SignCertThumbprint>
-    <SignToolPath Condition="'$(SignToolPath)' == ''">
-    </SignToolPath>
-  </PropertyGroup>
+<PropertyGroup>
+  <SignMetadataPath Condition="'$(SignMetadataPath)' == ''">$(MSBuildProjectDirectory)\Tools\acs-metadata.json</SignMetadataPath>
+  <SignToolPath Condition="'$(SignToolPath)' == ''">C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\signtool.exe</SignToolPath>
+</PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -177,7 +176,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Tools\ResolveSignToolPath.ps1" />
+    <None Include="Tools\acs-metadata.json" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.2">
@@ -200,19 +199,18 @@
     <Error Condition="!Exists('packages\ILRepack.2.0.35\build\ILRepack.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\ILRepack.2.0.35\build\ILRepack.props'))" />
   </Target>
   <Import Project="packages\ILRepack.Lib.MSBuild.Task.2.0.34.2\build\ILRepack.Lib.MSBuild.Task.targets" Condition="Exists('packages\ILRepack.Lib.MSBuild.Task.2.0.34.2\build\ILRepack.Lib.MSBuild.Task.targets')" />
-  <Target Name="ResolveSignToolPath" Condition="'$(SignToolPath)' == ''" BeforeTargets="SignPlugin">
-    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\Tools\ResolveSignToolPath.ps1&quot;" ConsoleToMSBuild="true" StandardOutputImportance="low">
-      <Output TaskParameter="ConsoleOutput" PropertyName="_WinSdkVersionDir" />
-    </Exec>
-    <PropertyGroup Condition="'$(_WinSdkVersionDir)' != ''">
-      <SignToolPath>$(_WinSdkVersionDir)</SignToolPath>
-    </PropertyGroup>
-  </Target>
-  <Target Name="SignPlugin" AfterTargets="Build;CustomILRepackMerge">
-    <Error Condition="'$(SignCertThumbprint)' == ''" Text="SignCertThumbprint must be set to sign the plugin assembly." />
-    <Error Condition="'$(SignToolPath)' == '' or !Exists('$(SignToolPath)')" Text="SignToolPath ('$(SignToolPath)') was not found. Could not locate a matching-architecture signtool.exe from an installed Windows 10/11 SDK; set SignToolPath explicitly." />
-    <Exec Command="&quot;$(SignToolPath)&quot; sign /sha1 $(SignCertThumbprint) /s My /fd SHA256 /t http://timestamp.digicert.com &quot;$(MSBuildProjectDirectory)\$(OutputPath)$(TargetName)$(TargetExt)&quot;" />
-  </Target>
+<Target Name="SignPlugin" AfterTargets="Build;CustomILRepackMerge">
+  <PropertyGroup>
+  <SignDlibPath Condition="'$(SignDlibPath)' == ''">$(MSBuildProjectDirectory)\Tools\Microsoft.ArtifactSigning.Client\bin\x64\Azure.CodeSigning.Dlib.dll</SignDlibPath>    <_SignTarget>$(MSBuildProjectDirectory)\$(OutputPath)$(TargetName)$(TargetExt)</_SignTarget>
+  </PropertyGroup>
+
+  <Error Condition="!Exists('$(SignDlibPath)')" Text="Azure.CodeSigning.Dlib.dll not found at '$(SignDlibPath)'. Run: nuget install Microsoft.ArtifactSigning.Client -ExcludeVersion -OutputDirectory tools" />
+  <Error Condition="!Exists('$(SignMetadataPath)')" Text="acs-metadata.json not found at '$(SignMetadataPath)'." />
+  <Error Condition="'$(SignToolPath)' == '' or !Exists('$(SignToolPath)')" Text="signtool.exe not found. Set SignToolPath explicitly (x64 build, Windows SDK 10.0.22621 or newer)." />
+
+  <Exec Command="&quot;$(SignToolPath)&quot; sign /v /fd SHA256 /tr http://timestamp.acs.microsoft.com /td SHA256 /dlib &quot;$(SignDlibPath)&quot; /dmdf &quot;$(SignMetadataPath)&quot; &quot;$(_SignTarget)&quot;" />
+  <Exec Command="&quot;$(SignToolPath)&quot; verify /pa &quot;$(_SignTarget)&quot;" />
+</Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

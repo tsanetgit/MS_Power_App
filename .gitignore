@@ -369,3 +369,6 @@ exports/
 *.zip
 .pac/
 *.cer
+
+# Azure Artifact Signing client package (restored locally)
+**/Tools/Microsoft.ArtifactSigning.Client/
