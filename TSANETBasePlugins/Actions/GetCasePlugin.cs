@@ -29,6 +29,10 @@ public class GetCasePlugin : IPlugin
                 // Call the GetCaseU method
                 ApiResponse response = integrationPlugin.GetCase(caseToken, accessToken).Result;
 
+                // Use the UpdateCasePlugin to process the response
+                var commonCasePlugin = new CommonCasePlugin();
+                commonCasePlugin.ProcessCaseResponse(service, tracingService, response.Content, null);
+
                 // Set the output parameter
                 context.OutputParameters["IsError"] = response.IsError;
                 // Return the raw JSON response to the context output parameters

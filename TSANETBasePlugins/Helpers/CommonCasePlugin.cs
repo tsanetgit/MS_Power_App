@@ -7,7 +7,7 @@ using System.Linq;
 
 public class CommonCasePlugin
 {
-    public void ProcessCaseResponse(IOrganizationService service, ITracingService tracingService, string caseResponseJson, Guid tsanetcaseId)
+    public void ProcessCaseResponse(IOrganizationService service, ITracingService tracingService, string caseResponseJson, Guid? tsanetcaseId)
     {
         try
         {
@@ -22,19 +22,51 @@ public class CommonCasePlugin
                 throw new InvalidPluginExecutionException("Failed to deserialize case response JSON.");
             }
 
-            // Update the tsanetcase record with the JSON content - removed due UX limitation
-            //Entity tsanetcase = new Entity("ap_tsanetcase");
-            //tsanetcase.Id = tsanetcaseId;
-            //tsanetcase["ap_formjson"] = caseResponseJson;
-            //service.Update(tsanetcase);
-            //tracingService.Trace(caseResponseJson);
+            // Update the tsanetcase record with the JSON content
+            Entity tsanetcase = new Entity("ap_tsanetcase");
+            tsanetcase["ap_formjson"] = caseResponseJson;
+            tsanetcase["ap_companyname"] = caseResponse.SubmitCompanyName;
+            tsanetcase["ap_companycode"] = caseResponse.SubmitCompanyId.ToString();
+            tsanetcase["ap_name"] = caseResponse.Summary;
+            tsanetcase["ap_tsacasetoken"] = caseResponse.Token;
+            tsanetcase["ap_submittercasenumber"] = caseResponse.SubmitterCaseNumber;
+            tsanetcase["ap_documentcode"] = caseResponse.ContactDocumentId;
+            tsanetcase["ap_documentname"] = caseResponse.ContactDocumentName;
+
+            // Find existing case by token
+            Guid? existingId = tsanetcaseId;
+            if (existingId == null && !string.IsNullOrEmpty(caseResponse.Token))
+            {
+                var tokenQuery = new QueryExpression("ap_tsanetcase");
+                tokenQuery.ColumnSet = new ColumnSet("ap_tsanetcaseid");
+                tokenQuery.Criteria.AddCondition("ap_tsacasetoken", ConditionOperator.Equal, caseResponse.Token);
+                tokenQuery.TopCount = 1;
+                var found = service.RetrieveMultiple(tokenQuery);
+                if (found.Entities.Count > 0)
+                {
+                    existingId = found.Entities[0].Id;
+                }
+            }
+
+            if (existingId.HasValue)
+            {
+                tsanetcase.Id = existingId.Value;
+                tsanetcaseId = existingId.Value;
+                service.Update(tsanetcase);
+            }
+            else
+            {
+                tracingService.Trace("Case not found by token; creating new case");
+                tsanetcaseId = service.Create(tsanetcase);
+            }
+            tracingService.Trace(caseResponseJson);
 
             // Process case notes
-            ProcessCaseNotes(service, tracingService, caseResponse.CaseNotes, tsanetcaseId);
+            ProcessCaseNotes(service, tracingService, caseResponse.CaseNotes, tsanetcaseId.Value);
             tracingService.Trace("Processed case notes");
 
             // Process case responses
-            ProcessCaseResponses(service, tracingService, caseResponse.CaseResponses, tsanetcaseId, caseResponse);
+            ProcessCaseResponses(service, tracingService, caseResponse.CaseResponses, tsanetcaseId.Value, caseResponse);
             tracingService.Trace("Processed case responses");
 
         }

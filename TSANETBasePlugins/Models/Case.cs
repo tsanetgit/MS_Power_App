@@ -67,6 +67,12 @@ public class Case
     [JsonProperty("escalationInstructions")]
     public string EscalationInstructions { get; set; }
 
+    [JsonProperty("contactDocumentId")]
+    public string ContactDocumentId { get; set; }
+
+    [JsonProperty("contactDocumentName")]
+    public string ContactDocumentName { get; set; }
+
     [JsonProperty("testCase")]
     public bool TestCase { get; set; }
 
