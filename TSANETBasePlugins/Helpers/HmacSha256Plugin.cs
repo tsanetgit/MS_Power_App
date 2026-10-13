@@ -3,6 +3,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
+//OBSOLETE: This plugin is no longer used. It was replaced by the HmacSha256PluginV2 plugin, which uses a different approach to compute the HMAC-SHA256 hash.
 public class HmacSha256Plugin : IPlugin
 {
     public void Execute(IServiceProvider serviceProvider)

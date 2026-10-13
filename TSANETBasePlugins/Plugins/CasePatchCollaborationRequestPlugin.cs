@@ -158,7 +158,7 @@ public class CasePatchCollaborationRequestPlugin : IPlugin
                 tracingService.Trace("PatchCollaborationRequestPlugin: Successfully updated case form");
 
                 CommonCasePlugin commonCasePlugin = new CommonCasePlugin();
-                commonCasePlugin.ProcessCaseResponse(service, tracingService, response.Content, entity.Id);
+                commonCasePlugin.ProcessCaseResponse(service, tracingService, response.Content, entity.Id, serviceProvider);
 
                 tracingService.Trace("PatchCollaborationRequestPlugin: Successfully updated collaboration request");
             }

@@ -1,0 +1,36 @@
+{
+  "profile": "tsanet-e2ee-1",
+  "note": "TEST ONLY keys generated for this vector. Field 'summary' of payload; plaintext = 'Note sum'.",
+  "jti": "05778f6d-24e5-405b-8b44-a1c7824f1e28",
+  "manifestDigest": "JIungBLW8vDQqDeUwI78dUAHOZfi5QdcqFL4RlDNoKs",
+  "senderSigningPublicJwk": {
+    "kty": "EC",
+    "crv": "P-256",
+    "kid": "https://alice.vault.azure.net/keys/sign/sv1",
+    "x": "OxR86cqzkDxRhZRNmgsxPBzD8pnvUEQxon-NvEeecxg",
+    "y": "Y9r2la8J7NqLhPBrKMwsNA5RXw4DvysLIBrXWNeSPEM"
+  },
+  "recipientPublicJwk": {
+    "kty": "RSA",
+    "kid": "https://bob.vault.azure.net/keys/enc/ev1",
+    "n": "oO4RkgHFBXa9yBYYkOMRWNvdifE8E7k-mIJ9Ug1lu4Y43v9bWL5QOUfhwA_mkptCFww4bS7iL4291qWM22piW9BOQecMpjy-icoIz32stS2tewiU0kOgkQSj-Mbq3VQnf9nbF10S6JIL4GManZXOGGXOe1RiFtgnpI8iGO-bATaKo9-8pOQrjH-puBDuEfyQouniO9YVKuViHjyvnROxBqD56WPp4ZMewYewe6FWhkEtkstYlAqEDsyG1EbKk4ot1BjBaBALdeMFduTwtb-aj93sOXmBxG3_O2xnTe5P-XH3wBbQ-f_sJzokhC77VIniImaRxNiom7rgL6jCPZahXQ",
+    "e": "AQAB"
+  },
+  "senderPublicJwk": {
+    "kty": "RSA",
+    "kid": "https://alice.vault.azure.net/keys/enc/ev1",
+    "n": "tJUn-kCB7OfUC2ZqaFPVy3HGP_FOmci4hCsUZ4CG7CSTK1qnkPDdZIYbam5VLhboL89hO1IG-VmzsN6UYoyga51FKLKKuf-rF_RE9zgcLMdU14-ZcuOcOQf2rsLt8ZYtO_9YYgXW0ZdELtkxZpoF1j-T1Dsse3ymtBAYUp6AA-KCd74T91-N2Vz7ZwnFS_1e7uRuYze8ilQAUqLkwhZ6WgUHnWPcSOTuf80khAH0lWn4BKfbqo_tdFKucCfA3ep1F7dAszuqfmu423SPcNvtrkGpwYLetcV9iKAE-pUJ3t6Wo3Ld0sQjRiUmG2VHRcmccyqAx-goMxPfWTPpg8MB8Q",
+    "e": "AQAB"
+  },
+  "iss": "ALICE",
+  "aud": "BOB",
+  "ref": "S-1",
+  "fullPayload": {
+    "summary": "{\"protected\":\"eyJlbmMiOiJBMjU2R0NNIiwidHNhX3ZlciI6InRzYW5ldC1lMmVlLTEiLCJ0c2FfanRpIjoiMDU3NzhmNmQtMjRlNS00MDViLThiNDQtYTFjNzgyNGYxZTI4IiwidHNhX2ZsZCI6InN1bW1hcnkifQ\",\"recipients\":[{\"header\":{\"alg\":\"RSA-OAEP-256\",\"kid\":\"https://bob.vault.azure.net/keys/enc/ev1\"},\"encrypted_key\":\"mrQF2-XjLYdyPK0vhTUm1ry_wkCyRizmVN-C2bnDJYN9kWq738uMjmi3VuiXzuRfJrNnM0jxVvkCZD8e7fBrOrUMwmDLHyfg_Tr8Oe5eAj_laWZkUQjMNZYQqqpg8VY4NfYaxP5zraurLySBqBfakZf6ymbwS5jFKLpMLWvg4RGG2s-bcIJIxkS_3tjvj1RJsYclk-13bitQeyQq5n_pV_-qHiJ5fwBQjIk6fn4hwAS3gV0nI5Kg3Mn74zsiH43TL6AKyt-vbmGs5qZ2ELLsFUH3E7yhn_0fe0Fw4F6h23DIKMuMvuiCR0MaElnI9cIIZV7Rf2g-yKUrbXGmP_wb1g\"},{\"header\":{\"alg\":\"RSA-OAEP-256\",\"kid\":\"https://alice.vault.azure.net/keys/enc/ev1\"},\"encrypted_key\":\"jjkSfIq5U2vO-HJsrpZ2tUxLV-W5jLOyXPkGvItMYmXeV9GsRKie30OY2HvNXyt9GYBN4gKvCxPWWGKFUD4GueS1fZMF4NvR1XXBsxt9m8BrUOwSuMSWHfGwsxsAZcIkOFAq8WiE9tUD_DBxIRMtYqBbExTOJG0WtC2K0Yk_XVaXUY2fj2Uz4FdHW0g5QLODZnhFdzhBqfzf5Tgqb3uXs8KNn9Lu2D9fb8FdS_DUpv0cHaciWjFf9XpERVh54i4rAhNB1BoWIQK5kjZkHOJFpJ-nu1VdJdvw8W6g47EelA18bBuOhWuG2ZgWmB3w6Wkt_1NEdYYkDCAnc3cY6TGtYw\"}],\"iv\":\"dJEHKIiGWrsSHnPa\",\"ciphertext\":\"Ty6oCcRJ01E\",\"tag\":\"x7SxjxlGMhXlcqP8vBqziQ\"}",
+    "description": "{\"protected\":\"eyJlbmMiOiJBMjU2R0NNIiwidHNhX3ZlciI6InRzYW5ldC1lMmVlLTEiLCJ0c2FfanRpIjoiMDU3NzhmNmQtMjRlNS00MDViLThiNDQtYTFjNzgyNGYxZTI4IiwidHNhX2ZsZCI6ImRlc2NyaXB0aW9uIn0\",\"recipients\":[{\"header\":{\"alg\":\"RSA-OAEP-256\",\"kid\":\"https://bob.vault.azure.net/keys/enc/ev1\"},\"encrypted_key\":\"oI7SU3lq_deNpowR55krb2K7JVz0eVMnJ-jNCRrSHIhCLSJrGMSSoiSmc3g4PQoUprOO9Ty-45qF9dYRM0ekTTi7gPZoeYCT95kH-CMJoR6-RFmvTGrZEGKBEsFKwqnkp5IvKlMPs7DswT91NMleGenn5S58giymwXPdZlnbCpS5SQToYtg7aJyz0WFeOMWE2qxysPV2EA2yf_WtHzNnXbNCGON_311CqzoVeut0udcR9x-IwsBKhgKy2VzsMO-Hd6Nm86wIEYANZXbABVFzIAi7WL8RXB0E0aU27h3Ml31T6xEk0vNJyjsiQJpU792f0QT3ghQ8U_VxYnK260L8MQ\"},{\"header\":{\"alg\":\"RSA-OAEP-256\",\"kid\":\"https://alice.vault.azure.net/keys/enc/ev1\"},\"encrypted_key\":\"rdh1GK1MNf3Sld_eX9fzwhhaIxTEgNnGl7-jg4OXMG1W9SzsPaFc3LVBeI-pXxNW1lnCJttz7iRmo7H77T5CNZ_n2KG6du44vnr8c6hjGRDBD1bPJbtcoudYjDZMHaixdiNcUw5bbkhMnd5iF419Wn7H5gAYDlcPZd-_zglKVX4xF96DYHFUHd2WYIjs4njZuzOBIru98iu0wjKSLuazA83aSNBgiPtoi8LeoCKk25RsxSTiglb-povZc-FUpMGLbFd_rVG1zl39qh2Ya29m2NFrhU_aWAjePybmGB0A86KzTYaM1-2aOsFyWzv977blViL1lkM5ibDkO6utSz5h1w\"}],\"iv\":\"lDajaouUAoCjUlN3\",\"ciphertext\":\"04sVbywsNmx_\",\"tag\":\"SV_45J6tlRiShYCu9vuzDQ\"}",
+    "createdBy": "x",
+    "seq": 5,
+    "manifest": "eyJhbGciOiJFUzI1NiIsImtpZCI6Imh0dHBzOi8vYWxpY2UudmF1bHQuYXp1cmUubmV0L2tleXMvc2lnbi9zdjEiLCJ0eXAiOiJ0c2FuZXQtbWFuaWZlc3QrandzIn0.eyJ2ZXIiOiJ0c2FuZXQtZTJlZS0xIiwiaXNzIjoiQUxJQ0UiLCJhdWQiOiJCT0IiLCJqdGkiOiIwNTc3OGY2ZC0yNGU1LTQwNWItOGI0NC1hMWM3ODI0ZjFlMjgiLCJpYXQiOjE3OTE1NDM1OTcsInJlZiI6IlMtMSIsImNpZCI6IkNJRC0xIiwiZmllbGRzIjpbeyJuYW1lIjoic3VtbWFyeSIsImFsZyI6IlMyNTYiLCJkaWciOiJqNUhvREVZcUp3TkJFLUZzenM1dmNnVFBuSnN0STA0TDZLcFRRSDJiYzRFIn0seyJuYW1lIjoiZGVzY3JpcHRpb24iLCJhbGciOiJTMjU2IiwiZGlnIjoic1c5MFVFQWlZVnYwWXl1cjZpbGprdDNOSDVZU2gwbGxFM2FvY3U0THRhUSJ9XX0.k72eTweJVOmdCyf69ul9Jhlr2nMGYl9API-VU4ZnsLFD5xuRpJE2NgU4PY012Q9POwmngdPxRnv-J67H-SHhAg",
+    "encrypted": true
+  }
+}

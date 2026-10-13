@@ -6,6 +6,7 @@ using System;
 /// RSA-OAEP-256) and verifies the inner JWS (ES256) against the sender's public key, per
 /// the TSANet Connect E2E encryption proposal. Manual/testing invocation only.
 /// </summary>
+[Obsolete("Uses the obsolete whole-message JoseDecryptHelper. Migrate to TSANETBasePlugins.E2ee.E2eePayloadDecryptor.")]
 public class DecryptTextPlugin : IPlugin
 {
     public void Execute(IServiceProvider serviceProvider)

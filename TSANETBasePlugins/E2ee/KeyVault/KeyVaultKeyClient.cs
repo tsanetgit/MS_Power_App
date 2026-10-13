@@ -46,7 +46,54 @@ internal class KeyVaultKeyClient
     }
 
     /// <summary>
-    /// Sends an RSA-OAEP-256 wrapped CEK to Key Vault's "unwrapKey" endpoint and returns the
+    /// Reads the public part of an RSA key from Key Vault and returns it as a JWK JSON string
+    /// (kty, kid, n, e). <paramref name="keyId"/> may be versioned or versionless; the returned
+    /// kid is always the versioned key URI. Requires the "get" key permission.
+    /// </summary>
+    public string GetPublicKeyJwk(string keyId)
+    {
+        string endpoint = $"{keyId.TrimEnd('/')}?api-version={KeyVaultApiVersion}";
+        JObject response = InvokeKeyVault(endpoint, null);
+        JObject key = response["key"] as JObject;
+        if (key == null || (string)key["kid"] == null || (string)key["n"] == null || (string)key["e"] == null)
+        {
+            throw new InvalidPluginExecutionException("Key Vault did not return an RSA public key for the configured encryption key.");
+        }
+
+        return new JObject
+        {
+            ["kty"] = "RSA",
+            ["kid"] = (string)key["kid"],
+            ["n"] = (string)key["n"],
+            ["e"] = (string)key["e"]
+        }.ToString();
+    }
+
+    /// <summary>
+    /// Reads the public part of an EC P-256 key from Key Vault as a JWK JSON string (kty, crv, kid, x, y).
+    /// </summary>
+    public string GetEcPublicKeyJwk(string keyId)
+    {
+        string endpoint = $"{keyId.TrimEnd('/')}?api-version={KeyVaultApiVersion}";
+        JObject response = InvokeKeyVault(endpoint, null);
+        JObject key = response["key"] as JObject;
+        if (key == null || (string)key["kid"] == null || (string)key["x"] == null || (string)key["y"] == null)
+        {
+            throw new InvalidPluginExecutionException("Key Vault did not return an EC public key for the configured signing key.");
+        }
+
+        return new JObject
+        {
+            ["kty"] = "EC",
+            ["crv"] = (string)key["crv"] ?? "P-256",
+            ["kid"] = (string)key["kid"],
+            ["x"] = (string)key["x"],
+            ["y"] = (string)key["y"]
+        }.ToString();
+    }
+
+    /// <summary>
+    /// Sends an RSA-OAEP-256 wrapped CEK
     /// recovered raw CEK bytes. <paramref name="unwrapKeyId"/> is the full Key Vault key
     /// identifier (e.g. https://{vault}.vault.azure.net/keys/{name}/{version}).
     /// </summary>
@@ -102,8 +149,16 @@ internal class KeyVaultKeyClient
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-            var content = new StringContent(requestBody.ToString(), Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync(endpoint, content).ConfigureAwait(false);
+            HttpResponseMessage response;
+            if (requestBody == null)
+            {
+                response = await client.GetAsync(endpoint).ConfigureAwait(false);
+            }
+            else
+            {
+                var content = new StringContent(requestBody.ToString(), Encoding.UTF8, "application/json");
+                response = await client.PostAsync(endpoint, content).ConfigureAwait(false);
+            }
             string responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)

@@ -57,10 +57,10 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>CRM-PKA.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-<PropertyGroup>
-  <SignMetadataPath Condition="'$(SignMetadataPath)' == ''">$(MSBuildProjectDirectory)\Tools\acs-metadata.json</SignMetadataPath>
-  <SignToolPath Condition="'$(SignToolPath)' == ''">C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\signtool.exe</SignToolPath>
-</PropertyGroup>
+  <PropertyGroup>
+    <SignMetadataPath Condition="'$(SignMetadataPath)' == ''">$(MSBuildProjectDirectory)\Tools\acs-metadata.json</SignMetadataPath>
+    <SignToolPath Condition="'$(SignToolPath)' == ''">C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\signtool.exe</SignToolPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -71,11 +71,11 @@
     <Reference Include="Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CrmSdk.CoreAssemblies.9.0.2.60\lib\net462\Microsoft.Xrm.Sdk.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="jose-jwt, Version=5.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\jose-jwt.5.3.0\lib\net461\jose-jwt.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -132,10 +132,26 @@
     <Compile Include="Plugins\CasePatchCollaborationRequestPlugin.cs" />
     <Compile Include="Helpers\CommonIntegrationPlugin.cs" />
     <Compile Include="Helpers\JoseCryptoUtils.cs" />
-    <Compile Include="Helpers\JwkHelper.cs" />
-    <Compile Include="Helpers\KeyVaultKeyClient.cs" />
+    <Compile Include="E2ee\Crypto\JwkHelper.cs" />
+    <Compile Include="E2ee\KeyVault\KeyVaultKeyClient.cs" />
     <Compile Include="Helpers\JoseEncryptHelper.cs" />
     <Compile Include="Helpers\JoseDecryptHelper.cs" />
+    <Compile Include="E2ee\E2eeHelperFactory.cs" />
+    <Compile Include="E2ee\E2eeCaseEncryption.cs" />
+    <Compile Include="E2ee\E2eeCaseDecryption.cs" />
+    <Compile Include="E2ee\E2eePayloadDecryptor.cs" />
+    <Compile Include="E2ee\E2eePayloadEncryptor.cs" />
+    <Compile Include="E2ee\Common\E2eeUtil.cs" />
+    <Compile Include="E2ee\Common\Base64UrlEncoding.cs" />
+    <Compile Include="E2ee\KeyVault\IKeyVaultCrypto.cs" />
+    <Compile Include="E2ee\Crypto\JweFieldCrypto.cs" />
+    <Compile Include="E2ee\KeyVault\KeyVaultCryptoHttp.cs" />
+    <Compile Include="E2ee\Crypto\ManifestService.cs" />
+    <Compile Include="E2ee\Payload\PayloadFieldMap.cs" />
+    <Compile Include="E2ee\Models\DecryptionModels.cs" />
+    <Compile Include="E2ee\Models\E2eeConfig.cs" />
+    <Compile Include="E2ee\Models\E2eeEnums.cs" />
+    <Compile Include="E2ee\Models\EncryptionModels.cs" />
     <Compile Include="Models\ApiResponse.cs" />
     <Compile Include="Models\Case.cs" />
     <Compile Include="Models\CaseForm.cs" />
@@ -199,18 +215,17 @@
     <Error Condition="!Exists('packages\ILRepack.2.0.35\build\ILRepack.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\ILRepack.2.0.35\build\ILRepack.props'))" />
   </Target>
   <Import Project="packages\ILRepack.Lib.MSBuild.Task.2.0.34.2\build\ILRepack.Lib.MSBuild.Task.targets" Condition="Exists('packages\ILRepack.Lib.MSBuild.Task.2.0.34.2\build\ILRepack.Lib.MSBuild.Task.targets')" />
-<Target Name="SignPlugin" AfterTargets="Build;CustomILRepackMerge">
-  <PropertyGroup>
-  <SignDlibPath Condition="'$(SignDlibPath)' == ''">$(MSBuildProjectDirectory)\Tools\Microsoft.ArtifactSigning.Client\bin\x64\Azure.CodeSigning.Dlib.dll</SignDlibPath>    <_SignTarget>$(MSBuildProjectDirectory)\$(OutputPath)$(TargetName)$(TargetExt)</_SignTarget>
-  </PropertyGroup>
-
-  <Error Condition="!Exists('$(SignDlibPath)')" Text="Azure.CodeSigning.Dlib.dll not found at '$(SignDlibPath)'. Run: nuget install Microsoft.ArtifactSigning.Client -ExcludeVersion -OutputDirectory tools" />
-  <Error Condition="!Exists('$(SignMetadataPath)')" Text="acs-metadata.json not found at '$(SignMetadataPath)'." />
-  <Error Condition="'$(SignToolPath)' == '' or !Exists('$(SignToolPath)')" Text="signtool.exe not found. Set SignToolPath explicitly (x64 build, Windows SDK 10.0.22621 or newer)." />
-
-  <Exec Command="&quot;$(SignToolPath)&quot; sign /v /fd SHA256 /tr http://timestamp.acs.microsoft.com /td SHA256 /dlib &quot;$(SignDlibPath)&quot; /dmdf &quot;$(SignMetadataPath)&quot; &quot;$(_SignTarget)&quot;" />
-  <Exec Command="&quot;$(SignToolPath)&quot; verify /pa &quot;$(_SignTarget)&quot;" />
-</Target>
+  <Target Name="SignPlugin" AfterTargets="Build;CustomILRepackMerge">
+    <PropertyGroup>
+      <SignDlibPath Condition="'$(SignDlibPath)' == ''">$(MSBuildProjectDirectory)\Tools\Microsoft.ArtifactSigning.Client\bin\x64\Azure.CodeSigning.Dlib.dll</SignDlibPath>
+      <_SignTarget>$(MSBuildProjectDirectory)\$(OutputPath)$(TargetName)$(TargetExt)</_SignTarget>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SignDlibPath)')" Text="Azure.CodeSigning.Dlib.dll not found at '$(SignDlibPath)'. Run: nuget install Microsoft.ArtifactSigning.Client -ExcludeVersion -OutputDirectory tools" />
+    <Error Condition="!Exists('$(SignMetadataPath)')" Text="acs-metadata.json not found at '$(SignMetadataPath)'." />
+    <Error Condition="'$(SignToolPath)' == '' or !Exists('$(SignToolPath)')" Text="signtool.exe not found. Set SignToolPath explicitly (x64 build, Windows SDK 10.0.22621 or newer)." />
+    <Exec Command="&quot;$(SignToolPath)&quot; sign /v /fd SHA256 /tr http://timestamp.acs.microsoft.com /td SHA256 /dlib &quot;$(SignDlibPath)&quot; /dmdf &quot;$(SignMetadataPath)&quot; &quot;$(_SignTarget)&quot;" />
+    <Exec Command="&quot;$(SignToolPath)&quot; verify /pa &quot;$(_SignTarget)&quot;" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

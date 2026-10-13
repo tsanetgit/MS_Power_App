@@ -8,6 +8,7 @@ using System.Text;
 /// Key Vault and never exposed locally — and the resulting JWS is then encrypted (A256GCM,
 /// CEK wrapped with RSA-OAEP-256) for the recipient, producing a JWE compact serialization.
 /// </summary>
+[Obsolete("Whole-message encryption is replaced by field-level E2EE. Use TSANETBasePlugins.E2ee.E2eePayloadEncryptor via E2eeHelperFactory.CreateEncryptor.")]
 public class JoseEncryptHelper
 {
     private readonly ITracingService _tracingService;

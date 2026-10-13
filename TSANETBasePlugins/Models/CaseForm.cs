@@ -35,4 +35,11 @@ public class CaseForm
 
     [JsonProperty("internalNotes")]
     public List<InternalNote> InternalNotes { get; set; }
+
+    // E2EE (tsanet-e2ee-1): signed manifest and advisory flag; omitted when the case is not encrypted.
+    [JsonProperty("manifest", NullValueHandling = NullValueHandling.Ignore)]
+    public string Manifest { get; set; }
+
+    [JsonProperty("encrypted", NullValueHandling = NullValueHandling.Ignore)]
+    public bool? Encrypted { get; set; }
 }

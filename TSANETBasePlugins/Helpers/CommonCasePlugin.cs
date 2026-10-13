@@ -7,12 +7,17 @@ using System.Linq;
 
 public class CommonCasePlugin
 {
-    public void ProcessCaseResponse(IOrganizationService service, ITracingService tracingService, string caseResponseJson, Guid? tsanetcaseId)
+    public string ProcessCaseResponse(IOrganizationService service, ITracingService tracingService, string caseResponseJson, Guid? tsanetcaseId, IServiceProvider serviceProvider = null)
     {
         try
         {
 
             tracingService.Trace("Starting to process case response JSON");
+
+            if (serviceProvider != null)
+            {
+                caseResponseJson = TSANETBasePlugins.E2ee.E2eeCaseDecryption.Decrypt(serviceProvider, caseResponseJson);
+            }
 
             // Deserialize the case response JSON
             var caseResponse = JsonConvert.DeserializeObject<Case>(caseResponseJson);
@@ -68,6 +73,8 @@ public class CommonCasePlugin
             // Process case responses
             ProcessCaseResponses(service, tracingService, caseResponse.CaseResponses, tsanetcaseId.Value, caseResponse);
             tracingService.Trace("Processed case responses");
+
+            return caseResponseJson;
 
         }
         catch (Exception ex)

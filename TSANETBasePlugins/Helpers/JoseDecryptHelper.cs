@@ -8,6 +8,7 @@ using System.Text;
 /// RSA-OAEP-256 "unwrapKey" operation, payload decrypted locally with A256GCM) to recover
 /// the inner JWS, which is then verified (ES256) against the sender's public key.
 /// </summary>
+[Obsolete("Whole-message decryption is replaced by field-level E2EE. Use TSANETBasePlugins.E2ee.E2eePayloadDecryptor via E2eeHelperFactory.CreateDecryptor.")]
 public class JoseDecryptHelper
 {
     private readonly ITracingService _tracingService;

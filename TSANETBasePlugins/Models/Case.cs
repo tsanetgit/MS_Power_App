@@ -34,6 +34,12 @@ public class Case
     [JsonProperty("priority")]
     public string Priority { get; set; }
 
+    [JsonProperty("encrypted")]
+    public bool Encrypted { get; set; }
+
+    [JsonProperty("manifest")]
+    public string Manifest { get; set; }
+
     [JsonProperty("status")]
     public string Status { get; set; }
 

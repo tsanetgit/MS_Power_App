@@ -2,37 +2,12 @@ using System;
 using System.Security.Cryptography;
 
 /// <summary>
-/// Base64url encode/decode helpers per RFC 7515 (JOSE) — standard base64 with
-/// '+' -> '-', '/' -> '_', and no padding.
-/// </summary>
-internal static class Base64UrlEncoding
-{
-    public static string Encode(byte[] data)
-    {
-        return Convert.ToBase64String(data)
-            .TrimEnd('=')
-            .Replace('+', '-')
-            .Replace('/', '_');
-    }
-
-    public static byte[] Decode(string value)
-    {
-        string s = value.Replace('-', '+').Replace('_', '/');
-        switch (s.Length % 4)
-        {
-            case 2: s += "=="; break;
-            case 3: s += "="; break;
-        }
-        return Convert.FromBase64String(s);
-    }
-}
-
-/// <summary>
-/// Minimal, self-contained AES-256-GCM implementation (per NIST SP 800-38D) built on
+/// Minimal,
 /// top of the framework's AES-ECB single-block primitive,
 /// Only 96-bit (12-byte) nonces are supported, matching the JWE
 /// A256GCM requirement (RFC 7518).
 /// </summary>
+[Obsolete("Only used by the obsolete whole-message helpers. New code uses jose-jwt's Jose.AesGcm.")]
 internal static class AesGcm256
 {
     private const int BlockSizeBytes = 16;

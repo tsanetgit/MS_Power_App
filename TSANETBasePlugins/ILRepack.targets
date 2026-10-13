@@ -26,6 +26,7 @@
 				DebugInfo="true"
 				AllowDuplicateResources="false"
 				InputAssemblies="@(InputAssemblies)"
+				LibraryPath="$(MSBuildProjectDirectory)\$(OutputPath)"
 				TargetKind="SameAsPrimaryAssembly"
 				KeyFile="$(AssemblyOriginatorKeyFile)"
 				OutputFile="$(OutputPath)$(TargetName)$(TargetExt)"

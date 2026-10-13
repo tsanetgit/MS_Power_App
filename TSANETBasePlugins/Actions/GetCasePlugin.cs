@@ -31,12 +31,12 @@ public class GetCasePlugin : IPlugin
 
                 // Use the UpdateCasePlugin to process the response
                 var commonCasePlugin = new CommonCasePlugin();
-                commonCasePlugin.ProcessCaseResponse(service, tracingService, response.Content, null);
+                var caseResponseJson = commonCasePlugin.ProcessCaseResponse(service, tracingService, response.Content, null, serviceProvider);
 
                 // Set the output parameter
                 context.OutputParameters["IsError"] = response.IsError;
                 // Return the raw JSON response to the context output parameters
-                context.OutputParameters["GetCaseResponse"] = response.Content;
+                context.OutputParameters["GetCaseResponse"] = caseResponseJson;
             }
             else
             {

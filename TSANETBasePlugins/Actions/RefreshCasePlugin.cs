@@ -38,9 +38,9 @@ public class RefreshCasePlugin : IPlugin
                 // Retrieve the access token
                 var accessToken = integrationPlugin.Login().Result;
 
-                // Call the GetCaseU method
+                // Call the GetCase method
                 ApiResponse response = integrationPlugin.GetCase(caseToken, accessToken).Result;
-
+                var caseResponseJson = response.Content;
                 // Set the output parameter
                 context.OutputParameters["IsError"] = response.IsError;
 
@@ -50,7 +50,7 @@ public class RefreshCasePlugin : IPlugin
 
                     // Use the UpdateCasePlugin to process the response
                     var commonCasePlugin = new CommonCasePlugin();
-                    commonCasePlugin.ProcessCaseResponse(service, tracingService, response.Content, targetRef.Id);
+                    caseResponseJson = commonCasePlugin.ProcessCaseResponse(service, tracingService, caseResponseJson, targetRef.Id, serviceProvider);
 
                     tracingService.Trace("Case data processed successfully");
                     context.OutputParameters["Success"] = true;
@@ -58,7 +58,7 @@ public class RefreshCasePlugin : IPlugin
                 }
 
                 // Return the raw JSON response to the context output parameters
-                context.OutputParameters["CaseResponse"] = response.Content;
+                context.OutputParameters["CaseResponse"] = caseResponseJson;
             }
             else
             {

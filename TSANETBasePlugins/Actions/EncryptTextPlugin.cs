@@ -6,6 +6,7 @@ using System;
 /// encrypts (JWE, A256GCM / RSA-OAEP-256) plain text for a recipient, per the TSANet
 /// Connect E2E encryption proposal. Manual/testing invocation only.
 /// </summary>
+[Obsolete("Uses the obsolete whole-message JoseEncryptHelper. Migrate to TSANETBasePlugins.E2ee.E2eePayloadEncryptor.")]
 public class EncryptTextPlugin : IPlugin
 {
     public void Execute(IServiceProvider serviceProvider)
