@@ -21,7 +21,6 @@ public class PostCasePlugin : IPlugin
 
         // Field-level E2EE: only when an 'encryptedRecipient' setting exists
         caseDetails = E2eeCaseEncryption.PrepareForPost(serviceProvider, caseDetails);
-
         // Initialize the common integration plugin
         CommonIntegrationPlugin commonIntegration = new CommonIntegrationPlugin(serviceProvider);
 
@@ -47,7 +46,7 @@ public class PostCasePlugin : IPlugin
             tracingService.Trace("Case data processed successfully");
         }
         // Return the raw JSON response to the context output parameters
-        context.OutputParameters["PostCaseResponse"] = response.Content;
+        context.OutputParameters["PostCaseResponse"] = caseResponseJson;
 
 
     }

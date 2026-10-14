@@ -10,7 +10,7 @@ namespace TSANETBasePlugins.E2ee
     {
         /// <summary>Payload we send (customFields items use "fieldId").</summary>
         Outgoing,
-        /// <summary>Payload we receive (customFields items use "id").</summary>
+        /// <summary>Payload we receive (summary/description instead of problem*, HTML-encoded JWEs, instance "id" on custom fields).</summary>
         Incoming
     }
 
@@ -22,20 +22,20 @@ namespace TSANETBasePlugins.E2ee
 
         public string Value
         {
-            get
-            {
-                string value = (string)Container[Property];
-                if (value != null && value.StartsWith("{&#34;", System.StringComparison.Ordinal))
-                {
-                    value = System.Net.WebUtility.HtmlDecode(value);
-                }
-                return value;
-            }
+            get { return DecodeHtmlEncodedJwe((string)Container[Property]); }
         }
 
         public void SetValue(string value)
         {
             Container[Property] = value;
+        }
+
+        /// <summary>The API HTML-encodes some JWE values (e.g. description) with &amp;#34; for quotes.</summary>
+        private static string DecodeHtmlEncodedJwe(string value)
+        {
+            return value != null && value.StartsWith("{&#34;", System.StringComparison.Ordinal)
+                ? System.Net.WebUtility.HtmlDecode(value)
+                : value;
         }
     }
 
@@ -59,11 +59,7 @@ namespace TSANETBasePlugins.E2ee
             string[] topLevel = type == PayloadType.Note ? NoteFields : CollaborationRequestFields;
             foreach (string name in topLevel)
             {
-                string property = name;
-                if (type == PayloadType.CollaborationRequest && direction == PayloadDirection.Incoming && IsNull(payload[name]))
-                {
-                    property = name == "problemSummary" ? "summary" : "description";
-                }
+                string property = ResolveTopLevelProperty(payload, name, type, direction);
                 JToken token = payload[property];
                 if (IsNull(token))
                 {
@@ -84,7 +80,6 @@ namespace TSANETBasePlugins.E2ee
                         throw new InvalidPluginExecutionException(CustomFieldsArray + " must be an array.");
                     }
 
-                    string idProperty = direction == PayloadDirection.Outgoing ? OutgoingCustomFieldIdProperty : IncomingCustomFieldIdProperty;
                     foreach (JToken item in array)
                     {
                         var obj = item as JObject;
@@ -97,8 +92,17 @@ namespace TSANETBasePlugins.E2ee
                         {
                             continue;
                         }
-                        string id = ReadId(obj[idProperty], idProperty);
-                        string fieldName = CustomFieldsArray + "/" + id + "/" + CustomFieldValueProperty;
+                        string fieldName = direction == PayloadDirection.Incoming ? FieldNameFromJwe(value) : null;
+                        if (fieldName == null)
+                        {
+                            string actualIdProperty = OutgoingCustomFieldIdProperty;
+                            if (IsNull(obj[actualIdProperty]))
+                            {
+                                actualIdProperty = IncomingCustomFieldIdProperty;
+                            }
+                            string id = ReadId(obj[actualIdProperty], actualIdProperty);
+                            fieldName = CustomFieldsArray + "/" + id + "/" + CustomFieldValueProperty;
+                        }
                         RequireString(value, fieldName);
                         Add(result, seen, new ProtectedField { Id = fieldName, Container = obj, Property = CustomFieldValueProperty });
                     }
@@ -106,6 +110,37 @@ namespace TSANETBasePlugins.E2ee
             }
 
             return result;
+        }
+
+        /// <summary>GET returns summary/description for the manifest's problemSummary/problemDescription.</summary>
+        private static string ResolveTopLevelProperty(JObject payload, string name, PayloadType type, PayloadDirection direction)
+        {
+            if (type == PayloadType.CollaborationRequest && direction == PayloadDirection.Incoming && IsNull(payload[name]))
+            {
+                return name == "problemSummary" ? "summary" : "description";
+            }
+            return name;
+        }
+
+        /// <summary>Incoming custom-field "id" is an instance id; the definition id the manifest signs is only in the JWE header (tsa_fld).</summary>
+        private static string FieldNameFromJwe(JToken value)
+        {
+            try
+            {
+                if (value.Type != JTokenType.String) return null;
+                var jwe = JObject.Parse((string)value);
+                string protectedB64 = (string)jwe["protected"];
+                if (string.IsNullOrEmpty(protectedB64)) return null;
+                string s = protectedB64.Replace('-', '+').Replace('_', '/');
+                s = s.PadRight(s.Length + (4 - s.Length % 4) % 4, '=');
+                var header = JObject.Parse(System.Text.Encoding.UTF8.GetString(System.Convert.FromBase64String(s)));
+                string fld = (string)header["tsa_fld"];
+                return fld != null && fld.StartsWith(CustomFieldsArray + "/", System.StringComparison.Ordinal) ? fld : null;
+            }
+            catch (System.Exception)
+            {
+                return null;
+            }
         }
 
         private static void Add(List<ProtectedField> list, HashSet<string> seen, ProtectedField field)

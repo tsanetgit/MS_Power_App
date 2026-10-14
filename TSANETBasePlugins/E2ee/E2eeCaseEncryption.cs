@@ -19,7 +19,6 @@ namespace TSANETBasePlugins.E2ee
     /// </summary>
     public static class E2eeCaseEncryption
     {
-        private const string SettingsEntity = "ap_tsanetsetting";
         private const string RecipientSettingName = "encryptedRecipient";
         private const string IssSettingName = "Iss";
 

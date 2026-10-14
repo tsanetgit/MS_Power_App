@@ -75,10 +75,26 @@ namespace TSANETBasePlugins.Tests
                 foreach (JObject item in cf)
                 {
                     JProperty p = item.Property("fieldId");
-                    p.Replace(new JProperty("id", p.Value));
+                    p.Replace(new JProperty("id", (int)p.Value + 10000));
                 }
             }
+            RenameProperty(o, "problemSummary", "summary");
+            RenameProperty(o, "problemDescription", "description");
+            JToken desc = o["description"];
+            if (desc != null && desc.Type == JTokenType.String)
+            {
+                o["description"] = ((string)desc).Replace("\"", "&#34;");
+            }
             return o.ToString(Newtonsoft.Json.Formatting.None);
+        }
+
+        private static void RenameProperty(JObject o, string from, string to)
+        {
+            JProperty p = o.Property(from);
+            if (p != null)
+            {
+                p.Replace(new JProperty(to, p.Value));
+            }
         }
 
         private EncryptResult EncryptCase(string cid = null)
@@ -106,8 +122,8 @@ namespace TSANETBasePlugins.Tests
             Assert.AreEqual(enc.ManifestDigest, dec.ManifestDigest);
             Assert.IsTrue(dec.Iat.HasValue);
             JObject plain = JObject.Parse(dec.PayloadJson);
-            Assert.AreEqual("Sum secret", (string)plain["problemSummary"]);
-            Assert.AreEqual("Desc secret", (string)plain["problemDescription"]);
+            Assert.AreEqual("Sum secret", (string)plain["summary"]);
+            Assert.AreEqual("Desc secret", (string)plain["description"]);
             Assert.AreEqual("cf-one", (string)plain["customFields"][0]["value"]);
             Assert.AreEqual("cf-two", (string)plain["customFields"][1]["value"]);
             Assert.AreEqual(JTokenType.Null, plain["customFields"][2]["value"].Type);
@@ -162,7 +178,7 @@ namespace TSANETBasePlugins.Tests
             DecryptResult dec = _alice.Decryptor().Decrypt(PayloadType.CollaborationRequest, ToIncomingShape(enc.PayloadJson), AliceCtx());
 
             Assert.AreEqual(DecryptStatus.Ok, dec.Status);
-            Assert.AreEqual("Sum secret", (string)JObject.Parse(dec.PayloadJson)["problemSummary"]);
+            Assert.AreEqual("Sum secret", (string)JObject.Parse(dec.PayloadJson)["summary"]);
         }
 
         [TestMethod]
@@ -184,7 +200,7 @@ namespace TSANETBasePlugins.Tests
         {
             EncryptResult enc = EncryptCase();
             JObject p = JObject.Parse(ToIncomingShape(enc.PayloadJson));
-            p["problemSummary"] = FlipCiphertext((string)p["problemSummary"]);
+            p["summary"] = FlipCiphertext((string)p["summary"]);
 
             DecryptResult dec = _bob.Decryptor().Decrypt(PayloadType.CollaborationRequest, p.ToString(), BobCtx());
 
@@ -196,8 +212,8 @@ namespace TSANETBasePlugins.Tests
         {
             EncryptResult enc = EncryptCase();
             JObject p = JObject.Parse(ToIncomingShape(enc.PayloadJson));
-            string tampered = FlipCiphertext((string)p["problemSummary"]);
-            p["problemSummary"] = tampered;
+            string tampered = FlipCiphertext((string)p["summary"]);
+            p["summary"] = tampered;
             p["manifest"] = _alice.Forge((string)p["manifest"], c => SetDig(c, "problemSummary", tampered));
 
             DecryptResult dec = _bob.Decryptor().Decrypt(PayloadType.CollaborationRequest, p.ToString(), BobCtx());
@@ -210,7 +226,7 @@ namespace TSANETBasePlugins.Tests
         {
             JObject a = JObject.Parse(ToIncomingShape(EncryptCase().PayloadJson));
             JObject b = JObject.Parse(ToIncomingShape(EncryptCase().PayloadJson));
-            a["problemSummary"] = b["problemSummary"];
+            a["summary"] = b["summary"];
 
             DecryptResult dec = _bob.Decryptor().Decrypt(PayloadType.CollaborationRequest, a.ToString(), BobCtx());
 
@@ -222,8 +238,8 @@ namespace TSANETBasePlugins.Tests
         {
             JObject a = JObject.Parse(ToIncomingShape(EncryptCase().PayloadJson));
             JObject b = JObject.Parse(ToIncomingShape(EncryptCase().PayloadJson));
-            string foreign = (string)b["problemSummary"];
-            a["problemSummary"] = foreign;
+            string foreign = (string)b["summary"];
+            a["summary"] = foreign;
             a["manifest"] = _alice.Forge((string)a["manifest"], c => SetDig(c, "problemSummary", foreign));
 
             DecryptResult dec = _bob.Decryptor().Decrypt(PayloadType.CollaborationRequest, a.ToString(), BobCtx());
@@ -235,8 +251,8 @@ namespace TSANETBasePlugins.Tests
         public void Tamper_FieldMovedToOtherFieldName_WithResignedManifest_HeaderBindingMismatch()
         {
             JObject a = JObject.Parse(ToIncomingShape(EncryptCase().PayloadJson));
-            string summaryJwe = (string)a["problemSummary"];
-            a["problemDescription"] = summaryJwe;
+            string summaryJwe = (string)a["summary"];
+            a["description"] = summaryJwe;
             a["manifest"] = _alice.Forge((string)a["manifest"], c => SetDig(c, "problemDescription", summaryJwe));
 
             DecryptResult dec = _bob.Decryptor().Decrypt(PayloadType.CollaborationRequest, a.ToString(), BobCtx());
@@ -248,7 +264,7 @@ namespace TSANETBasePlugins.Tests
         public void Tamper_RemovedField_FieldSetMismatch()
         {
             JObject p = JObject.Parse(ToIncomingShape(EncryptCase().PayloadJson));
-            p.Remove("problemDescription");
+            p.Remove("description");
 
             DecryptResult dec = _bob.Decryptor().Decrypt(PayloadType.CollaborationRequest, p.ToString(), BobCtx());
 

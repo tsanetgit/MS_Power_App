@@ -100,6 +100,8 @@ namespace TSANETBasePlugins.E2ee
                 var manifestNames = new HashSet<string>(claims.Fields.Select(f => f.Name));
                 if (manifestNames.Count != claims.Fields.Count || !payloadNames.SetEquals(manifestNames))
                 {
+                    E2eeUtil.Trace(_tracing, "Decrypt: field set mismatch. payload=[" + string.Join(", ", payloadNames.OrderBy(n => n))
+                        + "] manifest=[" + string.Join(", ", claims.Fields.Select(f => f.Name).OrderBy(n => n)) + "]");
                     return Fail(DecryptStatus.FieldSetMismatch, claims, manifestDigest);
                 }
                 E2eeUtil.Trace(_tracing, "Decrypt: field set matches (" + fields.Count + ")");
