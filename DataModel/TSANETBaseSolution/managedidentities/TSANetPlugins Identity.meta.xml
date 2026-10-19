@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<managedidentity managedidentityid="9a0f55f5-b2b1-f111-aaad-00224826014e" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <applicationid>{1c2c1862-aadc-42ec-bd16-4e043012de56}</applicationid>
+  <credentialsource>2</credentialsource>
+  <identitytype>0</identitytype>
+  <iscustomizable>1</iscustomizable>
+  <name>TSANetPlugins Identity</name>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <subjectscope>1</subjectscope>
+  <tenantid>{5ab65033-c200-4f85-9af7-b7db123e8ea8}</tenantid>
+  <version>2</version>
+</managedidentity>

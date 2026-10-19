@@ -41,10 +41,42 @@
                   "x-ms-dynamically-added": true,
                   "description": "Please enter your input",
                   "x-ms-content-hint": "TEXT"
+                },
+                "boolean": {
+                  "title": "Oauth2",
+                  "type": "boolean",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please select yes or no",
+                  "x-ms-content-hint": "BOOLEAN"
+                },
+                "text_1": {
+                  "title": "TenantID",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_2": {
+                  "title": "ClientID",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_3": {
+                  "title": "ClientSecret",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
                 }
               },
               "required": [
-                "text"
+                "text",
+                "boolean",
+                "text_1",
+                "text_2",
+                "text_3"
               ]
             }
           }
@@ -81,18 +113,6 @@
         },
         "Scope": {
           "actions": {
-            "Get_Token": {
-              "runAfter": {},
-              "metadata": {
-                "operationMetadataId": "0f487098-2606-4461-85b1-3f210e5695a6"
-              },
-              "type": "Workflow",
-              "inputs": {
-                "host": {
-                  "workflowReferenceName": "5501ead7-1b8a-ef11-8a69-6045bdd3fb39"
-                }
-              }
-            },
             "GetTokenSuccess": {
               "actions": {
                 "HTTP_Register_Webhook": {
@@ -113,32 +133,14 @@
                         "org.tsanet.connect.collaboration-request.created",
                         "org.tsanet.connect.collaboration-request.note.created"
                       ],
-                      "callbackAuth": {
-                        "type": "NONE",
-                        "username": "",
-                        "password": "",
-                        "token": "",
-                        "headerName": "",
-                        "headerValue": ""
-                      }
+                      "payloadVersion": "V2",
+                      "callbackAuth": "@variables('AuthObject')"
                     }
                   }
                 },
-                "Secret": {
-                  "runAfter": {
-                    "HTTP_Register_Webhook": [
-                      "Succeeded"
-                    ]
-                  },
-                  "metadata": {
-                    "operationMetadataId": "f001aac6-0453-4cf2-b1ee-13a6075bcd4f"
-                  },
-                  "type": "Compose",
-                  "inputs": "@body('HTTP_Register_Webhook')?['secret']"
-                },
                 "List_rows_TSANET_Setting": {
                   "runAfter": {
-                    "Secret": [
+                    "HTTP_Register_Webhook": [
                       "Succeeded"
                     ]
                   },
@@ -183,7 +185,8 @@
                     "parameters": {
                       "entityName": "ap_tsanetsettings",
                       "recordId": "@first(outputs('List_rows_TSANET_Setting')?['body/value'])?['ap_tsanetsettingid']",
-                      "item/ap_webhooksecret": "@outputs('Secret')"
+                      "item/ap_webhookcode": "@body('HTTP_Register_Webhook')?['id']",
+                      "item/ap_webhooksecret": "@body('HTTP_Register_Webhook')?['secret']"
                     },
                     "authentication": {
                       "type": "Raw",
@@ -193,7 +196,7 @@
                 }
               },
               "runAfter": {
-                "Get_Token": [
+                "IsOauth2": [
                   "Succeeded"
                 ]
               },
@@ -207,9 +210,78 @@
                 "operationMetadataId": "41111d7e-093c-4a42-a2dc-a60d443b2985"
               },
               "type": "If"
+            },
+            "Start_Delete_Current_Webhook": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "ae4d98d0-bca4-4eb9-a46a-7defec5aba78"
+              },
+              "type": "Workflow",
+              "inputs": {
+                "host": {
+                  "workflowReferenceName": "22c7b3fe-3ba8-f111-aaab-0022482ebb30"
+                }
+              }
+            },
+            "Get_Token": {
+              "runAfter": {
+                "Start_Delete_Current_Webhook": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "0f487098-2606-4461-85b1-3f210e5695a6"
+              },
+              "type": "Workflow",
+              "inputs": {
+                "host": {
+                  "workflowReferenceName": "5501ead7-1b8a-ef11-8a69-6045bdd3fb39"
+                }
+              }
+            },
+            "IsOauth2": {
+              "actions": {
+                "Set_variable": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "a728e54d-d289-4805-b851-d2156ed0b055"
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "AuthObject",
+                    "value": {
+                      "type": "OAUTH2_CLIENT_CREDENTIALS",
+                      "oauth2TokenUrl": "https://login.microsoftonline.com/@{triggerBody()['text_1']}/oauth2/v2.0/token",
+                      "oauth2ClientId": "@{triggerBody()['text_2']}",
+                      "oauth2ClientSecret": "@{triggerBody()['text_3']}",
+                      "oauth2ClientAuthenticationMethod": "CLIENT_SECRET_BASIC",
+                      "oauth2Scope": "https://service.flow.microsoft.com//.default"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Get_Token": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "equals": [
+                  "@triggerBody()['boolean']",
+                  "@true"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "8b77bfd9-a300-4e4a-8b97-2232d598bdd2"
+              },
+              "type": "If"
             }
           },
-          "runAfter": {},
+          "runAfter": {
+            "Initialize_variable_AuthObject": [
+              "Succeeded"
+            ]
+          },
           "metadata": {
             "operationMetadataId": "261741f1-9eba-4605-8ea7-97cee6dae74c"
           },
@@ -243,6 +315,24 @@
                 }
               }
             }
+          }
+        },
+        "Initialize_variable_AuthObject": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "0746ee39-2dc4-418a-8005-d1795c9ad00f"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "AuthObject",
+                "type": "object",
+                "value": {
+                  "type": "NONE"
+                }
+              }
+            ]
           }
         }
       }

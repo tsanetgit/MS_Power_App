@@ -20,8 +20,18 @@
           "inputs": {
             "schema": {
               "type": "object",
-              "properties": {},
-              "required": []
+              "properties": {
+                "text": {
+                  "title": "WebhookURL",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
             }
           }
         }
@@ -91,19 +101,34 @@
                 "Apply_to_each_webhook": {
                   "foreach": "@body('HTTP_GET_Webhooks')",
                   "actions": {
-                    "HTTP_DELETE_Webhooks": {
-                      "runAfter": {},
-                      "metadata": {
-                        "operationMetadataId": "80654909-5a54-400d-886b-3fe2de53445f"
-                      },
-                      "type": "Http",
-                      "inputs": {
-                        "method": "DELETE",
-                        "uri": "@{body('Get_Token')?['uri']}/v1/webhooks/@{items('Apply_to_each_webhook')?['id']}",
-                        "headers": {
-                          "Authorization": "Bearer @{body('Get_Token')?['accesstoken']}"
+                    "IsPowerApp": {
+                      "actions": {
+                        "HTTP_DELETE_Webhooks": {
+                          "runAfter": {},
+                          "metadata": {
+                            "operationMetadataId": "80654909-5a54-400d-886b-3fe2de53445f"
+                          },
+                          "type": "Http",
+                          "inputs": {
+                            "method": "DELETE",
+                            "uri": "@{body('Get_Token')?['uri']}/v1/webhooks/@{items('Apply_to_each_webhook')?['id']}",
+                            "headers": {
+                              "Authorization": "Bearer @{body('Get_Token')?['accesstoken']}"
+                            }
+                          }
                         }
-                      }
+                      },
+                      "runAfter": {},
+                      "expression": {
+                        "equals": [
+                          "@items('Apply_to_each_webhook')?['callbackurl']",
+                          "@triggerBody()['text']"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "7d82e439-da03-49e3-b7a5-57caa65b5c2a"
+                      },
+                      "type": "If"
                     }
                   },
                   "runAfter": {

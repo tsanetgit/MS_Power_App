@@ -20,6 +20,7 @@
           </Titles>
         </SubArea>
         <SubArea Id="subarea_b540d7f9" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="ap_casemapping" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
+        <SubArea Id="subarea_00cc793c" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="ap_tsanetsetting" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
       </Group>
     </Area>
   </SiteMap>

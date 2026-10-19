@@ -1,0 +1,8 @@
+{
+  "environmentvariablevalues": {
+    "environmentvariablevalue": {
+      "iscustomizable": "1",
+      "value": "https://kv-tsanet.vault.azure.net/keys/signing-key/f80150cdf0e541c98cb40f3a8ec7eade"
+    }
+  }
+}

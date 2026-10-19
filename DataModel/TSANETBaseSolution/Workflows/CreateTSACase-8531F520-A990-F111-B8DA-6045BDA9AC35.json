@@ -1,0 +1,147 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "01fab774-a57b-4a63-9590-7cf69b29dbda"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "CaseJSON": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "3e64c3da-9f53-4af5-9dcf-43ec1e819c50"
+          },
+          "type": "Compose",
+          "inputs": {
+            "documentId": 0,
+            "internalCaseNumber": "string",
+            "receiverInternalCaseNumber": "string",
+            "problemSummary": "string",
+            "problemDescription": "string",
+            "priority": "LOW",
+            "adminNote": "string",
+            "escalationInstructions": "string",
+            "submitterContactDetails": {
+              "name": "string",
+              "email": "user@example.com",
+              "phone": "string"
+            },
+            "customFields": [
+              {
+                "fieldId": 0,
+                "section": "CONTACT_SECTION",
+                "label": "string",
+                "options": "string",
+                "additionalSettings": "string",
+                "type": "STRING",
+                "displayOrder": 0,
+                "validationRules": "string",
+                "value": "string",
+                "selections": [
+                  {
+                    "value": "string",
+                    "children": [
+                      "string"
+                    ]
+                  }
+                ],
+                "required": true
+              }
+            ],
+            "internalNotes": [
+              {
+                "note": "string"
+              }
+            ],
+            "testSubmission": true
+          }
+        },
+        "Get_Token": {
+          "runAfter": {
+            "CaseJSON": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0f487098-2606-4461-85b1-3f210e5695a6"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "5501ead7-1b8a-ef11-8a69-6045bdd3fb39"
+            }
+          }
+        },
+        "GetTokenSuccess": {
+          "actions": {
+            "HTTP_POST_Request": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "80654909-5a54-400d-886b-3fe2de53445f"
+              },
+              "type": "Http",
+              "inputs": {
+                "method": "POST",
+                "uri": "@{body('Get_Token')?['uri']}/v1/collaboration-requests",
+                "headers": {
+                  "Authorization": "Bearer @{body('Get_Token')?['accesstoken']}"
+                },
+                "body": "@outputs('CaseJSON')"
+              }
+            },
+            "Response": {
+              "runAfter": {
+                "HTTP_POST_Request": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "f001aac6-0453-4cf2-b1ee-13a6075bcd4f"
+              },
+              "type": "Compose",
+              "inputs": "@body('HTTP_POST_Request')"
+            }
+          },
+          "runAfter": {
+            "Get_Token": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@body('Get_Token')?['result']",
+              "Success"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "41111d7e-093c-4a42-a2dc-a60d443b2985"
+          },
+          "type": "If"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

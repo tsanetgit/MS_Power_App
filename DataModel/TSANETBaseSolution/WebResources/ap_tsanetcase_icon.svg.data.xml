@@ -3,6 +3,7 @@
   <WebResourceId>{34bd4676-b880-ef11-ac20-000d3a139338}</WebResourceId>
   <Name>ap_tsanetcase_icon.svg</Name>
   <DisplayName>ap_tsanetcase_icon.svg</DisplayName>
+  <LanguageCode>0</LanguageCode>
   <WebResourceType>11</WebResourceType>
   <IntroducedVersion>1.0.0.0</IntroducedVersion>
   <IsEnabledForMobileClient>1</IsEnabledForMobileClient>

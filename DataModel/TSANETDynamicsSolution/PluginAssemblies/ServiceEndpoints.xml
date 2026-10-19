@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ServiceEndpoints xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ServiceEndpoint ServiceEndpointId="{5ccf26c6-7add-ef11-a730-00224832847d}" Name="pva-msdyn_CustomerServiceTrialCopilot">
+    <ConnectionMode>1</ConnectionMode>
+    <Contract>1</Contract>
+    <Description>This endpoint is used to invoke pva service.</Description>
+    <Path>https://pvaruntime.us-il102.gateway.prod.island.powerapps.com</Path>
+    <SolutionNamespace>OmnichannelBotEnabler</SolutionNamespace>
+    <UserClaim>1</UserClaim>
+    <IsCustomizable>1</IsCustomizable>
+    <AuthType>1</AuthType>
+    <MessageFormat>1</MessageFormat>
+    <NamespaceFormat>1</NamespaceFormat>
+    <UseKeyVaultConfiguration>0</UseKeyVaultConfiguration>
+  </ServiceEndpoint>
+</ServiceEndpoints>

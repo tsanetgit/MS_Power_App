@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SdkMessageProcessingStep Name="GetFormByDocumentPlugin: ap_GetFormByDocument of any Entity" SdkMessageProcessingStepId="{f0022e89-e09f-f111-aaad-7c1e52024937}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SdkMessageId>90b57fe2-df9f-f111-aaad-7c1e52024937</SdkMessageId>
+  <PluginTypeName>GetFormByDocumentPlugin, TSANetPlugins, Version=0.1.9.2, Culture=neutral, PublicKeyToken=891580c5f46c504a</PluginTypeName>
+  <PluginTypeId>ff8bbfef-79d9-451f-93a8-bdc19a26f3ab</PluginTypeId>
+  <AsyncAutoDelete>0</AsyncAutoDelete>
+  <FilteringAttributes></FilteringAttributes>
+  <InvocationSource>0</InvocationSource>
+  <Mode>0</Mode>
+  <Rank>1</Rank>
+  <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+  <Stage>40</Stage>
+  <IsCustomizable>1</IsCustomizable>
+  <IsHidden>0</IsHidden>
+  <SupportedDeployment>0</SupportedDeployment>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <SdkMessageProcessingStepImages />
+</SdkMessageProcessingStep>

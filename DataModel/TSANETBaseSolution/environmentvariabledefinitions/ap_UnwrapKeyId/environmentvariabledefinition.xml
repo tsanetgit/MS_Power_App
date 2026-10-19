@@ -1,0 +1,10 @@
+<environmentvariabledefinition schemaname="ap_UnwrapKeyId">
+  <displayname default="UnwrapKeyId">
+    <label description="UnwrapKeyId" languagecode="1033" />
+  </displayname>
+  <introducedversion>2.13.0.1</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

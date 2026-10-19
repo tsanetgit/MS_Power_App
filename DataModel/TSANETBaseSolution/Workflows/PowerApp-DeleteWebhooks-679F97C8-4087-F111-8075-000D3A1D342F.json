@@ -27,25 +27,9 @@
         }
       },
       "actions": {
-        "StartDeleteWebhooksV2": {
-          "runAfter": {
-            "StartDeleteWebhooksV1": [
-              "Succeeded"
-            ]
-          },
-          "metadata": {
-            "operationMetadataId": "730214b7-7b9b-42a4-a08d-5edf2b7ae9ea"
-          },
-          "type": "Workflow",
-          "inputs": {
-            "host": {
-              "workflowReferenceName": "b41d7ac2-3d87-f111-8075-000d3a1d342f"
-            }
-          }
-        },
         "Respond_to_a_Power_App_or_flow": {
           "runAfter": {
-            "StartDeleteWebhooksV2": [
+            "StartDeleteCurrentWebhook": [
               "Succeeded"
             ]
           },
@@ -57,7 +41,7 @@
           "inputs": {
             "statusCode": 200,
             "body": {
-              "result": "@{body('StartDeleteWebhooksV2')?['result']}"
+              "result": "@body('StartDeleteCurrentWebhook')?['result']"
             },
             "schema": {
               "type": "object",
@@ -71,7 +55,7 @@
             }
           }
         },
-        "StartDeleteWebhooksV1": {
+        "StartDeleteCurrentWebhook": {
           "runAfter": {},
           "metadata": {
             "operationMetadataId": "eae4abbe-cef6-4ddf-920c-fcd2c96b9651"
@@ -79,7 +63,7 @@
           "type": "Workflow",
           "inputs": {
             "host": {
-              "workflowReferenceName": "952d0034-4987-f111-8075-000d3a1d342f"
+              "workflowReferenceName": "22c7b3fe-3ba8-f111-aaab-0022482ebb30"
             }
           }
         }

@@ -57,7 +57,7 @@
                 },
                 "parameters": {
                   "entityName": "ap_tsanetsettings",
-                  "$select": "ap_uri,ap_clientid,ap_secret,ap_authorizationtype,ap_tenantid,ap_scope",
+                  "$select": "ap_uri,ap_clientid,ap_secret,ap_authorizationtype,ap_tenantid,ap_scope,ap_webhookcode",
                   "$filter": "ap_name eq 'settings'",
                   "$top": 1
                 },
@@ -85,7 +85,8 @@
                       "secret": "-",
                       "authtype": 0,
                       "tenantid": "-",
-                      "scope": "-"
+                      "scope": "-",
+                      "webhookcode": "0"
                     },
                     "schema": {
                       "type": "object",
@@ -124,6 +125,11 @@
                           "title": "Scope",
                           "x-ms-dynamically-added": true,
                           "type": "string"
+                        },
+                        "webhookcode": {
+                          "title": "WebhookCode",
+                          "x-ms-dynamically-added": true,
+                          "type": "number"
                         }
                       }
                     }
@@ -187,7 +193,8 @@
               "secret": "@{first(outputs('List_rows_Setting')?['body/value'])?['ap_secret']}",
               "authtype": "@{first(outputs('List_rows_Setting')?['body/value'])?['ap_authorizationtype']}",
               "tenantid": "@{first(outputs('List_rows_Setting')?['body/value'])?['ap_tenantid']}",
-              "scope": "@{first(outputs('List_rows_Setting')?['body/value'])?['ap_scope']}"
+              "scope": "@{first(outputs('List_rows_Setting')?['body/value'])?['ap_scope']}",
+              "webhookcode": "@{first(outputs('List_rows_Setting')?['body/value'])?['ap_webhookcode']}"
             },
             "schema": {
               "type": "object",
@@ -226,6 +233,11 @@
                   "title": "Scope",
                   "x-ms-dynamically-added": true,
                   "type": "string"
+                },
+                "webhookcode": {
+                  "title": "WebhookCode",
+                  "x-ms-dynamically-added": true,
+                  "type": "number"
                 }
               }
             }
@@ -253,7 +265,8 @@
               "secret": "-",
               "authtype": 0,
               "tenantid": "-",
-              "scope": "-"
+              "scope": "-",
+              "webhookcode": "0"
             },
             "schema": {
               "type": "object",
@@ -292,6 +305,11 @@
                   "title": "Scope",
                   "x-ms-dynamically-added": true,
                   "type": "string"
+                },
+                "webhookcode": {
+                  "title": "WebhookCode",
+                  "x-ms-dynamically-added": true,
+                  "type": "number"
                 }
               }
             }

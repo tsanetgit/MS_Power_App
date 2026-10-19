@@ -1,0 +1,8 @@
+{
+  "environmentvariablevalues": {
+    "environmentvariablevalue": {
+      "iscustomizable": "1",
+      "value": "https://kv-tsanet.vault.azure.net/keys/encryption-key/2e64e3f3d882478f98a1e4d2d307b440"
+    }
+  }
+}
