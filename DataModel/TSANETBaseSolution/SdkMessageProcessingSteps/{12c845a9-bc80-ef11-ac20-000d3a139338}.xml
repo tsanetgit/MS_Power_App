@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <SdkMessageProcessingStep Name="PostCasePlugin: ap_PostCase of any Entity" SdkMessageProcessingStepId="{12c845a9-bc80-ef11-ac20-000d3a139338}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SdkMessageId>d5dcc064-ba80-ef11-ac20-000d3a139338</SdkMessageId>
-  <PluginTypeName>PostCasePlugin, TSANetPlugins, Version=0.1.9.0, Culture=neutral, PublicKeyToken=891580c5f46c504a</PluginTypeName>
+  <PluginTypeName>PostCasePlugin, TSANetPlugins, Version=0.1.9.2, Culture=neutral, PublicKeyToken=891580c5f46c504a</PluginTypeName>
   <PluginTypeId>020ba74e-dcab-4d8f-b4a6-82fb85f9320a</PluginTypeId>
   <AsyncAutoDelete>0</AsyncAutoDelete>
   <FilteringAttributes></FilteringAttributes>

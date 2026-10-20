@@ -16,6 +16,7 @@
           <cell name="statuscode" width="119" />
           <cell name="ap_submittercasenumber" width="176" />
           <cell name="ap_companyname" width="132" />
+          <cell name="ap_documentname" width="136" />
         </row>
       </grid>
     </layoutxml>
@@ -37,6 +38,7 @@
               <value>120950001</value>
             </condition>
           </filter>
+          <attribute name="ap_documentname" />
         </entity>
       </fetch>
     </fetchxml>

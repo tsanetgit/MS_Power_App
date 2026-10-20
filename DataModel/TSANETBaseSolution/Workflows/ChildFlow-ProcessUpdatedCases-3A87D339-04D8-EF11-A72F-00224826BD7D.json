@@ -153,7 +153,7 @@
                   "actions": {
                     "Add_a_new_Log": {
                       "runAfter": {
-                        "ProcessCasePatch": [
+                        "IsEncrypted": [
                           "Failed",
                           "Skipped",
                           "TimedOut"
@@ -181,8 +181,212 @@
                         }
                       }
                     },
-                    "ProcessCasePatch": {
+                    "IsEncrypted": {
                       "actions": {
+                        "List_rows_TSA_Cases": {
+                          "runAfter": {
+                            "Direction": [
+                              "Succeeded"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "6048a104-c196-4cce-9ab5-2d74ca67270b"
+                          },
+                          "type": "OpenApiConnection",
+                          "inputs": {
+                            "host": {
+                              "connectionName": "shared_commondataserviceforapps",
+                              "operationId": "ListRecords",
+                              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                            },
+                            "parameters": {
+                              "entityName": "ap_tsanetcases",
+                              "$select": "ap_tsanetcaseid",
+                              "$filter": "ap_tsacasetoken eq '@{items('Apply_to_each')['token']}'",
+                              "$top": 1
+                            },
+                            "authentication": {
+                              "type": "Raw",
+                              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                            }
+                          }
+                        },
+                        "SwitchStatus": {
+                          "runAfter": {},
+                          "cases": {
+                            "rejected": {
+                              "case": "rejected",
+                              "actions": {
+                                "Set_variable_5": {
+                                  "runAfter": {
+                                    "Set_variable_4": [
+                                      "Succeeded"
+                                    ]
+                                  },
+                                  "metadata": {
+                                    "operationMetadataId": "35eca733-6aaf-4939-8595-3a252a002393"
+                                  },
+                                  "type": "SetVariable",
+                                  "inputs": {
+                                    "name": "StatusCode",
+                                    "value": 120950002
+                                  }
+                                },
+                                "Set_variable_4": {
+                                  "runAfter": {},
+                                  "metadata": {
+                                    "operationMetadataId": "04bb488b-0731-4f3f-85bf-a7032e10a999"
+                                  },
+                                  "type": "SetVariable",
+                                  "inputs": {
+                                    "name": "StateCode",
+                                    "value": 1
+                                  }
+                                }
+                              }
+                            },
+                            "closed": {
+                              "case": "closed",
+                              "actions": {
+                                "Set_variable_3": {
+                                  "runAfter": {
+                                    "Set_variable_1": [
+                                      "Succeeded"
+                                    ]
+                                  },
+                                  "metadata": {
+                                    "operationMetadataId": "31264817-c68a-4cc6-a320-cdf9c2d1aaf2"
+                                  },
+                                  "type": "SetVariable",
+                                  "inputs": {
+                                    "name": "StatusCode",
+                                    "value": 2
+                                  }
+                                },
+                                "Set_variable_1": {
+                                  "runAfter": {},
+                                  "metadata": {
+                                    "operationMetadataId": "02dccd14-6048-4bf2-9ce5-9b90e6a2b4cc"
+                                  },
+                                  "type": "SetVariable",
+                                  "inputs": {
+                                    "name": "StateCode",
+                                    "value": 1
+                                  }
+                                }
+                              }
+                            },
+                            "information": {
+                              "case": "information",
+                              "actions": {
+                                "Set_variable_7": {
+                                  "runAfter": {
+                                    "Set_variable_6": [
+                                      "Succeeded"
+                                    ]
+                                  },
+                                  "metadata": {
+                                    "operationMetadataId": "087ab615-b320-4b3b-8dfd-b3f16ce29fad"
+                                  },
+                                  "type": "SetVariable",
+                                  "inputs": {
+                                    "name": "StatusCode",
+                                    "value": 120950001
+                                  }
+                                },
+                                "Set_variable_6": {
+                                  "runAfter": {},
+                                  "metadata": {
+                                    "operationMetadataId": "a3199dbb-5dc4-4fc5-9af3-904cf15f06d6"
+                                  },
+                                  "type": "SetVariable",
+                                  "inputs": {
+                                    "name": "StateCode",
+                                    "value": 0
+                                  }
+                                }
+                              }
+                            },
+                            "accepted": {
+                              "case": "accepted",
+                              "actions": {
+                                "Set_variable_9": {
+                                  "runAfter": {
+                                    "Set_variable_8": [
+                                      "Succeeded"
+                                    ]
+                                  },
+                                  "metadata": {
+                                    "operationMetadataId": "8febe1d3-572c-4e8d-a783-416a8631c593"
+                                  },
+                                  "type": "SetVariable",
+                                  "inputs": {
+                                    "name": "StatusCode",
+                                    "value": 120950003
+                                  }
+                                },
+                                "Set_variable_8": {
+                                  "runAfter": {},
+                                  "metadata": {
+                                    "operationMetadataId": "a4caafda-9e9c-4eb1-85c1-cbbacf914a08"
+                                  },
+                                  "type": "SetVariable",
+                                  "inputs": {
+                                    "name": "StateCode",
+                                    "value": 0
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "default": {
+                            "actions": {
+                              "Set_variable_11": {
+                                "runAfter": {
+                                  "Set_variable_10": [
+                                    "Succeeded"
+                                  ]
+                                },
+                                "metadata": {
+                                  "operationMetadataId": "3074ec1e-c953-415a-9acb-b47556feb0e1"
+                                },
+                                "type": "SetVariable",
+                                "inputs": {
+                                  "name": "StatusCode",
+                                  "value": 1
+                                }
+                              },
+                              "Set_variable_10": {
+                                "runAfter": {},
+                                "metadata": {
+                                  "operationMetadataId": "ffdc4209-7fd5-49e1-89bd-192253d14c28"
+                                },
+                                "type": "SetVariable",
+                                "inputs": {
+                                  "name": "StateCode",
+                                  "value": 0
+                                }
+                              }
+                            }
+                          },
+                          "expression": "@toLower(items('Apply_to_each')['status'])",
+                          "metadata": {
+                            "operationMetadataId": "a01be060-428d-44fd-9332-d88b400813a9"
+                          },
+                          "type": "Switch"
+                        },
+                        "Direction": {
+                          "runAfter": {
+                            "SwitchStatus": [
+                              "Succeeded"
+                            ]
+                          },
+                          "metadata": {
+                            "operationMetadataId": "8276a9e1-2ea5-4f18-b594-9ffcdcc10a8b"
+                          },
+                          "type": "Compose",
+                          "inputs": "@if(equals(int(body('Get_Company_Id')?['companyid']),items('Apply_to_each')['receiveCompanyId']),0,1)"
+                        },
                         "CaseExists": {
                           "actions": {
                             "Set_variable": {
@@ -217,6 +421,8 @@
                                   "item/ap_companycode": "@if(equals(outputs('Direction'),0),items('Apply_to_each')['submitCompanyId'],items('Apply_to_each')['receiveCompanyId'])",
                                   "item/ap_companyname": "@if(equals(outputs('Direction'),0),items('Apply_to_each')['submitCompanyName'],items('Apply_to_each')['receiveCompanyName'])",
                                   "item/ap_direction": "@outputs('Direction')",
+                                  "item/ap_documentcode": "@items('Apply_to_each')['contactDocumentId']",
+                                  "item/ap_documentname": "@items('Apply_to_each')['contactDocumentName']",
                                   "item/ap_formjson": "@items('Apply_to_each')",
                                   "item/ap_name": "@items('Apply_to_each')['id']",
                                   "item/ap_submittercasenumber": "@items('Apply_to_each')['submitterCaseNumber']",
@@ -257,7 +463,11 @@
                               }
                             }
                           },
-                          "runAfter": {},
+                          "runAfter": {
+                            "List_rows_TSA_Cases": [
+                              "Succeeded"
+                            ]
+                          },
                           "else": {
                             "actions": {
                               "Update_a_Case": {
@@ -683,219 +893,43 @@
                           "type": "Foreach"
                         }
                       },
-                      "runAfter": {
-                        "List_rows_TSA_Cases": [
-                          "Succeeded"
-                        ]
-                      },
-                      "metadata": {
-                        "operationMetadataId": "fe515915-7bc2-4b31-a2bb-de87e13003a6"
-                      },
-                      "type": "Scope"
-                    },
-                    "SwitchStatus": {
                       "runAfter": {},
-                      "cases": {
-                        "rejected": {
-                          "case": "rejected",
-                          "actions": {
-                            "Set_variable_5": {
-                              "runAfter": {
-                                "Set_variable_4": [
-                                  "Succeeded"
-                                ]
-                              },
-                              "metadata": {
-                                "operationMetadataId": "35eca733-6aaf-4939-8595-3a252a002393"
-                              },
-                              "type": "SetVariable",
-                              "inputs": {
-                                "name": "StatusCode",
-                                "value": 120950002
-                              }
-                            },
-                            "Set_variable_4": {
-                              "runAfter": {},
-                              "metadata": {
-                                "operationMetadataId": "04bb488b-0731-4f3f-85bf-a7032e10a999"
-                              },
-                              "type": "SetVariable",
-                              "inputs": {
-                                "name": "StateCode",
-                                "value": 1
-                              }
-                            }
-                          }
-                        },
-                        "closed": {
-                          "case": "closed",
-                          "actions": {
-                            "Set_variable_3": {
-                              "runAfter": {
-                                "Set_variable_1": [
-                                  "Succeeded"
-                                ]
-                              },
-                              "metadata": {
-                                "operationMetadataId": "31264817-c68a-4cc6-a320-cdf9c2d1aaf2"
-                              },
-                              "type": "SetVariable",
-                              "inputs": {
-                                "name": "StatusCode",
-                                "value": 2
-                              }
-                            },
-                            "Set_variable_1": {
-                              "runAfter": {},
-                              "metadata": {
-                                "operationMetadataId": "02dccd14-6048-4bf2-9ce5-9b90e6a2b4cc"
-                              },
-                              "type": "SetVariable",
-                              "inputs": {
-                                "name": "StateCode",
-                                "value": 1
-                              }
-                            }
-                          }
-                        },
-                        "information": {
-                          "case": "information",
-                          "actions": {
-                            "Set_variable_7": {
-                              "runAfter": {
-                                "Set_variable_6": [
-                                  "Succeeded"
-                                ]
-                              },
-                              "metadata": {
-                                "operationMetadataId": "087ab615-b320-4b3b-8dfd-b3f16ce29fad"
-                              },
-                              "type": "SetVariable",
-                              "inputs": {
-                                "name": "StatusCode",
-                                "value": 120950001
-                              }
-                            },
-                            "Set_variable_6": {
-                              "runAfter": {},
-                              "metadata": {
-                                "operationMetadataId": "a3199dbb-5dc4-4fc5-9af3-904cf15f06d6"
-                              },
-                              "type": "SetVariable",
-                              "inputs": {
-                                "name": "StateCode",
-                                "value": 0
-                              }
-                            }
-                          }
-                        },
-                        "accepted": {
-                          "case": "accepted",
-                          "actions": {
-                            "Set_variable_9": {
-                              "runAfter": {
-                                "Set_variable_8": [
-                                  "Succeeded"
-                                ]
-                              },
-                              "metadata": {
-                                "operationMetadataId": "8febe1d3-572c-4e8d-a783-416a8631c593"
-                              },
-                              "type": "SetVariable",
-                              "inputs": {
-                                "name": "StatusCode",
-                                "value": 120950003
-                              }
-                            },
-                            "Set_variable_8": {
-                              "runAfter": {},
-                              "metadata": {
-                                "operationMetadataId": "a4caafda-9e9c-4eb1-85c1-cbbacf914a08"
-                              },
-                              "type": "SetVariable",
-                              "inputs": {
-                                "name": "StateCode",
-                                "value": 0
-                              }
-                            }
-                          }
-                        }
-                      },
-                      "default": {
+                      "else": {
                         "actions": {
-                          "Set_variable_11": {
-                            "runAfter": {
-                              "Set_variable_10": [
-                                "Succeeded"
-                              ]
-                            },
-                            "metadata": {
-                              "operationMetadataId": "3074ec1e-c953-415a-9acb-b47556feb0e1"
-                            },
-                            "type": "SetVariable",
-                            "inputs": {
-                              "name": "StatusCode",
-                              "value": 1
-                            }
-                          },
-                          "Set_variable_10": {
+                          "GetCase": {
                             "runAfter": {},
                             "metadata": {
-                              "operationMetadataId": "ffdc4209-7fd5-49e1-89bd-192253d14c28"
+                              "operationMetadataId": "3d73f963-4039-497a-9797-effe532a806d"
                             },
-                            "type": "SetVariable",
+                            "type": "OpenApiConnection",
                             "inputs": {
-                              "name": "StateCode",
-                              "value": 0
+                              "host": {
+                                "connectionName": "shared_commondataserviceforapps",
+                                "operationId": "PerformUnboundAction",
+                                "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                              },
+                              "parameters": {
+                                "actionName": "ap_GetCase",
+                                "item/CaseToken": "@items('Apply_to_each')['token']"
+                              },
+                              "authentication": {
+                                "type": "Raw",
+                                "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                              }
                             }
                           }
                         }
                       },
-                      "expression": "@toLower(items('Apply_to_each')['status'])",
-                      "metadata": {
-                        "operationMetadataId": "a01be060-428d-44fd-9332-d88b400813a9"
-                      },
-                      "type": "Switch"
-                    },
-                    "Direction": {
-                      "runAfter": {
-                        "SwitchStatus": [
-                          "Succeeded"
+                      "expression": {
+                        "equals": [
+                          "@items('Apply_to_each')['encrypted']",
+                          "@false"
                         ]
                       },
                       "metadata": {
-                        "operationMetadataId": "8276a9e1-2ea5-4f18-b594-9ffcdcc10a8b"
+                        "operationMetadataId": "da90031d-3aef-45c6-bc65-e4189c994bc6"
                       },
-                      "type": "Compose",
-                      "inputs": "@if(equals(int(body('Get_Company_Id')?['companyid']),items('Apply_to_each')['receiveCompanyId']),0,1)"
-                    },
-                    "List_rows_TSA_Cases": {
-                      "runAfter": {
-                        "Direction": [
-                          "Succeeded"
-                        ]
-                      },
-                      "metadata": {
-                        "operationMetadataId": "6048a104-c196-4cce-9ab5-2d74ca67270b"
-                      },
-                      "type": "OpenApiConnection",
-                      "inputs": {
-                        "host": {
-                          "connectionName": "shared_commondataserviceforapps",
-                          "operationId": "ListRecords",
-                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
-                        },
-                        "parameters": {
-                          "entityName": "ap_tsanetcases",
-                          "$select": "ap_tsanetcaseid",
-                          "$filter": "ap_tsacasetoken eq '@{items('Apply_to_each')['token']}'",
-                          "$top": 1
-                        },
-                        "authentication": {
-                          "type": "Raw",
-                          "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
-                        }
-                      }
+                      "type": "If"
                     }
                   },
                   "runAfter": {

@@ -56,7 +56,8 @@
               "subscriptionRequest/message": 3,
               "subscriptionRequest/entityname": "email",
               "subscriptionRequest/scope": 4,
-              "subscriptionRequest/filteringattributes": "statecode"
+              "subscriptionRequest/filteringattributes": "statecode",
+              "subscriptionRequest/filterexpression": "statecode eq 3"
             },
             "authentication": "@parameters('$authentication')"
           }
@@ -107,7 +108,7 @@
                       "item/ap_tsanetcaseid@odata.bind": "ap_tsanetcases(@{items('Apply_to_each')?['ap_tsanetcaseid']})",
                       "item/ap_creatoremail": "@outputs('Get_a_row_Creator')?['body/internalemailaddress']",
                       "item/ap_creatorname": "@outputs('Get_a_row_Creator')?['body/fullname']",
-                      "item/ap_description": "@if(greater(length(body('Html_to_text')),1600),\r\n  substring(body('Html_to_text'),0,1600),\r\n  body('Html_to_text'))",
+                      "item/ap_description": "<b>From: </b> @{triggerOutputs()?['body/sender']} </br>\n<b>To: </b>@{outputs('To')}</br>\n<b>Cc: </b>@{outputs('CC')}</br>\n<b>Subject:</b> @{triggerOutputs()?['body/subject']}</br>\n<b>Email Body:</b>\n@{if(greater(length(body('Html_to_text')),1600),\r\n  substring(body('Html_to_text'),0,1600),\r\n  body('Html_to_text'))}",
                       "item/ap_source": 120950000,
                       "item/ap_isautomated": true
                     },
@@ -116,7 +117,7 @@
                 }
               },
               "runAfter": {
-                "Html_to_text": [
+                "Scope_CC": [
                   "Succeeded"
                 ]
               },
@@ -170,6 +171,132 @@
                 },
                 "authentication": "@parameters('$authentication')"
               }
+            },
+            "List_rows_Parties": {
+              "runAfter": {
+                "Html_to_text": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "4d757152-69f4-4697-8143-72a631b89a89"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "activityparties",
+                  "$select": "addressused,_partyid_value,participationtypemask",
+                  "$filter": "_activityid_value eq @{triggerOutputs()?['body/activityid']}"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Scope_CC": {
+              "actions": {
+                "Filter_array_CC": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "2c64e526-c827-48fa-843c-fb7a0c7e601e"
+                  },
+                  "type": "Query",
+                  "inputs": {
+                    "from": "@outputs('List_rows_Parties')?['body/value']",
+                    "where": "@equals(item()?['participationtypemask'], 3)"
+                  }
+                },
+                "Select_CC": {
+                  "runAfter": {
+                    "Filter_array_CC": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "42dcb9d7-dbbd-400c-98fa-2e8d3d6b95fa"
+                  },
+                  "type": "Select",
+                  "inputs": {
+                    "from": "@body('Filter_array_CC')",
+                    "select": "@item()?['_partyid_value@OData.Community.Display.V1.FormattedValue']"
+                  }
+                },
+                "CC": {
+                  "runAfter": {
+                    "Select_CC": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "6a2c6cc0-bc37-4307-a0e9-582fe5ddd708"
+                  },
+                  "type": "Compose",
+                  "inputs": "@join(body('Select_CC'),';')"
+                }
+              },
+              "runAfter": {
+                "Scope_To": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "35690d7d-a6a6-49ce-a065-59949652883d"
+              },
+              "type": "Scope"
+            },
+            "Scope_To": {
+              "actions": {
+                "Filter_array_To": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "2c64e526-c827-48fa-843c-fb7a0c7e601e"
+                  },
+                  "type": "Query",
+                  "inputs": {
+                    "from": "@outputs('List_rows_Parties')?['body/value']",
+                    "where": "@equals(item()?['participationtypemask'], 2)"
+                  }
+                },
+                "Select_To": {
+                  "runAfter": {
+                    "Filter_array_To": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "42dcb9d7-dbbd-400c-98fa-2e8d3d6b95fa"
+                  },
+                  "type": "Select",
+                  "inputs": {
+                    "from": "@body('Filter_array_To')",
+                    "select": "@item()?['_partyid_value@OData.Community.Display.V1.FormattedValue']"
+                  }
+                },
+                "To": {
+                  "runAfter": {
+                    "Select_To": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "6a2c6cc0-bc37-4307-a0e9-582fe5ddd708"
+                  },
+                  "type": "Compose",
+                  "inputs": "@join(body('Select_To'), ';')"
+                }
+              },
+              "runAfter": {
+                "List_rows_Parties": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "63bd9953-aa88-4b0c-a4f7-c1e3271f8728"
+              },
+              "type": "Scope"
             }
           },
           "runAfter": {

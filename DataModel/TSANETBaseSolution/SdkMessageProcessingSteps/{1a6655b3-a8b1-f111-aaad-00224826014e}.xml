@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SdkMessageProcessingStep Name="DecryptTextPlugin: ap_DecryptText of any Entity" SdkMessageProcessingStepId="{1a6655b3-a8b1-f111-aaad-00224826014e}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SdkMessageId>37a913bb-a1b1-f111-aaad-00224826014e</SdkMessageId>
+  <PluginTypeName>DecryptTextPlugin, TSANetPlugins, Version=0.1.9.2, Culture=neutral, PublicKeyToken=891580c5f46c504a</PluginTypeName>
+  <PluginTypeId>0b0ff79f-bf80-4798-a2ca-1cd919685b64</PluginTypeId>
+  <AsyncAutoDelete>0</AsyncAutoDelete>
+  <FilteringAttributes></FilteringAttributes>
+  <InvocationSource>0</InvocationSource>
+  <Mode>0</Mode>
+  <Rank>1</Rank>
+  <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+  <Stage>40</Stage>
+  <IsCustomizable>1</IsCustomizable>
+  <IsHidden>0</IsHidden>
+  <SupportedDeployment>0</SupportedDeployment>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <SdkMessageProcessingStepImages />
+</SdkMessageProcessingStep>

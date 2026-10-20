@@ -34,8 +34,42 @@
           "inputs": {
             "schema": {
               "type": "object",
-              "properties": {},
-              "required": []
+              "properties": {
+                "boolean": {
+                  "title": "WebhookOauth2",
+                  "type": "boolean",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please select yes or no",
+                  "x-ms-content-hint": "BOOLEAN"
+                },
+                "text": {
+                  "title": "WebhookTenantID",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "WebhookClientID",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_2": {
+                  "title": "WebhookClientSecret",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "boolean",
+                "text",
+                "text_1",
+                "text_2"
+              ]
             }
           }
         }
@@ -56,7 +90,11 @@
               "workflowReferenceName": "ff670484-3f87-f111-8075-000d3a1d342f"
             },
             "body": {
-              "text": "@outputs('List_Callback_URL')?['body/response/value']"
+              "text": "@outputs('List_Callback_URL')?['body/response/value']",
+              "boolean": "@triggerBody()['boolean']",
+              "text_1": "@triggerBody()['text']",
+              "text_2": "@triggerBody()['text_1']",
+              "text_3": "@triggerBody()['text_2']"
             }
           }
         },

@@ -1,0 +1,11 @@
+<dvtablesearch dvtablesearchid="9828e446-4aa8-f111-aaac-7c1e525ca8bb">
+  <appmoduleuniquename>ap_TSANETConfiguration</appmoduleuniquename>
+  <iscustomizable>1</iscustomizable>
+  <m365appmoduleid>
+    <uniquename>ap_TSANETConfiguration</uniquename>
+  </m365appmoduleid>
+  <name>M365_Primary_model_ap_TSANETConfiguration</name>
+  <searchtype>0</searchtype>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</dvtablesearch>

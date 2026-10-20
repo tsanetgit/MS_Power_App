@@ -1,0 +1,270 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "ap_sharedcommondataserviceforapps_d0fba"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "f2710afc-81c5-4386-865a-121a00e24f83"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_a_Power_App_or_flow": {
+          "runAfter": {
+            "Scope": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a5b21c27-ecb1-4925-a19f-67d7f027fa98"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "result": "Success"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "title": "Result",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Scope": {
+          "actions": {
+            "Get_Token": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "0f487098-2606-4461-85b1-3f210e5695a6"
+              },
+              "type": "Workflow",
+              "inputs": {
+                "host": {
+                  "workflowReferenceName": "5501ead7-1b8a-ef11-8a69-6045bdd3fb39"
+                }
+              }
+            },
+            "GetTokenSuccess": {
+              "actions": {
+                "HTTP_DELETE_Webhooks": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "80654909-5a54-400d-886b-3fe2de53445f"
+                  },
+                  "type": "Http",
+                  "inputs": {
+                    "method": "DELETE",
+                    "uri": "@{body('Get_Token')?['uri']}/v1/webhooks/@{outputs('IDInt')}",
+                    "headers": {
+                      "Authorization": "Bearer @{body('Get_Token')?['accesstoken']}"
+                    }
+                  }
+                },
+                "List_rows_TSASetting": {
+                  "runAfter": {
+                    "HTTP_DELETE_Webhooks": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "6c8b3dde-3f90-4e2e-bac8-98fcaedee1f3"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "ListRecords",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "ap_tsanetsettings",
+                      "$select": "ap_tsanetsettingid",
+                      "$filter": "ap_name eq 'settings'",
+                      "$top": 1
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Apply_to_each": {
+                  "foreach": "@outputs('List_rows_TSASetting')?['body/value']",
+                  "actions": {
+                    "Update_TSASetting": {
+                      "runAfter": {},
+                      "metadata": {
+                        "operationMetadataId": "49cf86ed-32fd-4090-b9fb-6f83be898e38"
+                      },
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connectionName": "shared_commondataserviceforapps",
+                          "operationId": "UpdateOnlyRecord",
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                        },
+                        "parameters": {
+                          "entityName": "ap_tsanetsettings",
+                          "recordId": "@items('Apply_to_each')?['ap_tsanetsettingid']",
+                          "item/ap_webhookcode": 0
+                        },
+                        "authentication": {
+                          "type": "Raw",
+                          "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                        }
+                      }
+                    }
+                  },
+                  "runAfter": {
+                    "List_rows_TSASetting": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "e4d3e534-9836-4bee-ab81-528a0a6b076b"
+                  },
+                  "type": "Foreach"
+                }
+              },
+              "runAfter": {
+                "IDInt": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "and": [
+                  {
+                    "equals": [
+                      "@body('Get_Token')?['result']",
+                      "Success"
+                    ]
+                  },
+                  {
+                    "equals": [
+                      "@body('Get_Settings')?['result']",
+                      "Success"
+                    ]
+                  },
+                  {
+                    "greater": [
+                      "@outputs('IDInt')",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "41111d7e-093c-4a42-a2dc-a60d443b2985"
+              },
+              "type": "If"
+            },
+            "Get_Settings": {
+              "runAfter": {
+                "Get_Token": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "6271a3a4-c4a3-4dfb-8d6c-63240bd00845"
+              },
+              "type": "Workflow",
+              "inputs": {
+                "host": {
+                  "workflowReferenceName": "40cfe0a0-cdd5-f011-8543-00224826374b"
+                }
+              }
+            },
+            "IDInt": {
+              "runAfter": {
+                "Get_Settings": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "702629ef-103b-4216-95be-2ef9d3d3768a"
+              },
+              "type": "Compose",
+              "inputs": "@if(empty(outputs('Get_Settings')?['Body']?['webhookcode']),0,int(outputs('Get_Settings')?['Body']?['webhookcode']))"
+            }
+          },
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "261741f1-9eba-4605-8ea7-97cee6dae74c"
+          },
+          "type": "Scope"
+        },
+        "Respond_to_a_Power_App_or_flow_2": {
+          "runAfter": {
+            "Scope": [
+              "Failed",
+              "Skipped",
+              "TimedOut"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6bb4e0f7-4600-4a5d-a5ec-a747873e68bf"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "result": "Error"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "title": "Result",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}
