@@ -1,5 +1,8 @@
 ﻿using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
+using Newtonsoft.Json;
 using System;
+using TSANETBasePlugins.E2ee;
 
 public class PostCaseNotePlugin : IPlugin
 {
@@ -24,6 +27,21 @@ public class PostCaseNotePlugin : IPlugin
             {
             };
 
+            var parentQuery = new QueryExpression("ap_tsanetcase")
+            {
+                ColumnSet = new ColumnSet("ap_submittercasenumber"),
+                TopCount = 2
+            };
+            parentQuery.Criteria.AddCondition("ap_tsacasetoken", ConditionOperator.Equal, caseToken);
+            EntityCollection parents = service.RetrieveMultiple(parentQuery);
+            if (parents.Entities.Count != 1)
+            {
+                throw new InvalidPluginExecutionException("The note must resolve to exactly one parent collaboration request.");
+            }
+            string parentReference = parents.Entities[0].GetAttributeValue<string>("ap_submittercasenumber");
+            string noteDetails = JsonConvert.SerializeObject(new { summary, description, priority, submittedBy });
+            noteDetails = E2eeCaseEncryption.PrepareForPost(serviceProvider, PayloadType.Note, noteDetails, parentReference);
+
             // Initialize the common integration plugin
             CommonIntegrationPlugin commonIntegration = new CommonIntegrationPlugin(serviceProvider);
 
@@ -31,9 +49,12 @@ public class PostCaseNotePlugin : IPlugin
             string accessToken = commonIntegration.Login().Result;
 
             // Send case note details to the API
-            ApiResponse response = commonIntegration.PostCaseNote(caseToken, summary, description, priority, submittedBy, accessToken).Result;
+            ApiResponse response = commonIntegration.PostCaseNote(caseToken, noteDetails, accessToken).Result;
+            if (!response.IsError)
+            {
+                response.Content = E2eeCaseDecryption.Decrypt(serviceProvider, response.Content, PayloadType.Note, parentReference);
+            }
             context.OutputParameters["IsError"] = response.IsError;
-            // Return the raw JSON response to the context output parameters
             context.OutputParameters["Response"] = response.Content;
         }
         catch (Exception ex)

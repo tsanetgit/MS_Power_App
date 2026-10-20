@@ -33,6 +33,15 @@ public class CaseNote
     [JsonProperty("status")]
     public string Status { get; set; }
 
+    [JsonProperty("type")]
+    public CaseNoteType Type { get; set; }
+
+    [JsonProperty("manifest")]
+    public string Manifest { get; set; }
+
+    [JsonProperty("encrypted")]
+    public bool Encrypted { get; set; }
+
     [JsonProperty("token")]
     public string Token { get; set; }
 
@@ -41,4 +50,13 @@ public class CaseNote
 
     [JsonProperty("updatedAt")]
     public DateTime UpdatedAt { get; set; }
+}
+
+public class CaseNoteType
+{
+    [JsonProperty("code")]
+    public string Code { get; set; }
+
+    [JsonProperty("displayName")]
+    public string DisplayName { get; set; }
 }

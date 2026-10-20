@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TSANETBasePlugins.E2ee;
 
 public class PostCaseNoteOnCreatePlugin : IPlugin
 {
@@ -37,7 +38,8 @@ public class PostCaseNoteOnCreatePlugin : IPlugin
             }
 
             EntityReference caseReference = (EntityReference)entity["ap_tsanetcaseid"];
-            Entity tsaCaseEntity = service.Retrieve(caseReference.LogicalName, caseReference.Id, new ColumnSet("ap_name", "ap_tsacasetoken"));
+            Entity tsaCaseEntity = service.Retrieve(caseReference.LogicalName, caseReference.Id,
+                new ColumnSet("ap_name", "ap_tsacasetoken", "ap_submittercasenumber"));
 
             if (!tsaCaseEntity.Contains("ap_tsacasetoken"))
             {
@@ -72,8 +74,12 @@ public class PostCaseNoteOnCreatePlugin : IPlugin
                 City = userCity
             };
 
+            string parentReference = tsaCaseEntity.GetAttributeValue<string>("ap_submittercasenumber");
+            string noteDetails = JsonConvert.SerializeObject(new { summary, description, priority, submittedBy });
+            noteDetails = E2eeCaseEncryption.PrepareForPost(serviceProvider, PayloadType.Note, noteDetails, parentReference);
+
             // Send case note details to the API
-            ApiResponse response = commonIntegration.PostCaseNote(caseToken, summary, description, priority, submittedBy, accessToken).Result;
+            ApiResponse response = commonIntegration.PostCaseNote(caseToken, noteDetails, accessToken).Result;
             if (response.IsError)
             {
                 tracingService.Trace($"PostCaseNoteOnCreatePlugin: Error response received - {response.Content}");
@@ -96,6 +102,7 @@ public class PostCaseNoteOnCreatePlugin : IPlugin
             }
             else
             {
+                response.Content = E2eeCaseDecryption.Decrypt(serviceProvider, response.Content, PayloadType.Note, parentReference);
                 var caseNote = JsonConvert.DeserializeObject<CaseNote>(response.Content);
 
                 if (caseNote != null)

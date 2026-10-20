@@ -64,7 +64,7 @@ public class CommonCasePlugin
                 tracingService.Trace("Case not found by token; creating new case");
                 tsanetcaseId = service.Create(tsanetcase);
             }
-            tracingService.Trace(caseResponseJson);
+            tracingService.Trace("Case response verified and saved");
 
             // Process case notes
             ProcessCaseNotes(service, tracingService, caseResponse.CaseNotes, tsanetcaseId.Value);

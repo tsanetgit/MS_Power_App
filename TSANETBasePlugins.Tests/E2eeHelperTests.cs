@@ -141,6 +141,155 @@ namespace TSANETBasePlugins.Tests
             Assert.AreEqual("Note desc", (string)plain["description"]);
         }
 
+        [DataTestMethod]
+        [DataRow(false)]
+        [DataRow(true)]
+        public void Response_StandaloneNote_RecipientAndSenderCanDecrypt(bool sender)
+        {
+            EncryptResult enc = _alice.Encryptor().Encrypt(PayloadType.Note, NoteJson, EncCtx());
+            Party reader = sender ? _alice : _bob;
+            DecryptionContext context = sender ? AliceCtx() : BobCtx();
+            string json = E2eeCaseDecryption.Decrypt(enc.PayloadJson, PayloadType.Note, "S-1",
+                (type, payload, reference) => VerifyResponse(reader, context, type, payload, reference));
+
+            JObject note = JObject.Parse(json);
+            Assert.AreEqual("Note sum", (string)note["summary"]);
+            Assert.AreEqual("Note desc", (string)note["description"]);
+            Assert.AreEqual("x", (string)note["createdBy"]);
+            Assert.AreEqual(5, (int)note["seq"]);
+            CollectionAssert.AreEquivalent(new[] { "summary", "description" },
+                reader.Decryptor().ReadClaimsUnverified(enc.PayloadJson).Fields.Select(f => f.Name).ToArray());
+        }
+
+        [DataTestMethod]
+        [DataRow(false)]
+        [DataRow(true)]
+        public void Response_MixedNotes_DecryptsBothSignersRegardlessOfParentEncryption(bool encryptedParent)
+        {
+            JObject parent = encryptedParent
+                ? JObject.Parse(ToIncomingShape(EncryptCase().PayloadJson))
+                : JObject.Parse("{\"submitterCaseNumber\":\"S-1\",\"summary\":\"Plain case\"}");
+            EncryptResult aliceNote = _alice.Encryptor().Encrypt(PayloadType.Note, NoteJson, EncCtx());
+            EncryptionContext bobContext = EncCtx();
+            bobContext.Iss = "BOB";
+            bobContext.Aud = "ALICE";
+            bobContext.RecipientEncryptionKeyJwk = _alice.EncJwk();
+            bobContext.OwnEncryptionKeyJwk = _bob.EncJwk();
+            EncryptResult bobNote = _bob.Encryptor().Encrypt(PayloadType.Note,
+                "{\"summary\":\"Reply\",\"description\":\"Reply details\",\"id\":42}", bobContext);
+            JObject encodedNote = JObject.Parse(aliceNote.PayloadJson);
+            encodedNote["description"] = ((string)encodedNote["description"]).Replace("\"", "&#34;");
+            parent["caseNotes"] = new JArray(JObject.Parse(NoteJson), encodedNote, JObject.Parse(bobNote.PayloadJson));
+            int calls = 0;
+
+            string json = E2eeCaseDecryption.Decrypt(parent.ToString(), PayloadType.CollaborationRequest, null,
+                (type, payload, reference) =>
+                {
+                    calls++;
+                    DecryptionContext context = BobCtx();
+                    if (_bob.Decryptor().ReadClaimsUnverified(payload).Iss == "BOB")
+                    {
+                        context.SenderSigningKeyJwk = _bob.SigningJwk();
+                    }
+                    return VerifyResponse(_bob, context, type, payload, reference);
+                });
+
+            JObject result = JObject.Parse(json);
+            Assert.AreEqual(encryptedParent ? 3 : 2, calls);
+            Assert.AreEqual(encryptedParent ? "Sum secret" : "Plain case", (string)result["summary"]);
+            Assert.AreEqual(3, result["caseNotes"].Count());
+            Assert.IsTrue(JToken.DeepEquals(JObject.Parse(NoteJson), result["caseNotes"][0]));
+            Assert.AreEqual("Note sum", (string)result["caseNotes"][1]["summary"]);
+            Assert.AreEqual("Note desc", (string)result["caseNotes"][1]["description"]);
+            Assert.AreEqual("Reply", (string)result["caseNotes"][2]["summary"]);
+            Assert.AreEqual("Reply details", (string)result["caseNotes"][2]["description"]);
+            Assert.AreEqual(42, (int)result["caseNotes"][2]["id"]);
+        }
+
+        [DataTestMethod]
+        [DataRow("{}")]
+        [DataRow("{\"caseNotes\":null}")]
+        [DataRow("{\"caseNotes\":[]}")]
+        [DataRow("{\"caseNotes\":[{\"summary\":\"Plain\",\"encrypted\":false}]}")]
+        public void Response_Plaintext_RemainsByteIdentical(string json)
+        {
+            string result = E2eeCaseDecryption.Decrypt(json, PayloadType.CollaborationRequest, null,
+                (type, payload, reference) => { throw new AssertFailedException("Plaintext must not call the verifier."); });
+            Assert.AreEqual(json, result);
+        }
+
+        [DataTestMethod]
+        [DataRow("{\"encrypted\":true}")]
+        [DataRow("{\"encrypted\":true,\"manifest\":null}")]
+        [DataRow("{\"encrypted\":true,\"manifest\":\"\"}")]
+        [DataRow("{\"encrypted\":true,\"manifest\":42}")]
+        [DataRow("{\"encrypted\":\"true\"}")]
+        public void Response_InvalidNoteEnvelope_ThrowsBeforeVerification(string json)
+        {
+            int calls = 0;
+            Assert.ThrowsException<InvalidPluginExecutionException>(() => E2eeCaseDecryption.Decrypt(
+                json, PayloadType.Note, "S-1", (type, payload, reference) => { calls++; return payload; }));
+            Assert.AreEqual(0, calls);
+        }
+
+        [DataTestMethod]
+        [DataRow("{\"caseNotes\":{}}")]
+        [DataRow("{\"caseNotes\":[null]}")]
+        [DataRow("{\"caseNotes\":[1]}")]
+        [DataRow("not json")]
+        public void Response_InvalidCaseShape_Throws(string json)
+        {
+            Assert.ThrowsException<InvalidPluginExecutionException>(() => E2eeCaseDecryption.Decrypt(
+                json, PayloadType.CollaborationRequest, null,
+                (type, payload, reference) => { throw new AssertFailedException("Invalid shape must not call the verifier."); }));
+        }
+
+        [DataTestMethod]
+        [DataRow(false)]
+        [DataRow(true)]
+        public void Response_NoteFailure_RejectsEntireResponse(bool tampered)
+        {
+            JObject note = JObject.Parse(_alice.Encryptor().Encrypt(PayloadType.Note, NoteJson, EncCtx()).PayloadJson);
+            if (tampered) note["summary"] = FlipCiphertext((string)note["summary"]);
+            JObject parent = new JObject
+            {
+                ["submitterCaseNumber"] = tampered ? "S-1" : "OTHER-CASE",
+                ["caseNotes"] = new JArray(JObject.Parse(NoteJson), note)
+            };
+            InvalidPluginExecutionException error = Assert.ThrowsException<InvalidPluginExecutionException>(() =>
+                E2eeCaseDecryption.Decrypt(parent.ToString(), PayloadType.CollaborationRequest, null,
+                    (type, payload, reference) => VerifyResponse(_bob, BobCtx(), type, payload, reference)));
+            StringAssert.Contains(error.Message, tampered ? "FingerprintMismatch" : "BindingMismatch");
+        }
+
+        [TestMethod]
+        public void Response_EncryptedNoteWithoutParentReference_Throws()
+        {
+            string note = _alice.Encryptor().Encrypt(PayloadType.Note, NoteJson, EncCtx()).PayloadJson;
+            Assert.ThrowsException<InvalidPluginExecutionException>(() => E2eeCaseDecryption.Decrypt(
+                note, PayloadType.Note, null,
+                (type, payload, reference) => { throw new AssertFailedException("Missing context must not call the verifier."); }));
+        }
+
+        [TestMethod]
+        public void Response_ManifestStillVerifiedWhenEncryptedFlagIsFalse()
+        {
+            JObject note = JObject.Parse(_alice.Encryptor().Encrypt(PayloadType.Note, NoteJson, EncCtx()).PayloadJson);
+            note["encrypted"] = false;
+            string json = E2eeCaseDecryption.Decrypt(note.ToString(), PayloadType.Note, "S-1",
+                (type, payload, reference) => VerifyResponse(_bob, BobCtx(), type, payload, reference));
+            Assert.AreEqual("Note sum", (string)JObject.Parse(json)["summary"]);
+        }
+
+        private static string VerifyResponse(Party reader, DecryptionContext context, PayloadType type,
+            string payload, string reference)
+        {
+            context.ExpectedRef = reference;
+            DecryptResult result = reader.Decryptor().Decrypt(type, payload, context);
+            if (!result.IsVerified) throw new InvalidPluginExecutionException("Verification failed: " + result.Status);
+            return result.PayloadJson;
+        }
+
         [TestMethod]
         public void Manifest_ListsExpectedFieldIdentifiers_NeverArrayIndex()
         {

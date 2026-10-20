@@ -7,7 +7,7 @@ using System.Net.Http;
 namespace TSANETBasePlugins.E2ee
 {
     /// <summary>
-    /// Encrypts an outgoing collaboration request when (and only when) an 'encryptedRecipient'
+    /// Encrypts an outgoing collaboration request or note when (and only when) an 'encryptedRecipient'
     /// record exists in ap_tsanetsetting.
     /// <list type="bullet">
     /// <item>Iss: ap_tsanetsetting 'Iss' (ap_value)</item>
@@ -25,6 +25,12 @@ namespace TSANETBasePlugins.E2ee
         /// <summary>Returns the encrypted payload, or <paramref name="caseDetailsJson"/> unchanged when no recipient is configured.</summary>
         public static string PrepareForPost(IServiceProvider serviceProvider, string caseDetailsJson)
         {
+            return PrepareForPost(serviceProvider, PayloadType.CollaborationRequest, caseDetailsJson, null);
+        }
+
+        /// <summary>Notes use the parent case's submitterCaseNumber as their reference.</summary>
+        public static string PrepareForPost(IServiceProvider serviceProvider, PayloadType type, string payloadJson, string parentReference)
+        {
             var tracing = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
             var serviceFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
             IOrganizationService systemService = CommonIntegrationPlugin.CreateSystemContextService(serviceFactory);
@@ -32,8 +38,8 @@ namespace TSANETBasePlugins.E2ee
             Entity recipient = E2eeUtil.GetSetting(systemService, RecipientSettingName);
             if (recipient == null)
             {
-                E2eeUtil.Trace(tracing, "No 'encryptedRecipient' setting; posting case unencrypted");
-                return caseDetailsJson;
+                E2eeUtil.Trace(tracing, "No 'encryptedRecipient' setting; posting " + type + " unencrypted");
+                return payloadJson;
             }
 
             string aud = recipient.GetAttributeValue<string>("ap_value");
@@ -44,9 +50,11 @@ namespace TSANETBasePlugins.E2ee
             E2eeUtil.RequireValue(jwksUrl, "encryptedRecipient (ap_uri)");
             E2eeUtil.RequireValue(iss, "Iss setting (ap_value)");
 
-            JObject payload = E2eeUtil.ParseObject(caseDetailsJson, "CaseDetails");
-            string reference = E2eeUtil.StringOrNull(payload["internalCaseNumber"]);
-            E2eeUtil.RequireValue(reference, "CaseDetails.internalCaseNumber");
+            JObject payload = E2eeUtil.ParseObject(payloadJson, "Payload");
+            string reference = type == PayloadType.Note
+                ? parentReference
+                : E2eeUtil.StringOrNull(payload["internalCaseNumber"]);
+            E2eeUtil.RequireValue(reference, type == PayloadType.Note ? "Parent submitterCaseNumber" : "CaseDetails.internalCaseNumber");
 
             E2eeConfig config = E2eeHelperFactory.ReadConfig(serviceProvider);
             config.ValidateForEncrypt();
@@ -61,9 +69,9 @@ namespace TSANETBasePlugins.E2ee
                 Ref = reference
             };
 
-            E2eeUtil.Trace(tracing, "Encrypting case for recipient " + aud);
+            E2eeUtil.Trace(tracing, "Encrypting " + type + " for recipient " + aud);
             E2eePayloadEncryptor encryptor = E2eeHelperFactory.CreateEncryptor(serviceProvider);
-            return encryptor.Encrypt(PayloadType.CollaborationRequest, caseDetailsJson, ctx).PayloadJson;
+            return encryptor.Encrypt(type, payloadJson, ctx).PayloadJson;
         }
 
         private static string FetchRecipientJwk(string jwksUrl, ITracingService tracing)        {

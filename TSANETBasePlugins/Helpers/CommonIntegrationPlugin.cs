@@ -764,7 +764,7 @@ public class CommonIntegrationPlugin
             return apiResponse;
         }
     }
-    public async Task<ApiResponse> PostCaseNote(string caseToken, string summary, string description, string priority, SubmittedBy submittedBy, string accessToken)
+    public async Task<ApiResponse> PostCaseNote(string caseToken, string noteDetailsJson, string accessToken)
     {
         var apiResponse = new ApiResponse();
 
@@ -774,22 +774,12 @@ public class CommonIntegrationPlugin
 
             using (HttpClient client = new HttpClient())
             {
-                var noteDetails = new
-                {
-                    summary = summary,
-                    description = description,
-                    priority = priority,
-                    submittedBy = submittedBy
-                };
-
                 // Add default headers
                 AddDefaultHeaders(client);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-                var json = JsonConvert.SerializeObject(noteDetails);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var content = new StringContent(noteDetailsJson, Encoding.UTF8, "application/json");
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                //content.Headers.ContentLength = json.Length;
 
                 _tracingService.Trace("Sending POST request to create case note.");
 
@@ -805,11 +795,10 @@ public class CommonIntegrationPlugin
                     return apiResponse;
                 }
 
-                // Deserialize the response content into a Case object
                 Stream responseStream = await response.Content.ReadAsStreamAsync();
                 string responseContent = await DecompressResponse(response.Content, responseStream);
 
-                _tracingService.Trace("Case note created successfully. /n" + responseContent);
+                _tracingService.Trace("Case note created successfully.");
                 apiResponse.IsError = false;
                 apiResponse.Content = responseContent;
                 return apiResponse;
