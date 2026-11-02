@@ -105,7 +105,8 @@ public class CommonCasePlugin
             
             Entity noteEntity;
             bool isNew = existingNotes.Entities.Count == 0;
-            
+            OptionSetValue noteType = GetCaseNoteTypeValue(note.Type?.Code);
+
             if (isNew)
             {
                 noteEntity = new Entity("ap_tsanetnote");
@@ -118,6 +119,7 @@ public class CommonCasePlugin
                 noteEntity["ap_companyname"] = note.CompanyName;
                 noteEntity["ap_creatoremail"] = note.CreatorEmail;
                 noteEntity["ap_creatorname"] = note.CreatorName;
+                noteEntity["ap_type"] = noteType;
                 noteEntity["ap_source"] = new OptionSetValue(120950001); // External source
                 noteEntity["ap_tsanotecode"] = note.Id.ToString();
 
@@ -140,6 +142,7 @@ public class CommonCasePlugin
                 noteEntity["ap_companyname"] = note.CompanyName;
                 noteEntity["ap_creatoremail"] = note.CreatorEmail;
                 noteEntity["ap_creatorname"] = note.CreatorName;
+                noteEntity["ap_type"] = noteType;
                 service.Update(noteEntity); 
 
                 tracingService.Trace($"Existing note with ID: {note.Id}");
@@ -250,10 +253,49 @@ public class CommonCasePlugin
         }
     }
 
+    private OptionSetValue GetCaseNoteTypeValue(string type)
+    {
+        if (string.IsNullOrWhiteSpace(type))
+        {
+            return null;
+        }
+
+        switch (type.ToLowerInvariant())
+        {
+            case "partner":
+                return new OptionSetValue(0);
+            case "public":
+                return new OptionSetValue(1);
+            case "escalation":
+                return new OptionSetValue(2);
+            case "status":
+                return new OptionSetValue(3);
+            default:
+                return null; // Return null if type is not recognized
+        }
+    }
+
+    public static string GetCaseNoteTypeCode(int typeValue)
+    {
+        switch (typeValue)
+        {
+            case 0:
+                return "partner";
+            case 1:
+                return "public";
+            case 2:
+                return "escalation";
+            case 3:
+                return "status";
+            default:
+                throw new InvalidPluginExecutionException($"Unsupported case note type option value: {typeValue}.");
+        }
+    }
+
     private OptionSetValue GetResponseTypeValue(string type)
     {
         if (string.IsNullOrEmpty(type)) return new OptionSetValue(1); // Default to APPROVAL
-        
+
         switch (type.ToUpper())
         {
             case "REJECTION":

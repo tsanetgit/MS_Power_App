@@ -21,6 +21,11 @@ public class PostCaseNotePlugin : IPlugin
             string priority = (string)context.InputParameters["Priority"];
             int caseId = (int)context.InputParameters["CaseID"];
             string caseToken = (string)context.InputParameters["CaseToken"];
+            int? caseType = context.InputParameters.Contains("Type") && context.InputParameters["Type"] is int typeValue
+                ? typeValue
+                : (int?)null;
+
+            string typeCode = caseType.HasValue ? CommonCasePlugin.GetCaseNoteTypeCode(caseType.Value) : null;
 
             // Create SubmittedBy object
             SubmittedBy submittedBy = new SubmittedBy
@@ -39,7 +44,8 @@ public class PostCaseNotePlugin : IPlugin
                 throw new InvalidPluginExecutionException("The note must resolve to exactly one parent collaboration request.");
             }
             string parentReference = parents.Entities[0].GetAttributeValue<string>("ap_submittercasenumber");
-            string noteDetails = JsonConvert.SerializeObject(new { summary, description, priority, submittedBy });
+            var type = typeCode == null ? null : new { code = typeCode };
+            string noteDetails = JsonConvert.SerializeObject(new { summary, description, priority, submittedBy, type });
             noteDetails = E2eeCaseEncryption.PrepareForPost(serviceProvider, PayloadType.Note, noteDetails, parentReference);
 
             // Initialize the common integration plugin

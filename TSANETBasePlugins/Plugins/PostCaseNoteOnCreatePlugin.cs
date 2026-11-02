@@ -30,6 +30,8 @@ public class PostCaseNoteOnCreatePlugin : IPlugin
             string summary = entity.Contains("ap_name") ? entity["ap_name"].ToString() : string.Empty;
             string description = entity.Contains("ap_description") ? entity["ap_description"].ToString() : string.Empty;
             string priority = entity.Contains("ap_priority") ? GetPriority(entity.GetAttributeValue<OptionSetValue>("ap_priority").Value) : "LOW";
+            OptionSetValue noteType = entity.GetAttributeValue<OptionSetValue>("ap_type");
+            string typeCode = noteType != null ? CommonCasePlugin.GetCaseNoteTypeCode(noteType.Value) : null;
 
             // Retrieve the related tsanetcase record using ap_tsanetcaseid
             if (!entity.Contains("ap_tsanetcaseid"))
@@ -75,7 +77,8 @@ public class PostCaseNoteOnCreatePlugin : IPlugin
             };
 
             string parentReference = tsaCaseEntity.GetAttributeValue<string>("ap_submittercasenumber");
-            string noteDetails = JsonConvert.SerializeObject(new { summary, description, priority, submittedBy });
+            var type = typeCode == null ? null : new { code = typeCode };
+            string noteDetails = JsonConvert.SerializeObject(new { summary, description, priority, submittedBy, type });
             noteDetails = E2eeCaseEncryption.PrepareForPost(serviceProvider, PayloadType.Note, noteDetails, parentReference);
 
             // Send case note details to the API
