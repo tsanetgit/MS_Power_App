@@ -31,7 +31,7 @@ public class GetCasePlugin : IPlugin
 
                 // Use the UpdateCasePlugin to process the response
                 var commonCasePlugin = new CommonCasePlugin();
-                var caseResponseJson = commonCasePlugin.ProcessCaseResponse(service, tracingService, response.Content, null, serviceProvider);
+                var caseResponseJson = commonCasePlugin.ProcessCaseResponse(service, tracingService, response.Content, null, integrationPlugin, accessToken, serviceProvider);
 
                 // Set the output parameter
                 context.OutputParameters["IsError"] = response.IsError;

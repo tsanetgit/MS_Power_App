@@ -124,7 +124,7 @@ public class PostCaseResponseOnCreatePlugin : IPlugin
 
                         // Use the UpdateCasePlugin to process the response
                         var commonCasePlugin = new CommonCasePlugin();
-                        commonCasePlugin.ProcessCaseResponse(service, tracingService, response.Content, tsanetcaseRef.Id, serviceProvider);
+                        commonCasePlugin.ProcessCaseResponse(service, tracingService, response.Content, tsanetcaseRef.Id, commonIntegration, accessToken, serviceProvider);
                     }
                 }
             }

@@ -254,7 +254,10 @@ class CaseCreateReadOnlyRenderer {
                 sectionGroup.innerHTML = `<h3>${displaySectionName}</h3>`;
 
                 customFields[section].forEach(field => {
-                    sectionGroup.appendChild(this.createReadOnlyTextField(field.fieldName || field.label, field.value));
+                    const fieldElement = this.createReadOnlyTextField(field.fieldName || field.label, field.value, field.type);
+                    if (fieldElement) {
+                        sectionGroup.appendChild(fieldElement);
+                    }
                 });
                 form.appendChild(sectionGroup);
             }
@@ -278,12 +281,17 @@ class CaseCreateReadOnlyRenderer {
         }
     }
 
-    // ========== HELPER FUNCTIONS (migrated from CaseTSA.js) ==========
+    // ========== HELPER FUNCTIONS ==========
 
     /**
      * Create read-only text field
      */
-    createReadOnlyTextField(label, value) {
+    createReadOnlyTextField(label, value, type) {
+        type = type || "text";
+        if (typeof type === "string" && type.toLowerCase() === "hidden") {
+            return null;
+        }
+
         const inputGroup = document.createElement("div");
         inputGroup.className = "input-group";
 

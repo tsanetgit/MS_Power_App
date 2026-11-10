@@ -41,7 +41,7 @@ public class PostCasePlugin : IPlugin
 
             // Use the UpdateCasePlugin to process the response
             var commonCasePlugin = new CommonCasePlugin();
-            caseResponseJson = commonCasePlugin.ProcessCaseResponse(service, tracingService, caseResponseJson, new Guid(caseID), serviceProvider);
+            caseResponseJson = commonCasePlugin.ProcessCaseResponse(service, tracingService, caseResponseJson, new Guid(caseID), commonIntegration, accessToken, serviceProvider);
 
             tracingService.Trace("Case data processed successfully");
         }

@@ -129,6 +129,7 @@
     <Compile Include="Actions\GetFormByDocumentPlugin.cs" />
     <Compile Include="Actions\EncryptTextPlugin.cs" />
     <Compile Include="Actions\DecryptTextPlugin.cs" />
+    <Compile Include="Models\MeResponse.cs" />
     <Compile Include="Plugins\CasePatchCollaborationRequestPlugin.cs" />
     <Compile Include="Helpers\CommonIntegrationPlugin.cs" />
     <Compile Include="Helpers\JoseCryptoUtils.cs" />

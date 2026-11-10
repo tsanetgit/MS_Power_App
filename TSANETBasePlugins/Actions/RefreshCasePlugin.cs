@@ -50,7 +50,7 @@ public class RefreshCasePlugin : IPlugin
 
                     // Use the UpdateCasePlugin to process the response
                     var commonCasePlugin = new CommonCasePlugin();
-                    caseResponseJson = commonCasePlugin.ProcessCaseResponse(service, tracingService, caseResponseJson, targetRef.Id, serviceProvider);
+                    caseResponseJson = commonCasePlugin.ProcessCaseResponse(service, tracingService, caseResponseJson, targetRef.Id, integrationPlugin, accessToken, serviceProvider);
 
                     tracingService.Trace("Case data processed successfully");
                     context.OutputParameters["Success"] = true;

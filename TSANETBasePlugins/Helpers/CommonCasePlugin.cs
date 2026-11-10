@@ -1,3 +1,4 @@
+using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Newtonsoft.Json;
@@ -7,7 +8,7 @@ using System.Linq;
 
 public class CommonCasePlugin
 {
-    public string ProcessCaseResponse(IOrganizationService service, ITracingService tracingService, string caseResponseJson, Guid? tsanetcaseId, IServiceProvider serviceProvider = null)
+    public string ProcessCaseResponse(IOrganizationService service, ITracingService tracingService, string caseResponseJson, Guid? tsanetcaseId, CommonIntegrationPlugin integrationPlugin, string accessToken, IServiceProvider serviceProvider = null)
     {
         try
         {
@@ -27,6 +28,26 @@ public class CommonCasePlugin
                 throw new InvalidPluginExecutionException("Failed to deserialize case response JSON.");
             }
 
+            if (integrationPlugin == null || string.IsNullOrWhiteSpace(accessToken))
+            {
+                throw new InvalidPluginExecutionException("An authenticated integration is required to determine the case direction.");
+            }
+
+            ApiResponse meApiResponse = integrationPlugin.GetMe(accessToken).Result;
+            if (meApiResponse.IsError)
+            {
+                throw new InvalidPluginExecutionException($"Unable to determine case direction because GET /v1/me failed: {meApiResponse.Content}");
+            }
+
+            var meResponse = JsonConvert.DeserializeObject<MeResponse>(meApiResponse.Content);
+            if (meResponse?.Company?.Id == null)
+            {
+                throw new InvalidPluginExecutionException("GET /v1/me returned no company id; unable to determine the case direction.");
+            }
+
+            int direction = meResponse.Company.Id.Value == caseResponse.ReceiveCompanyId ? 0 : 1;
+            tracingService.Trace($"Determined case direction: {direction}");
+
             // Update the tsanetcase record with the JSON content
             Entity tsanetcase = new Entity("ap_tsanetcase");
             tsanetcase["ap_formjson"] = caseResponseJson;
@@ -37,6 +58,7 @@ public class CommonCasePlugin
             tsanetcase["ap_submittercasenumber"] = caseResponse.SubmitterCaseNumber;
             tsanetcase["ap_documentcode"] = caseResponse.ContactDocumentId;
             tsanetcase["ap_documentname"] = caseResponse.ContactDocumentName;
+            tsanetcase["ap_direction"] = new OptionSetValue(direction);
 
             // Find existing case by token
             Guid? existingId = tsanetcaseId;
@@ -66,6 +88,9 @@ public class CommonCasePlugin
             }
             tracingService.Trace("Case response verified and saved");
 
+            // Status is set as a separate step because an inactive record can't be created
+            UpdateCaseStatus(service, tracingService, tsanetcaseId.Value, caseResponse.Status);
+
             // Process case notes
             ProcessCaseNotes(service, tracingService, caseResponse.CaseNotes, tsanetcaseId.Value);
             tracingService.Trace("Processed case notes");
@@ -82,6 +107,52 @@ public class CommonCasePlugin
             tracingService.Trace($"Exception: {ex.Message}");
             throw new InvalidPluginExecutionException($"An error occurred in the UpdateCasePlugin: {ex.Message}", ex);
         }
+    }
+
+    private void UpdateCaseStatus(IOrganizationService service, ITracingService tracingService, Guid tsanetcaseId, string status)
+    {
+        if (string.IsNullOrWhiteSpace(status))
+        {
+            tracingService.Trace("No status in case response; skipping status update");
+            return;
+        }
+
+        int state;
+        int statusCode;
+        switch (status.Trim().ToLowerInvariant())
+        {
+            case "rejected":
+                state = 1; statusCode = 120950002;
+                break;
+            case "closed":
+                state = 1; statusCode = 2;
+                break;
+            case "information":
+                state = 0; statusCode = 120950001;
+                break;
+            case "accepted":
+                state = 0; statusCode = 120950003;
+                break;
+            default:
+                state = 0; statusCode = 1;
+                break;
+        }
+
+        Entity current = service.Retrieve("ap_tsanetcase", tsanetcaseId, new ColumnSet("statecode", "statuscode"));
+        if (current.GetAttributeValue<OptionSetValue>("statecode")?.Value == state &&
+            current.GetAttributeValue<OptionSetValue>("statuscode")?.Value == statusCode)
+        {
+            tracingService.Trace("Case status already up to date");
+            return;
+        }
+
+        service.Execute(new SetStateRequest
+        {
+            EntityMoniker = new EntityReference("ap_tsanetcase", tsanetcaseId),
+            State = new OptionSetValue(state),
+            Status = new OptionSetValue(statusCode)
+        });
+        tracingService.Trace($"Case status set to '{status}'");
     }
 
     private void ProcessCaseNotes(IOrganizationService service, ITracingService tracingService, List<CaseNote> caseNotes, Guid tsanetcaseId)
