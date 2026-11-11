@@ -17,8 +17,13 @@ namespace TSANETBasePlugins.E2ee
         public static string Decrypt(IServiceProvider serviceProvider, string payloadJson,
             PayloadType type = PayloadType.CollaborationRequest, string expectedRef = null)
         {
+            bool rejectOnVerificationFailure = type == PayloadType.CollaborationRequest;
+            string caseToken = rejectOnVerificationFailure
+                ? E2eeUtil.StringOrNull(E2eeUtil.ParseObject(payloadJson, "Response")["token"])
+                : null;
             return Decrypt(payloadJson, type, expectedRef,
-                (payloadType, json, reference) => DecryptPayload(serviceProvider, payloadType, json, reference));
+                (payloadType, json, reference) => DecryptPayload(
+                    serviceProvider, payloadType, json, reference, caseToken, rejectOnVerificationFailure));
         }
 
         /// <summary>Processes the response shape with a verifier that returns plaintext or throws.</summary>
@@ -82,7 +87,8 @@ namespace TSANETBasePlugins.E2ee
             return false;
         }
 
-        private static string DecryptPayload(IServiceProvider serviceProvider, PayloadType type, string payloadJson, string reference)
+        private static string DecryptPayload(IServiceProvider serviceProvider, PayloadType type, string payloadJson,
+            string reference, string caseToken, bool rejectOnVerificationFailure)
         {
             var tracing = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
             JObject probe = E2eeUtil.ParseObject(payloadJson, "Response");
@@ -136,9 +142,43 @@ namespace TSANETBasePlugins.E2ee
             if (!result.IsVerified)
             {
                 E2eeUtil.Trace(tracing, "Decryption failed: " + result.Status + " (jti " + claims.Jti + ")");
+                if (rejectOnVerificationFailure)
+                {
+                    try
+                    {
+                        RejectUnverifiedCollaborationRequest(serviceProvider, caseToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        E2eeUtil.Trace(tracing, "Failed to send collaboration request rejection: " + ex.Message);
+                        throw new InvalidPluginExecutionException(
+                            "Encrypted " + type + " response could not be verified/decrypted: " + result.Status
+                            + ". Failed to send collaboration request rejection: " + ex.Message, ex);
+                    }
+                }
                 throw new InvalidPluginExecutionException("Encrypted " + type + " response could not be verified/decrypted: " + result.Status);
             }
             return result.PayloadJson;
+        }
+
+        private static void RejectUnverifiedCollaborationRequest(IServiceProvider serviceProvider, string caseToken)
+        {
+            E2eeUtil.RequireValue(caseToken, "Case token for collaboration request rejection");
+            var integration = new CommonIntegrationPlugin(serviceProvider);
+            string accessToken = E2eeUtil.RequireValue(
+                integration.Login().GetAwaiter().GetResult(), "Access token for collaboration request rejection");
+            ApiResponse response = integration.PostCaseReject(
+                caseToken,
+                "SYSTEM",
+                "",
+                "no-reply@tsa",
+                "The message signature wasn't verified",
+                accessToken).GetAwaiter().GetResult();
+            if (response.IsError)
+            {
+                throw new InvalidPluginExecutionException(
+                    "PostCaseReject failed: " + response.Content);
+            }
         }
 
         private static string ReadManifestKid(string compactJws)
