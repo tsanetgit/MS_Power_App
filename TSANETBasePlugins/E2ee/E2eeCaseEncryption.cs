@@ -2,13 +2,14 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Globalization;
 using System.Net.Http;
 
 namespace TSANETBasePlugins.E2ee
 {
     /// <summary>
-    /// Encrypts an outgoing collaboration request or note when (and only when) an 'encryptedRecipient'
-    /// record exists in ap_tsanetsetting.
+    /// Encrypts an outgoing collaboration request or note when an 'encryptedRecipient'
+    /// setting matches the counterparty's company ID.
     /// <list type="bullet">
     /// <item>Iss: ap_tsanetsetting 'Iss' (ap_value)</item>
     /// <item>Aud: ap_tsanetsetting 'encryptedRecipient' (ap_value)</item>
@@ -22,23 +23,19 @@ namespace TSANETBasePlugins.E2ee
         private const string RecipientSettingName = "encryptedRecipient";
         private const string IssSettingName = "Iss";
 
-        /// <summary>Returns the encrypted payload, or <paramref name="caseDetailsJson"/> unchanged when no recipient is configured.</summary>
-        public static string PrepareForPost(IServiceProvider serviceProvider, string caseDetailsJson)
+        /// <summary>Returns the encrypted payload, or the original payload when the recipient is not configured.</summary>
+        public static string PrepareForPost(IServiceProvider serviceProvider, PayloadType type, string payloadJson, string parentReference, string recipientCompanyId)
         {
-            return PrepareForPost(serviceProvider, PayloadType.CollaborationRequest, caseDetailsJson, null);
-        }
-
-        /// <summary>Notes use the parent case's submitterCaseNumber as their reference.</summary>
-        public static string PrepareForPost(IServiceProvider serviceProvider, PayloadType type, string payloadJson, string parentReference)
-        {
+            JObject payload = E2eeUtil.ParseObject(payloadJson, "Payload");
+            E2eeUtil.RequireValue(recipientCompanyId, "Recipient company ID");
             var tracing = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
             var serviceFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
             IOrganizationService systemService = CommonIntegrationPlugin.CreateSystemContextService(serviceFactory);
 
-            Entity recipient = E2eeUtil.GetSetting(systemService, RecipientSettingName);
+            Entity recipient = E2eeUtil.GetSetting(systemService, RecipientSettingName, recipientCompanyId);
             if (recipient == null)
             {
-                E2eeUtil.Trace(tracing, "No 'encryptedRecipient' setting; posting " + type + " unencrypted");
+                E2eeUtil.Trace(tracing, "No 'encryptedRecipient' setting for recipient " + recipientCompanyId + "; posting " + type + " unencrypted");
                 return payloadJson;
             }
 
@@ -50,7 +47,6 @@ namespace TSANETBasePlugins.E2ee
             E2eeUtil.RequireValue(jwksUrl, "encryptedRecipient (ap_uri)");
             E2eeUtil.RequireValue(iss, "Iss setting (ap_value)");
 
-            JObject payload = E2eeUtil.ParseObject(payloadJson, "Payload");
             string reference = type == PayloadType.Note
                 ? parentReference
                 : E2eeUtil.StringOrNull(payload["internalCaseNumber"]);
@@ -72,6 +68,32 @@ namespace TSANETBasePlugins.E2ee
             E2eeUtil.Trace(tracing, "Encrypting " + type + " for recipient " + aud);
             E2eePayloadEncryptor encryptor = E2eeHelperFactory.CreateEncryptor(serviceProvider);
             return encryptor.Encrypt(type, payloadJson, ctx).PayloadJson;
+        }
+
+        /// <summary>Resolves the note's counterparty from the parent case response and direction.</summary>
+        public static string GetNoteRecipientCompanyId(Entity caseRecord)
+        {
+            if (caseRecord == null) throw new ArgumentNullException(nameof(caseRecord));
+            OptionSetValue direction = caseRecord.GetAttributeValue<OptionSetValue>("ap_direction");
+            if (direction == null || (direction.Value != 0 && direction.Value != 1))
+            {
+                throw new InvalidPluginExecutionException("The parent case direction is missing or invalid.");
+            }
+            JObject caseResponse = E2eeUtil.ParseObject(caseRecord.GetAttributeValue<string>("ap_formjson"), "Parent case response");
+            string property = direction.Value == 0 ? "submitCompanyId" : "receiveCompanyId";
+            return GetCompanyId(caseResponse, property, "Parent case");
+        }
+
+        private static string GetCompanyId(JObject payload, string property, string description)
+        {
+            JToken company = payload[property];
+            int id;
+            if (company == null || (company.Type != JTokenType.Integer && company.Type != JTokenType.String)
+                || !int.TryParse(company.ToString(), NumberStyles.None, CultureInfo.InvariantCulture, out id) || id <= 0)
+            {
+                throw new InvalidPluginExecutionException(description + " " + property + " is missing or invalid.");
+            }
+            return id.ToString(CultureInfo.InvariantCulture);
         }
 
         private static string FetchRecipientJwk(string jwksUrl, ITracingService tracing)        {

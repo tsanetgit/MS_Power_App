@@ -20,6 +20,15 @@
         <mxsw:ArgumentEntityAttribute Value="" />
       </x:Property.Attributes>
     </x:Property>
+    <x:Property Name="RecipientCompanyID" Type="InArgument(x:String)">
+      <x:Property.Attributes>
+        <mxsw:ArgumentRequiredAttribute Value="True" />
+        <mxsw:ArgumentTargetAttribute Value="False" />
+        <mxsw:ArgumentDescriptionAttribute Value="Recipient company ID" />
+        <mxsw:ArgumentDirectionAttribute Value="Input" />
+        <mxsw:ArgumentEntityAttribute Value="" />
+      </x:Property.Attributes>
+    </x:Property>
     <x:Property Name="PostCaseResponse" Type="OutArgument(x:String)">
       <x:Property.Attributes>
         <mxsw:ArgumentRequiredAttribute Value="False" />

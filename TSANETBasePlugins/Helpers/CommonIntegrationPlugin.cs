@@ -68,6 +68,7 @@ public class CommonIntegrationPlugin
 
     /// <summary>
     /// Resolves the id of the built-in, non-interactive SYSTEM user account.
+    /// Do not change this.
     /// </summary>
     private static Guid GetSystemUserId(IOrganizationService service)
     {

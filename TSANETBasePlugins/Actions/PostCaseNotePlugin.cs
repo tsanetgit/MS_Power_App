@@ -34,7 +34,7 @@ public class PostCaseNotePlugin : IPlugin
 
             var parentQuery = new QueryExpression("ap_tsanetcase")
             {
-                ColumnSet = new ColumnSet("ap_submittercasenumber"),
+                ColumnSet = new ColumnSet("ap_submittercasenumber", "ap_direction", "ap_formjson"),
                 TopCount = 2
             };
             parentQuery.Criteria.AddCondition("ap_tsacasetoken", ConditionOperator.Equal, caseToken);
@@ -44,9 +44,10 @@ public class PostCaseNotePlugin : IPlugin
                 throw new InvalidPluginExecutionException("The note must resolve to exactly one parent collaboration request.");
             }
             string parentReference = parents.Entities[0].GetAttributeValue<string>("ap_submittercasenumber");
+            string recipientCompanyId = E2eeCaseEncryption.GetNoteRecipientCompanyId(parents.Entities[0]);
             var type = typeCode == null ? null : new { code = typeCode };
             string noteDetails = JsonConvert.SerializeObject(new { summary, description, priority, submittedBy, type });
-            noteDetails = E2eeCaseEncryption.PrepareForPost(serviceProvider, PayloadType.Note, noteDetails, parentReference);
+            noteDetails = E2eeCaseEncryption.PrepareForPost(serviceProvider, PayloadType.Note, noteDetails, parentReference, recipientCompanyId);
 
             // Initialize the common integration plugin
             CommonIntegrationPlugin commonIntegration = new CommonIntegrationPlugin(serviceProvider);

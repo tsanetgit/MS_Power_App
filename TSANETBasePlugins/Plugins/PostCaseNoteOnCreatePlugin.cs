@@ -41,7 +41,7 @@ public class PostCaseNoteOnCreatePlugin : IPlugin
 
             EntityReference caseReference = (EntityReference)entity["ap_tsanetcaseid"];
             Entity tsaCaseEntity = service.Retrieve(caseReference.LogicalName, caseReference.Id,
-                new ColumnSet("ap_name", "ap_tsacasetoken", "ap_submittercasenumber"));
+                new ColumnSet("ap_name", "ap_tsacasetoken", "ap_submittercasenumber", "ap_direction", "ap_formjson"));
 
             if (!tsaCaseEntity.Contains("ap_tsacasetoken"))
             {
@@ -77,9 +77,10 @@ public class PostCaseNoteOnCreatePlugin : IPlugin
             };
 
             string parentReference = tsaCaseEntity.GetAttributeValue<string>("ap_submittercasenumber");
+            string recipientCompanyId = E2eeCaseEncryption.GetNoteRecipientCompanyId(tsaCaseEntity);
             var type = typeCode == null ? null : new { code = typeCode };
             string noteDetails = JsonConvert.SerializeObject(new { summary, description, priority, submittedBy, type });
-            noteDetails = E2eeCaseEncryption.PrepareForPost(serviceProvider, PayloadType.Note, noteDetails, parentReference);
+            noteDetails = E2eeCaseEncryption.PrepareForPost(serviceProvider, PayloadType.Note, noteDetails, parentReference, recipientCompanyId);
 
             // Send case note details to the API
             ApiResponse response = commonIntegration.PostCaseNote(caseToken, noteDetails, accessToken).Result;

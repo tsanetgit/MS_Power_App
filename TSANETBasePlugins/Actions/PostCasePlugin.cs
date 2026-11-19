@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xrm.Sdk;
 using System;
+using System.Globalization;
 using TSANETBasePlugins.E2ee;
 
 public class PostCasePlugin : IPlugin
@@ -13,14 +14,14 @@ public class PostCasePlugin : IPlugin
         // Retrieve case details from input parameters
         string caseDetails = (string)context.InputParameters["CaseDetails"];
         string caseID = (string)context.InputParameters["CaseID"];
+        string recipientCompanyId = (string)context.InputParameters["RecipientCompanyID"];
 
         if (string.IsNullOrEmpty(caseDetails))
         {
             throw new InvalidPluginExecutionException("Case details are required.");
         }
 
-        // Field-level E2EE: only when an 'encryptedRecipient' setting exists
-        caseDetails = E2eeCaseEncryption.PrepareForPost(serviceProvider, caseDetails);
+        caseDetails = E2eeCaseEncryption.PrepareForPost(serviceProvider, PayloadType.CollaborationRequest, caseDetails, null, recipientCompanyId);
         // Initialize the common integration plugin
         CommonIntegrationPlugin commonIntegration = new CommonIntegrationPlugin(serviceProvider);
 

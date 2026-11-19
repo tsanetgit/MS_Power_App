@@ -310,22 +310,31 @@ function postCase(submissionData, formContext) {
             // Convert the submissionData object to a JSON string
             const submissionDataString = JSON.stringify(submissionData);
             const caseId = formContext.data.entity.getId().replace("{", "").replace("}", "");
+            const recipientCompanyId = formContext.getAttribute("ap_companycode").getValue();
+            if (!Number.isInteger(recipientCompanyId) || recipientCompanyId <= 0) {
+                Xrm.Utility.closeProgressIndicator();
+                showError(formContext, "A recipient company is required.");
+                return;
+            }
 
             const parameters = {
                 CaseDetails: submissionDataString,
-                CaseID: caseId
+                CaseID: caseId,
+                RecipientCompanyID: recipientCompanyId.toString()
             };
 
             // Custom action call
             const request = {
                 CaseDetails: parameters.CaseDetails,
                 CaseID: parameters.CaseID,
+                RecipientCompanyID: parameters.RecipientCompanyID,
                 getMetadata: function () {
                     return {
                         boundParameter: null, // No entity bound
                         parameterTypes: {
                             "CaseDetails": { typeName: "Edm.String", structuralProperty: 1 },
-                            "CaseID": { typeName: "Edm.String", structuralProperty: 1 }
+                            "CaseID": { typeName: "Edm.String", structuralProperty: 1 },
+                            "RecipientCompanyID": { typeName: "Edm.String", structuralProperty: 1 }
                         },
                         operationType: 0,
                         operationName: "ap_PostCase"

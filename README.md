@@ -21,10 +21,14 @@ https://github.com/tsanetgit/MS_Power_App/blob/master/Microsoft%20Power%20App%20
 ## Note encryption
 
 Collaboration requests and notes use the same field-level E2EE profile. Outgoing
-notes encrypt `summary` and `description` only when an `encryptedRecipient`
-setting exists, just like outgoing collaboration requests. Each note carries its
-own signed `manifest` and `encrypted` flag. Missing or invalid encryption
-configuration fails the operation; it does not fall back to plaintext.
+requests and notes are encrypted only when an `encryptedRecipient` setting has
+`ap_value` equal to the recipient company ID. Its `ap_uri` must contain the HTTPS
+JWKS URL; a matching setting with missing or invalid configuration fails the
+operation rather than falling back to plaintext. Each encrypted note carries its
+own signed `manifest` and `encrypted` flag. Case submission converts the form's
+integer `ap_companycode` to the required string `RecipientCompanyID` action parameter.
+Other callers of `ap_PostCase` must also supply it. Note recipients are determined
+from the parent case direction and stored response; missing recipient information fails the post.
 
 Notes are bound to their parent collaboration request's `submitterCaseNumber`
 (`ap_submittercasenumber` in Dataverse), not their note ID or case token. The
@@ -39,9 +43,9 @@ and notes from either participant are supported. Plaintext notes remain unchange
 A missing/invalid manifest or failed verification rejects the response before
 case/note persistence. Decrypted payload content is not written to tracing.
 
-Configuration reads use the existing SYSTEM-context service. Encryption still
-uses the existing `encryptedRecipient`, `Iss`, signing-key and unwrap-key
-configuration.
+Configuration reads use the SYSTEM-context service, which requires an enabled
+SYSTEM user with `accessmode` 3. Encryption uses the existing `encryptedRecipient`,
+`Iss`, signing-key and unwrap-key configuration.
 
 ## Provide Feedback
 
