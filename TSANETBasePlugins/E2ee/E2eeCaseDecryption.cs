@@ -142,7 +142,7 @@ namespace TSANETBasePlugins.E2ee
             if (!result.IsVerified)
             {
                 E2eeUtil.Trace(tracing, "Decryption failed: " + result.Status + " (jti " + claims.Jti + ")");
-                if (rejectOnVerificationFailure)
+                if (rejectOnVerificationFailure && sender != own)
                 {
                     try
                     {
